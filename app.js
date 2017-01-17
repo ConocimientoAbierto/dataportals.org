@@ -110,10 +110,9 @@ app.get('/admin/reload', routes.reload);
 
 model.catalog.loadUrl(config.databaseUrl, function(err) {
   if (err) {
-    console.error('Failed to load dataset info');
+    console.error('Failed to load dataset info', err);
   }
   app.listen(app.get('port'), function() {
     console.log("Listening on " + app.get('port'));
   });
 });
-
