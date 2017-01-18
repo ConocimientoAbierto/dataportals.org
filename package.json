@@ -1,13 +1,14 @@
 {
-    "name": "dataportals"
-  , "version": "0.1.0"
-  , "dependencies": {
-      "express": "3.x",
-      "nunjucks": "1.1.0",
-      "underscore": "",
-      "request": "",
-      "marked": "",
-      "csv-parse": ""
+  "name": "dataportals",
+  "version": "0.1.0",
+  "dependencies": {
+    "csv-parse": "",
+    "express": "3.x",
+    "marked": "",
+    "mongoose": "^4.7.7",
+    "nunjucks": "1.1.0",
+    "request": "",
+    "underscore": ""
   },
   "engines": {
     "node": "0.10.x"
