@@ -1,23 +1,25 @@
-var express = require('express')
-  , path = require('path')
-  , fs = require('fs')
-  , nunjucks = require('nunjucks')
-  , config = require('./lib/config.js')
-  , model = require('./lib/model.js')
-  , routes = require('./routes/index.js')
-  ;
+var express = require('express'),
+  path = require('path'),
+  nunjucks = require('nunjucks'),
+  logger = require('morgan'),
+  bodyParser = require('body-parser'),
+  methodOverride = require('method-override'),
+  config = require('./lib/config.js'),
+  model = require('./lib/model.js'),
+  routes = require('./routes/index.js');
 
 var app = express();
 
-app.configure(function(){
-  app.set('port', process.env.PORT || 5000);
-  app.set('views', __dirname + '/views');
-  app.use(express.favicon());
-  app.use(express.logger('dev'));
-  app.use(express.bodyParser());
-  app.use(express.methodOverride());
-  app.use(express.static(path.join(__dirname, 'public')));
-});
+// app.configure(function(){
+//
+// });
+
+app.set('port', process.env.PORT || 5000);
+app.set('views', __dirname + '/views');
+app.use(logger('dev'));
+app.use(bodyParser());
+app.use(methodOverride());
+app.use(express.static(path.join(__dirname, 'public')));
 
 var env = new nunjucks.Environment(new nunjucks.FileSystemLoader('views'));
 env.express(app);
