@@ -4,25 +4,35 @@ var express = require('express'),
   logger = require('morgan'),
   bodyParser = require('body-parser'),
   methodOverride = require('method-override'),
-  config = require('./lib/config.js'),
-  model = require('./lib/model.js'),
-  routes = require('./routes/index.js');
+  mongoose = require('mongoose');
 
 var app = express();
 
-// app.configure(function(){
-//
-// });
+// MONGOOSE CONFIG
+var uriDB = 'mongodb://calidatos:datoscali@Localhost:27017/calidatos';
+mongoose.connect(uriDB, (err) => err ? console.log(err) : console.log('Conected to DB'));
 
-app.set('port', process.env.PORT || 5000);
+// TODO ver esto
+var config = require('./lib/config.js'),
+    model = require('./lib/model.js');
+
+// config the app
 app.set('views', __dirname + '/views');
 app.use(logger('dev'));
-app.use(bodyParser());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(methodOverride());
 app.use(express.static(path.join(__dirname, 'public')));
 
 var env = new nunjucks.Environment(new nunjucks.FileSystemLoader('views'));
 env.express(app);
+
+
+// ROUTES CONFIG
+var routes = require('./routes/index.js');
+var portals = require('./routes/portals');
+
+app.use('/api', portals);
 
 app.get('/', function(req, res) {
   var catalogs = model.catalog.query();
@@ -114,7 +124,6 @@ model.catalog.loadUrl(config.databaseUrl, function(err) {
   if (err) {
     console.error('Failed to load dataset info', err);
   }
-  app.listen(app.get('port'), function() {
-    console.log("Listening on " + app.get('port'));
-  });
 });
+
+module.exports = app;
