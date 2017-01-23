@@ -64,13 +64,13 @@ my.Views.Dataset = Backbone.View.extend({
   template: ' \
     <div class="dataset show"> \
       <div class="row"> \
-        <div class="span8"> \
+        <div class="col-md-8"> \
           {{#image}} \
           <img src="{{image}}" alt="{{title}}" class="logo" /> \
           {{/image}} \
           <div class="description">{{description}}</div> \
         </div> \
-        <div class="span4"> \
+        <div class="col-md-4"> \
           <div class="actions"> \
             <a href="{{download_url}}" class="btn btn-large"><i class="icon-download-alt"></i> Download</a> \
           </div> \
@@ -161,12 +161,12 @@ my.Views.Search = Backbone.View.extend({
   template: ' \
     <div class="search"> \
       <form class="form-horizontal dataset-search" autocomplete="off"> \
-        <input type="text" name="q" placeholder="Search datasets" class="search-query js-dataset-query span5" autocomplete="off" /> \
+        <input type="text" name="q" placeholder="Search datasets" class="search-query js-dataset-query col-md-5" autocomplete="off" /> \
       </form> \
       <div class="row"> \
-        <div class="results span8"> \
+        <div class="results col-md-8"> \
         </div> \
-        <div class="sidebar span4"> \
+        <div class="sidebar col-md-4"> \
         </div> \
       </div> \
     </div> \

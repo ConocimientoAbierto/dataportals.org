@@ -11,12 +11,12 @@
     </h1>
   </div>
   <div class="row">
-        <div class="span6">
+        <div class="col-md-6">
             <h2>Description</h2>
             {{ catalog.description }}
         </div>
 
-        <div class="span6">
+        <div class="col-md-6">
             <dl class="dl-horizontal">
                 <dt>
                     Area covered:
@@ -64,11 +64,11 @@
                     Country/Language:
                 </dt>
                 <dd>
-                    <span class="label label-info">
+                    <spanclass="label label-info">
                         {{ catalog.country }}
                     </span>
                     /
-                    <span class="label label-info">
+                    <spanclass="label label-info">
                         {{ catalog.language }}
                     </span>
                     &thinsp;
@@ -79,7 +79,7 @@
                 <dd>
                       {% for kw in catalog.tags or [] %}
                         {% if kw %}
-                            <span class="label label-primary">{{kw}}</span>
+                            <spanclass="label label-primary">{{kw}}</span>
                         {% endif %}
                       {% endfor %}&thinsp;
                 </dd>

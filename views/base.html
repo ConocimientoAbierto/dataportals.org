@@ -16,7 +16,7 @@
   <![endif]-->
 
   <link href="http://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet" type="text/css">
-  <link href="//netdna.bootstrapcdn.com/bootstrap/2.3.2/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
   <link rel="stylesheet" href="/vendor/recline/vendor/leaflet/0.7.3/leaflet.css">
   <!--[if lte IE 8]>
@@ -26,14 +26,16 @@
   <link rel="stylesheet" href="/vendor/recline/vendor/leaflet.markercluster/MarkerCluster.Default.css">
   <link rel="stylesheet" href="/vendor/recline/dist/recline.css">
 
+
   <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
-<div class="navbar navbar-fixed-top">
-  <div class="navbar-inner">
+<div class="navbar navbar-default navbar-fixed-top">
     <div class="container">
-      <a class="brand" href="/" title="Data Portals">DataPortals.org</a>
-      <ul class="nav">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="/" title="Data Portals">DataPortals.org</a>
+      </div>
+      <ul class="nav navbar-nav navbar-left">
         <li class="divider-vertical"></li>
         <li><a href="/add">Add a Portal</a></li>
         <li class="divider-vertical"></li>
@@ -44,7 +46,7 @@
         <li><a href="/about">About</a></li>
         <li class="divider-vertical"></li>
       </ul>
-      <ul class="nav pull-right">
+      <ul class="nav navbar-nav navbar-right">
         <li class="logo">
           <a href="http://lod2.eu/" title="This project is supported by the EC funded LOD2 project"><img src="http://farm6.static.flickr.com/5249/5222467008_4e1a54ff89_t.jpg" alt="" /></a>
         </li>
@@ -58,7 +60,6 @@
       </form>
       -->
     </div>
-  </div>
 </div>
 
 <div class="container">
@@ -96,8 +97,9 @@
   </div><!-- /content -->
 </div><!-- /container -->
 
-<script src="/vendor/jquery/1.7.1/jquery.js"></script>
-<script src="/vendor/bootstrap/2.1.1/bootstrap.min.js"></script>
+<!-- <script src="/vendor/jquery/1.7.1/jquery.js"></script> -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
 {% block scripts %}{% endblock %}
 
@@ -113,4 +115,3 @@
 </script>
 </body>
 </html>
-
