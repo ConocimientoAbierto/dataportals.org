@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}
+  {{portal.title}}
+{% endblock %}
+
+{% block content %}
+  <div class="page-header">
+    <h1>
+      {{portal.title}}
+    </h1>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+        <h2>Description</h2>
+        {{ portal.description }}
+    </div>
+
+    <div class="col-md-6">
+      <dl class="dl-horizontal">
+          <dt>Autor:</dt>
+          <dd>{{ portal.author }}</a></dd>
+          <dt>URL:</dt>
+          <dd><a href="{{ portal.url }}">{{ portal.url }}</a></dd>
+          <dt>Estado:</dt>
+          <dd>{{ portal.status }}</dd>
+          <dt>Tipo de author:</dt>
+          <dd>{{ portal.publisher_clasification }}</dd>
+          <dt>País/Lenguaje:</dt>
+          <dd>
+            <span class="label label-info">{{ portal.country }}</span>
+              /
+            <span class="label label-info">{{ portal.lenguage }}</span>
+          </dd>
+          <dt>Plataforma utilizada</dt>
+          <dd>{{ portal.plataform }}</dd>
+          <dt>Tipo de API:</dt>
+          <dd>{{ portal.api_type }}</dd>
+          <dt>URL de API:</dt>
+          <dd>{{ portal.api_endpoint }}</dd>
+      </dl>
+      <div class="btn-inline">
+        <a class="btn btn-primary" href="/portals/{{portal.slug}}/edit" role="button">Editar Portal</a>
+        <form action="/portals/{{portal.slug}}" method="POST">
+          <input type="hidden" name="_method" value="DELETE">
+          <input type="submit" class="btn btn-danger" value="Borrar Portal">
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

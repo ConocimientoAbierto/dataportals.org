@@ -14,10 +14,9 @@ let portalSchema = new Schema({
   author: String,
   publisher_clasification: {
     type: String,
-    enum: ['municipal government', 'national government', 'ministry', 'org']
+    enum: ['municipal_government', 'national_government', 'ministry', 'org', 'other']
   },
   description: {type: String, min: 10, max: 200},
-  localization: String,
   country: String,
   city: String,
   lenguage: String,
@@ -27,12 +26,12 @@ let portalSchema = new Schema({
   },
   plataform: {
     type: String,
-    enum: ['CKAN', 'JUNAR', 'Own implementation']
+    enum: ['CKAN', 'JUNAR', 'Own_implementation']
   },
   api_endpoint: String,
   api_type: {
     type: String,
-    enum: ['CKAN_API_V1', 'CKAN_API_V2', 'CKAN_API_V3', 'JUNAR_API', 'Own implementation', 'No API']
+    enum: ['CKAN_API_V1', 'CKAN_API_V2', 'CKAN_API_V3', 'JUNAR_API', 'Own_implementation', 'No_API']
   },
   // user_created: Schema.Types.ObjectId,
   // user_updated: Schema.Types.ObjectId,

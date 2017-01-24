@@ -1,0 +1,20 @@
+{% extends "./../base.html" %}
+{% import './_snippets.html' as snippets %}
+
+{% block title %}Portales{% endblock %}
+
+{% block content %}
+  <div class="page-header">
+    <h1>
+      Portales
+    </h1>
+  </div>
+  <div class="row">
+    <div class="results col-md-6 col-md-offset-3">
+      <h3>{{ portals.length }} portals</h3>
+      {% for portal in portals %}
+        {{ snippets.summary(portal) }}
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}

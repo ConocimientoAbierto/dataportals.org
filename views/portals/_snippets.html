@@ -1,0 +1,114 @@
+{% import './_partials.html' as partials %}
+
+{% macro summary(portal) -%}
+  <div class="row catalog summary">
+    <img src="{{portal.image or
+      'http://assets.okfn.org/p/opendatahandbook/img/data-wrench.png'}}"
+      alt="{{portal.title}}" class="img-responsive img-rounded logo pull-right" />
+    <h3><a href="/portals/{{portal.slug}}">{{portal.title}}</a></h3>
+    <div class="description">{{portal.description}}</div>
+  </div>
+{%- endmacro %}
+
+{% macro portalForm(portal) %}
+  {# chanchada, sacar esto #}
+  {% set pubClasificationOpt = [
+    { value: 'municipal_government', description: 'Gobierno Municipal'},
+    { value: 'national_government', description: 'Gobierno Nacional'},
+    { value: 'ministry', description: 'Ministerio'},
+    { value: 'org', description: 'Organización no Gubernamental'},
+    { value: 'other', description: 'Otro'}
+  ] %}
+  {% set statusOpt = [
+    { value: 'active', description: 'activo'},
+    { value: 'inactive', description: 'inactivo'}
+  ] %}
+  {% set plataformOpt = [
+    { value: 'CKAN', description: 'CKAN'},
+    { value: 'JUNAR', description: 'JUNAR'},
+    { value: 'Own_implementation', description: 'Implementación propia'}
+  ] %}
+  {% set apiOpt = [
+    { value: 'CKAN_API_V1', description: 'CKAN_API_V1'},
+    { value: 'CKAN_API_V2', description: 'CKAN_API_V2'},
+    { value: 'CKAN_API_V3', description: 'CKAN_API_V3'},
+    { value: 'JUNAR_API', description: 'JUNAR_API'},
+    { value: 'Own_implementation', description: 'Implementación propia'},
+    { value: 'No_API', description: 'Sin API'}
+  ] %}
+  {% set countryOpt = [
+    { value: 'ar', description: 'Argentina'},
+    { value: 'br', description: 'Brazíl'},
+    { value: 'mx', description: 'México'}
+  ] %}
+  <div class="form-group">
+    <label for="title">Título</label>
+    <p class="help-block">Título completo del portal. ej: "Portal de datos del Ministerio de Modernización"</p>
+    <input type="text" class="form-control" id="title" name="title" value="{{portal.title}}" required>
+  </div>
+  <div class="form-group">
+    <label for="url">URL</label>
+    <p class="help-block">URL del home del portal</p>
+    <input type="url" class="form-control" id="url" name="url" value="{{portal.url}}" >
+  </div>
+  <div class="form-group">
+    <label for="author">Autor</label>
+    <p class="help-block">Nombre o título de la persona o entidad que publica el sitio</p>
+    <input type="text" class="form-control" id="author" name="author" value="{{portal.author}}">
+  </div>
+  <div class="form-group">
+    <label for="publisher_clasification">Tipo de autor</label>
+    <p class="help-block">Categoría a la que el autor pertenece</p>
+    <select class="form-control" id="publisher_clasification" name ="publisher_clasification">
+      {{ partials.creatSelectOptions(pubClasificationOpt, portal.publisher_clasification) }}
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="description">Descripción</label>
+    <p class="help-block">Descripción o notas adicionales del portal</p>
+    <textarea row=5 class="form-control" id="description" name="description">{{portal.description}}</textarea>
+  </div>
+  <div class="form-group">
+    <label for="country">País</label>
+    <p class="help-block">País al que pertenece el portal</p>
+    <select class="form-control" id="country" name ="country">
+      {{ partials.creatSelectOptions(countryOpt, portal.country) }}
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="city">Ciudad</label>
+    <p class="help-block">Ciudad a la que pertenece el portal</p>
+    <input type="text" class="form-control" id="city" name="city" value="{{portal.city}}">
+  </div>
+  <div class="form-group">
+    <label for="lenguage">Lenguaje</label>
+    <p class="help-block">Lenguaje principal del portal</p>
+    <input type="text" class="form-control" id="lenguage" name="lenguage" value="{{portal.lenguage}}">
+  </div>
+  <div class="form-group">
+    <label for="status">Estado</label>
+    <p class="help-block">Estado en el cual se encuentra el portal</p>
+    <select class="form-control" id="status" name ="status">
+      {{ partials.creatSelectOptions(statusOpt, portal.status) }}
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="plataform">Plataforma</label>
+    <p class="help-block">Plataforma de portales para datos abiertos utilizada</p>
+    <select class="form-control" id="plataform" name ="plataform">
+      {{ partials.creatSelectOptions(plataformOpt, portal.plataform) }}
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="api_endpoint">URL de API</label>
+    <p class="help-block">URL base para el uso de la api</p>
+    <input type="url" class="form-control" id="api_endpoint" name="api_endpoint" value="{{portal.api_endpoint}}">
+  </div>
+  <div class="form-group">
+    <label for="api_type">Tipo de API</label>
+    <p class="help-block">API utilizada en el portal</p>
+    <select class="form-control" id="api_type" name ="api_type">
+      {{ partials.creatSelectOptions(apiOpt, portal.api_type) }}
+    </select>
+  </div>
+{% endmacro %}

@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <title>
     {% block title %}Home{% endblock %}
     -
@@ -28,32 +31,43 @@
 
 
   <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/tempStyle.css" />
 </head>
 <body>
 <div class="navbar navbar-default navbar-fixed-top">
     <div class="container">
       <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-top" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
         <a class="navbar-brand" href="/" title="Data Portals">DataPortals.org</a>
       </div>
-      <ul class="nav navbar-nav navbar-left">
-        <li class="divider-vertical"></li>
-        <li><a href="/add">Add a Portal</a></li>
-        <li class="divider-vertical"></li>
-        <li><a href="/search">Browse</a></li>
-        <li class="divider-vertical"></li>
-        <!--li><a href="/group">Groups</a></li>
-        <li class="divider-vertical"></li-->
-        <li><a href="/about">About</a></li>
-        <li class="divider-vertical"></li>
-      </ul>
-      <ul class="nav navbar-nav navbar-right">
+      <div class="collapse navbar-collapse" id="navbar-top">
+        <ul class="nav navbar-nav navbar-left">
+          <li class="divider-vertical"></li>
+          <li><a href="/add">Add a Portal</a></li>
+          <li class="divider-vertical"></li>
+          <li><a href="/search">Browse</a></li>
+          <li class="divider-vertical"></li>
+          <!--li><a href="/group">Groups</a></li>
+          <li class="divider-vertical"></li-->
+          <li><a href="/about">About</a></li>
+          <li class="divider-vertical"></li>
+          <li><a href="/portals">Portales</a></li>
+          <li><a href="/portals/add">Nuevo portal</a></li>
+        </ul>
+      </div>
+      <!-- <ul class="nav navbar-nav navbar-right">
         <li class="logo">
           <a href="http://lod2.eu/" title="This project is supported by the EC funded LOD2 project"><img src="http://farm6.static.flickr.com/5249/5222467008_4e1a54ff89_t.jpg" alt="" /></a>
         </li>
         <li class="logo">
           <a href="http://okfn.org/" title="An Open Knowledge International project"><img src="//a.okfn.org/img/oki/landscape-rgb-165x43.png" alt="" /></a>
         </li>
-      </ul>
+      </ul> -->
       <!--
       <form class="navbar-search pull-right" action="/search">
         <input name="q" type="text" class="search-query" placeholder="Find data portals">

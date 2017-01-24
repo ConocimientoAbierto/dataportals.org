@@ -12,6 +12,8 @@ var app = express();
 var uriDB = 'mongodb://calidatos:datoscali@Localhost:27017/calidatos';
 mongoose.connect(uriDB, (err) => err ? console.log(err) : console.log('Conected to DB'));
 
+var portals = require('./model/portals');
+
 // TODO ver esto
 var config = require('./lib/config.js'),
     model = require('./lib/model.js');
@@ -21,7 +23,14 @@ app.set('views', __dirname + '/views');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(methodOverride());
+app.use(methodOverride(function(req, res){
+  if (req.body && typeof req.body === 'object' && '_method' in req.body) {
+    // look in urlencoded POST bodies and delete it
+    var method = req.body._method;
+    delete req.body._method;
+    return method;
+  }
+}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 var env = new nunjucks.Environment(new nunjucks.FileSystemLoader('views'));
@@ -32,7 +41,7 @@ env.express(app);
 var routes = require('./routes/index.js');
 var portals = require('./routes/portals');
 
-app.use('/api', portals);
+app.use('/', portals);
 
 app.get('/', function(req, res) {
   var catalogs = model.catalog.query();
@@ -57,7 +66,7 @@ app.get('/search', function(req, res) {
 });
 
 app.get('/add', function(req, res) {
-  res.render('add.html');
+  res.render('portals/add.html');
 });
 
 app.get('/catalog/:id', function(req, res) {

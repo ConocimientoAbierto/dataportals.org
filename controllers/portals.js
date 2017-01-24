@@ -5,38 +5,32 @@ const Portal = mongoose.model('Portal');
 
 exports.findAllPortals = (req, res) => {
   Portal.find((err, portals) => {
-    if(err) res.send(500, err.message);
+    if(err) res.status(500).send(err.message);
 
-    console.log('GET /portals')
-    res.status(200).jsonp(portals);
+    res.render('portals/index.html', {'portals': portals});
   });
 };
 
-//GET - Return a Portal with specified ID
+//GET - Return a Portal with specified SULG
 exports.findBySlug = (req, res) => {
-  console.log(req.params.slug);
   Portal.findBySlug(req.params.slug, (err, portal) => {
-    if(err) return res.send(500, err.message);
+    if(err) return res.status(500).send(err.message);
 
-    console.log('GET /portal/' + req.params.sulg);
-    res.status(200).jsonp(portal);
+    res.render('portals/view.html', {'portal': portal});
   });
 };
 
 //POST - Insert a new Portal in the DB
 exports.addPortal = (req, res) => {
-  console.log('POST');
-  console.log(req.body);
-
   var portal = new Portal({
     title                   : req.body.title,
     url                     : req.body.url,
     author                  : req.body.author,
     publisher_clasification : req.body.publisher_clasification,
     description             : req.body.description,
-    localizatio             : req.body.localizatio,
+    localization            : req.body.localization,
     country                 : req.body.country,
-    cit                     : req.body.cit,
+    city                    : req.body.city,
     lenguage                : req.body.lenguage,
     status                  : req.body.status,
     plataform               : req.body.plataform,
@@ -45,8 +39,8 @@ exports.addPortal = (req, res) => {
   });
 
   portal.save((err, portal) => {
-    if(err) return res.send(500, err.message);
-    res.status(200).jsonp(portal);
+    if(err) return res.status(500).send(err.message);
+    res.render('portals/view.html', {'portal': portal});
   });
 };
 
@@ -58,18 +52,18 @@ exports.updatePortal = (req, res) => {
     portal.author                  = req.body.author;
     portal.publisher_clasification = req.body.publisher_clasification;
     portal.description             = req.body.description;
-    portal.localizatio             = req.body.localizatio;
+    portal.localization            = req.body.localization;
     portal.country                 = req.body.country;
-    portal.cit                     = req.body.cit;
+    portal.city                    = req.body.city;
     portal.lenguage                = req.body.lenguage;
     portal.status                  = req.body.status;
     portal.plataform               = req.body.plataform;
     portal.api_endpoint            = req.body.api_endpoint;
     portal.api_type                = req.body.api_type;
 
-    portal.save((err) => {
-      if(err) return res.send(500, err.message);
-      res.status(200).jsonp(portal);
+    portal.save((err, portal) => {
+      if(err) return res.status(500).send(err.message);
+      res.redirect('/portals/' + portal.slug);
     });
   });
 };
@@ -78,8 +72,19 @@ exports.updatePortal = (req, res) => {
 exports.deletePortal = (req, res) => {
   Portal.findBySlug(req.params.slug, (err, portal) => {
     portal.remove((err) => {
-      if(err) return res.send(500, err.message);
-      res.status(200);
+      if(err) return res.status(500).send(err.message);
+      res.redirect('/portals');
     });
+  });
+};
+
+// ADD view
+exports.renderAddView = (req, res) => res.render('portals/add.html');
+
+// Edit view
+exports.renderEditView = (req, res) => {
+  Portal.findBySlug(req.params.slug, (err, portal) => {
+    if (err) return res.status(500).send(err.message);
+    res.render('portals/edit.html', {'portal': portal});
   });
 };

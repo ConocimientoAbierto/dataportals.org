@@ -1,6 +1,9 @@
 {
   "name": "dataportals",
   "version": "0.1.0",
+  "scripts": {
+    "start": "node ./bin/www"
+  },
   "dependencies": {
     "bluebird": "^3.4.7",
     "body-parser": "^1.16.0",
