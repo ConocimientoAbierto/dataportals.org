@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 const mongoose = require('mongoose'),
       slugHero = require('mongoose-slug-hero');
@@ -7,7 +7,7 @@ mongoose.Promise = require('bluebird');
 
 const Schema = mongoose.Schema;
 
-let portalSchema = new Schema({
+const portalSchema = new Schema({
   slug: String,
   title: {type: String, required: true},
   url: String,

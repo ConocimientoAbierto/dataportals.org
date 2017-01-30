@@ -1,23 +1,20 @@
-'use strict'
+'use strict';
 
-const express = require('express'),
-      portalCrtl = require('./../controllers/portals');
+const express = require('express');
+const portalCtrl = require('./../controllers/portals');
+const mids = require('../middlewheres');
 
 let router = express.Router();
 
-router.route('/portals')
-  .get(portalCrtl.findAllPortals)
-  .post(portalCrtl.addPortal);
+router.get('/', portalCtrl.findAllPortals);
+router.post('/', mids.isLoggedIn, mids.roleAuthorization(['admin']), portalCtrl.addPortal);
 
-router.route('/portals/add')
-  .get(portalCrtl.renderAddView);
+router.get('/new', mids.isLoggedIn, mids.roleAuthorization(['admin']), portalCtrl.renderNewView);
 
-router.route('/portals/:slug')
-  .get(portalCrtl.findBySlug)
-  .put(portalCrtl.updatePortal)
-  .delete(portalCrtl.deletePortal);
+router.get('/:slug', portalCtrl.findBySlug);
+router.put('/:slug', mids.isLoggedIn, mids.roleAuthorization(['admin']), portalCtrl.updatePortal);
+router.delete('/:slug', mids.isLoggedIn, mids.roleAuthorization(['admin']), portalCtrl.deletePortal);
 
-router.route('/portals/:slug/edit')
-  .get(portalCrtl.renderEditView);
+router.get('/:slug/edit', mids.isLoggedIn, mids.roleAuthorization(['admin']), portalCtrl.renderEditView);
 
 module.exports = router;

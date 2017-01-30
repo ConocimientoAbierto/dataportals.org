@@ -1,17 +1,18 @@
-'use strict'
+'use strict';
 
 const mongoose = require('mongoose');
 const Portal = mongoose.model('Portal');
 
+// GET - return all portlas
 exports.findAllPortals = (req, res) => {
   Portal.find((err, portals) => {
-    if(err) res.status(500).send(err.message);
+    if(err) return res.status(500).send(err.message);
 
     res.render('portals/index.html', {'portals': portals});
   });
 };
 
-//GET - Return a Portal with specified SULG
+// GET - Return a Portal with specified SULG
 exports.findBySlug = (req, res) => {
   Portal.findBySlug(req.params.slug, (err, portal) => {
     if(err) return res.status(500).send(err.message);
@@ -20,7 +21,7 @@ exports.findBySlug = (req, res) => {
   });
 };
 
-//POST - Insert a new Portal in the DB
+// POST - Insert a new Portal in the DB
 exports.addPortal = (req, res) => {
   var portal = new Portal({
     title                   : req.body.title,
@@ -44,7 +45,7 @@ exports.addPortal = (req, res) => {
   });
 };
 
-//PUT - Update a register already exists
+// PUT - Update a register already exists
 exports.updatePortal = (req, res) => {
   Portal.findBySlug(req.params.slug, (err, portal) => {
     portal.title = req.body.title ? req.body.title : portal.title;
@@ -68,7 +69,7 @@ exports.updatePortal = (req, res) => {
   });
 };
 
-//DELETE - Delete a Portal with specified ID
+// DELETE - Delete a Portal with specified ID
 exports.deletePortal = (req, res) => {
   Portal.findBySlug(req.params.slug, (err, portal) => {
     portal.remove((err) => {
@@ -78,8 +79,8 @@ exports.deletePortal = (req, res) => {
   });
 };
 
-// ADD view
-exports.renderAddView = (req, res) => res.render('portals/add.html');
+// NEW view
+exports.renderNewView = (req, res) => res.render('portals/new.html');
 
 // Edit view
 exports.renderEditView = (req, res) => {

@@ -1,0 +1,18 @@
+{% extends "./../base.html" %}
+{% import './_snippets.html' as snippets %}
+
+{% block title %}Usuarios{% endblock %}
+
+{% block content %}
+  <div class="page-header">
+    <h1>
+      Usuarios
+    </h1>
+  </div>
+  <div class="row">
+      <h3>{{ users.length }} Usuarios registrados</h3>
+      {% for user in users %}
+        {{ snippets.userSummary(user) }}
+      {% endfor %}
+  </div>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% import './../_partials.html' as partials %}
+
+{% macro userSummary(user) -%}
+  <div class="row">
+    <div class="col-md-6 col-md-offset-3">
+      <span class="glyphicon glyphicon-user pull-right" aria-hidden="true" style="font-size: 12rem"title="debería ir una imagen aca"></span>
+      <h3><a href="/users/{{user._id}}">{{user.name}}</a></h3>
+        <div class="btn-group">
+          <a href="/users/{{user._id}}/edit" class="btn btn-xs btn-primary" title="Editar usuario">
+            <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+          </a>
+        </div>
+
+        <div class="btn-group">
+          <form action="/users/{{user._id}}" method="POST">
+            <input type="hidden" name="_method" value="DELETE">
+            <button type="submit" class="btn btn-xs btn-danger" title="Borrar ususario">
+              <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+            </button>
+          </form>
+        </div>
+      <p>
+        Rol: {{user.role}}
+      </p>
+      <p>
+        Mail: {{user.email}}
+      </p>
+    </div>
+  </div>
+{%- endmacro %}
+
+{% macro userForm(user) %}
+  {# chanchada, sacar esto #}
+  {% set roleOpt = [
+    { value: 'admin', description: 'Administrador'},
+    { value: 'evaluator', description: 'Evaluador'}
+  ] %}
+
+  <div class="form-group">
+    <label for="name">Nombre</label>
+    <input type="text" class="form-control" id="name" name="name" value="{{user.name}}" required>
+  </div>
+  <div class="form-group">
+    <label for="email">Mail</label>
+    <input type="email" class="form-control" id="email" name="email" value="{{user.email}}" >
+  </div>
+  <div class="form-group">
+    <label for="password">Contraseña</label>
+    <input type="password" class="form-control" id="password" name="password">
+  </div>
+  <div class="form-group">
+    <label for="role">Rol</label>
+    <select class="form-control" id="role" name ="role">
+      {{ partials.creatSelectOptions(roleOpt, user.role) }}
+    </select>
+  </div>
+{% endmacro %}

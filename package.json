@@ -5,10 +5,13 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
     "bluebird": "^3.4.7",
     "body-parser": "^1.16.0",
+    "connect-flash": "^0.1.1",
     "csv-parse": "",
     "express": "^4.x",
+    "express-session": "^1.15.0",
     "lodash": "^3.10.1",
     "marked": "",
     "method-override": "^2.3.7",
@@ -16,6 +19,9 @@
     "mongoose-slug-hero": "^1.0.7",
     "morgan": "^1.7.0",
     "nunjucks": "^3.x",
+    "passport": "^0.3.2",
+    "passport-local": "^1.0.0",
+    "passport-local-mongoose": "^4.0.0",
     "request": "",
     "slug": "^0.9.1",
     "underscore": ""

@@ -1,0 +1,88 @@
+{% macro creatSelectOptions(options, selected) %}
+<option value="" 2>
+  Seleccioná una opción
+</option>
+  {% for option in options%}
+    <option value="{{ option.value}}" {% if selected == option.value %} selected {% endif %}>
+      {{ option.description }}
+    </option>
+  {% endfor %}
+{% endmacro %}
+
+{% macro flasgMsg(type, msg) %}
+<div class="container">
+  <div class="alert alert-{{ type }}" role="alert">
+    {{ msg }}
+  </div>
+</div>
+{% endmacro %}
+
+{% macro navBar(currentUser) %}
+<div class="navbar navbar-default navbar-fixed-top">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-top" aria-expanded="false">
+      <span class="sr-only">Toggle navigation</span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+      <a class="navbar-brand" href="/" title="Data Portals">DataPortals.org</a>
+    </div>
+    <div class="collapse navbar-collapse" id="navbar-top">
+      <ul class="nav navbar-nav navbar-left">
+        <li><a href="/#">Ranking</a></li>
+        <li><a href="/#">Metodología</a></li>
+        <li><a href="/#">Contacto</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        {% if currentUser %}
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ currentUser.name }} <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="/users/{{ currentUser._id }}">
+              Perfil
+            </a></li>
+            <li><a href="/portals">
+              Portales
+            </a></li>
+            {% if currentUser.role == 'admin' %}
+            <li><a href="/users">
+              Admin usuarios
+            </a></li>
+            <li><a href="/portals/new">
+              Nuevo portal
+            </a></li>
+            <li role="separator" class="divider"></li>
+            {% endif%}
+            <li><a href="/users/logout">
+              <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>
+              Salir
+            </a></li>
+          </ul>
+        </li>
+        {% else %}
+        <li><a href="/users/login">
+          <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>
+          Ingresá
+        </a></li>
+        {% endif %}
+      </ul>
+    </div>
+    <!-- <ul class="nav navbar-nav navbar-right">
+      <li class="logo">
+        <a href="http://lod2.eu/" title="This project is supported by the EC funded LOD2 project"><img src="http://farm6.static.flickr.com/5249/5222467008_4e1a54ff89_t.jpg" alt="" /></a>
+      </li>
+      <li class="logo">
+        <a href="http://okfn.org/" title="An Open Knowledge International project"><img src="//a.okfn.org/img/oki/landscape-rgb-165x43.png" alt="" /></a>
+      </li>
+    </ul> -->
+    <!--
+    <form class="navbar-search pull-right" action="/search">
+      <input name="q" type="text" class="search-query" placeholder="Find data portals">
+    </form>
+    -->
+  </div>
+</div>
+
+{% endmacro %}
