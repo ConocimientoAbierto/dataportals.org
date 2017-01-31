@@ -43,6 +43,7 @@
         <a class="btn btn-primary" href="/portals/{{portal.slug}}/edit" role="button">Editar Portal</a>
         <form action="/portals/{{portal.slug}}" method="POST">
           <input type="hidden" name="_method" value="DELETE">
+          <input type="hidden" name="_csrf" value="{{_csrf}}">
           <input type="submit" class="btn btn-danger" value="Borrar Portal">
         </form>
       </div>

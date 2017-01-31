@@ -12,6 +12,7 @@
   <section class="row">
     <form class="col-md-6 col-md-offset-3" method="post" action="/users/{{ user._id }}">
       <input type="hidden" name="_method" value="PUT">
+      <input type="hidden" name="_csrf" value="{{_csrf}}">
       {{ snippets.userForm(user) }}
       <button type="submit" class="btn btn-success btn-lg btn-block">Guardar cambios</button>
     </form>

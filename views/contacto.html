@@ -19,6 +19,7 @@
         <h3>Escribinos</h3>
       </div>
       <form method="post" action="/contacto">
+        <input type="hidden" name="_csrf" value="{{_csrf}}">
         <div class="form-group">
           <label for="name">Nombre <span class="text-danger">*</span></label>
           <input type="text" class="form-control" id="name" name="name" required>

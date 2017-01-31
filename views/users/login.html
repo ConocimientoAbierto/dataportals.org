@@ -11,6 +11,7 @@
   </div>
   <section class="row">
     <form class="col-md-6 col-md-offset-3" method="post" action="/users/login">
+      <input type="hidden" name="_csrf" value="{{_csrf}}">
       <div class="form-group">
         <label for="email">E-mail</label>
         <input type="email" class="form-control" name="email" id="email" required>

@@ -9,7 +9,8 @@ const express = require('express'),
   methodOverride = require('method-override'),
   mongoose = require('mongoose'),
   flash = require('connect-flash'),
-  session = require('express-session');
+  session = require('express-session'),
+  csurf = require('csurf');
 
 const configAPP = require('./lib/configAPP');
 const app = express();
@@ -40,6 +41,7 @@ app.use(session({
   resave: false,
   saveUninitialized: false
 }));
+app.use(csurf());
 
 // PASSPORT CONFIG
 require('./lib/configPassport')(app);
@@ -56,6 +58,7 @@ const usersRoutes = require('./routes/users');
 app.use(function(req, res, next) {
   res.locals.currentUser = req.user;
   res.locals.message     = req.flash('message');
+  res.locals._csrf       = req.csrfToken();
   next();
 });
 

@@ -86,10 +86,7 @@ exports.logoutUser = (req, res) => {
   // req.logout();
   // res.redirect('/portals');
   req.session.destroy(function(err) {
-    if(err) {
-      console.log(err);
-    } else {
-      res.redirect('/portals');
-    }
+    if(err) console.log(err);
+    else res.redirect('/');
   });
 };

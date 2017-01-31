@@ -9,6 +9,7 @@
     "bluebird": "^3.4.7",
     "body-parser": "^1.16.0",
     "connect-flash": "^0.1.1",
+    "csurf": "^1.9.0",
     "csv-parse": "",
     "express": "^4.x",
     "express-session": "^1.15.0",
