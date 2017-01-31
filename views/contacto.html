@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block hero %}
+<div class="jumbotron">
+  <div class="container">
+    <h1>Contacto</h1>
+    <p>
+      Gracias por su interés, cualquier consulta estamos a su disposición.
+    </p>
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<section>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="page-header">
+        <h3>Escribinos</h3>
+      </div>
+      <form method="post" action="/contacto">
+        <div class="form-group">
+          <label for="name">Nombre <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" id="name" name="name" required>
+        </div>
+        <div class="form-group">
+          <label for="subject">Asunto <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" id="subject" name="subject" required>
+        </div>
+        <div class="form-group">
+          <label for="message">Mensaje: <span class="text-danger">*</span></label>
+          <textarea class="form-control" name="message" rows="8" cols="40"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-success btn-lg btn-block">Enviar</button>
+      </form>
+    </div>
+    <div class="col-md-6">
+      <div class="page-header">
+        <h3>Información de contacto</h3>
+      </div>
+      <address>
+        <strong>Fundación Conocimiento Abierto Argentina</strong><br>
+        <i class="fa fa-map-marker" aria-hidden="true"></i> Avenida de Mayo 1161, 1° piso<br>
+        Ciudad Autónoma de Buenos Aires, C1085ABB<br>
+        <i class="fa fa-phone" aria-hidden="true"></i> (011) nananana-nananana
+      </address>
+
+      <address>
+        <strong>E-mail</strong><br>
+        <a href="mailto:#"><i class="fa fa-envelope" aria-hidden="true"></i> info@fcabierto.org</a>
+      </address>
+
+      <address>
+        <strong>Twitter</strong><br>
+        <a href="https://twitter/OKFNAR"><i class="fa fa-twitter" aria-hidden="true"></i> @OKFNAR</a>
+      </address>
+    </div>
+  </div>
+</section>
+{% endblock %}

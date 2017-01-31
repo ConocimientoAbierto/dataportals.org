@@ -1,4 +1,51 @@
+body {
+  padding-top: 61px;
+  font-family: 'PT Sans', Helvetica, Arial, sans-serif;
+}
+
 .btn-inline {
   display: flex;
   justify-content: space-around;
+}
+
+.navbar-header + .collapse.navbar-collapse {
+  padding-top: 10px;
+}
+
+.navbar-header {
+  padding-bottom: 10px;
+}
+
+a.navbar-brand img {
+  max-width: 300px;
+}
+
+.jumbotron {
+  padding: 0;
+
+}
+.jumbotron.jumbotron-home {
+  background-image: url('https://images.unsplash.com/photo-1431605695381-f4a9c3cdd150?dpr=1.25&auto=format&fit=crop&w=767&h=511&q=80&cs=tinysrgb&crop=');
+  background-size: cover;
+}
+.jumbotron>.background-blur {
+  color: #FFFFFF;
+  background-color: rgba(0,0,0,.5);
+}
+
+footer.footer {
+  margin-top: 30px;
+  position: absolute;
+  width: 100%;
+  background-color: #f5f5f5;
+  font-size: 1.3rem;
+}
+footer.footer>.container {
+  padding: 15px;
+}
+footer.footer a {
+  color: #000000;
+}
+footer.footer .footer-logo {
+  max-width: 300px;
 }

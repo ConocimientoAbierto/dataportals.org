@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block hero %}
+<div class="jumbotron">
+  <div class="container">
+    <h1>Sugerir portales</h1>
+    <p>
+      Constantemente están apareciendo nuevos portales de datos en el país, si usted conoce alguno que no se encuentra en el listado, por favor rellene este formulario.
+    </p>
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<section>
+  <div class="row">
+    <div class="col-md-6 col-md-offset-3">
+      <form method="post" action="/sugerir-portal">
+        <div class="form-group">
+          <label for="name">Nombre <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" id="name" name="name" required>
+        </div>
+        <div class="form-group">
+          <label for="url">URL del portal</label>
+          <input type="url" class="form-control" id="url" name="url">
+        </div>
+        <div class="form-group">
+          <h4>Utiliza la expresión datos abiertos</h4>
+          <div class="radio">
+            <label class="radio-inline">
+              <input type="radio" name="exp-datos-abiertos" id="exp-datos-abiertos1" value="si" checked>
+              si
+            </label>
+            <label class="radio-inline">
+              <input type="radio" name="exp-datos-abiertos" id="exp-datos-abiertos2" value="no">
+              no
+            </label>
+          </div>
+        </div>
+        <div class="form-group">
+          <h4>Utiliza la expresión gobierno abierto</h4>
+          <div class="radio">
+            <label class="radio-inline">
+              <input type="radio" name="exp-gob-abiertos" id="exp-gob-abiertos1" value="si" checked>
+              si
+            </label>
+            <label class="radio-inline">
+              <input type="radio" name="exp-gob-abiertos" id="exp-gob-abiertos2" value="no">
+              no
+            </label>
+          </div>
+        </div>
+        <div class="form-group">
+          <h4>Utiliza la expresión transparencia</h4>
+          <div class="radio">
+            <label class="radio-inline">
+              <input type="radio" name="exp-transparencia" id="exp-transparencia1" value="si" checked>
+              si
+            </label>
+            <label class="radio-inline">
+              <input type="radio" name="exp-transparencia" id="exp-transparencia2" value="no">
+              no
+            </label>
+          </div>
+        </div>
+        <div class="form-group">
+          <h4>Ofrece archivos para descargar</h4>
+          <div class="radio">
+            <label class="radio-inline">
+              <input type="radio" name="ofrece-descarga" id="ofrece-descarga1" value="si" checked>
+              si
+            </label>
+            <label class="radio-inline">
+              <input type="radio" name="ofrece-descarga" id="ofrece-descarga2" value="no">
+              no
+            </label>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-success btn-lg btn-block">Sugerir</button>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}

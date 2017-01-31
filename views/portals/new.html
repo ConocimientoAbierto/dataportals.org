@@ -11,9 +11,11 @@
   </div>
 
   <section class="row">
-    <form class="col-md-6 col-md-offset-3" method="post" action="/portals">
-      {{ snippets.portalForm() }}
-      <button type="submit" class="btn btn-success btn-lg btn-block">Agregar portal</button>
-    </form>
+    <div class="col-md-6 col-md-offset-3">
+      <form method="post" action="/portals">
+        {{ snippets.portalForm() }}
+        <button type="submit" class="btn btn-success btn-lg btn-block">Agregar portal</button>
+      </form>
+    </div>
   </section>
 {% endblock %}

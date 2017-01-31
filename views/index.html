@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block hero %}
+<div class="jumbotron jumbotron-home">
+  <div class="background-blur">
+    <div class="container">
+      <h1>Portales de Datos</h1>
+      <p>
+        Los portales de datos abiertos son donde los gobiernos publican información reutilizable para que analistas, periodistas, organizaciones y ciudadanos estén mejor informados.
+      </p>
+      <p>
+        Evaluamos la calidad de los datos y metadatos publicados para facilitar la reutilización.
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<section id="ranking">
+  <div class="row">
+    <table class="table table-condensed">
+      <thead>
+        <tr>
+          <th class="text-center">Posición</th>
+          <th class="text-center">Nombre</th>
+          <th class="text-center">Uso del Portal</th>
+          <th class="text-center">
+            Nivel de Calidad
+            <a id="popover-calidad" href="#" data-toggle="popover" data-trigger="focus" data-placement="top" title="Nivel de Calidad" data-content="Se evalúan varios criterios sobre cada conjunto de datos. Ver <a href='/metodologia'>metodología</a>">(?)</a>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="text-center">
+          <td>1 <span class="glyphicon glyphicon-menu-up text-success" aria-hidden="true"></span></td>
+          <td>Corte Suprema de Justicia</td>
+          <td>80%</td>
+          <td>100%</td>
+        </tr>
+        <tr class="text-center">
+          <td>2 <span class="glyphicon glyphicon-menu-down text-danger" aria-hidden="true"></span></td>
+          <td>Ministerio de Modernización</td>
+          <td>90%</td>
+          <td>100%</td>
+        </tr>
+        <tr class="text-center">
+          <td>3 <span class="glyphicon glyphicon-menu-up text-success" aria-hidden="true"></span></td>
+          <td>Municipalidad de Córdoba</td>
+          <td>50%</td>
+          <td>70%</td>
+        </tr>
+        <tr class="text-center">
+          <td>4 <span class="glyphicon glyphicon-menu-up text-success" aria-hidden="true"></span></td>
+          <td>Ciudad de Mendoza</td>
+          <td>60%</td>
+          <td>90%</td>
+        </tr>
+        <tr class="text-center">
+          <td>5 <span class="glyphicon glyphicon-menu-down text-danger" aria-hidden="true"></span></td>
+          <td>Gobierno de Jujuy</td>
+          <td>80%</td>
+          <td>100%</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="row center-block">
+      <div class="col-md-3 col-md-offset-3 visible-md-block visible-sm-block hidden-xs">
+        <a href="/ranking" class="btn btn-info btn-block text-center">Ver ranking completo</a>
+      </div>
+      <div class="col-md-3 visible-md-block visible-sm-block hidden-xs">
+        <a href="/ranking" class="btn btn-warning btn-block text-center">Sugerir portal</a>
+      </div>
+      <div class="row visible-xs-inline hidden-md hidden-sm">
+        <div class="col-sm-12">
+          <a href="/ranking" class="btn btn-info btn-block text-center">Ver ranking completo</a>
+        </div>
+      </div>
+      <div class="row visible-xs-inline hidden-md hidden-sm">
+        <div class="col-sm-12">
+          <a href="/ranking" class="btn btn-warning btn-block text-center">Sugerir portal</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+
+  </div>
+</section>
+{% endblock %}

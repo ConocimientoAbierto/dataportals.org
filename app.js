@@ -48,6 +48,7 @@ const env = new nunjucks.Environment(new nunjucks.FileSystemLoader('views'));
 env.express(app);
 
 // ROUTES CONFIG
+const homeRoutes = require('./routes/home');
 const portalsRoutes = require('./routes/portals');
 const usersRoutes = require('./routes/users');
 
@@ -58,6 +59,7 @@ app.use(function(req, res, next) {
   next();
 });
 
+app.use('/', homeRoutes);
 app.use('/portals', portalsRoutes);
 app.use('/users', usersRoutes);
 
