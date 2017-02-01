@@ -33,13 +33,27 @@ const portalSchema = new Schema({
     type: String,
     enum: ['CKAN_API_V1', 'CKAN_API_V2', 'CKAN_API_V3', 'JUNAR_API', 'Own_implementation', 'No_API']
   },
+  eval_use: {
+    oficial_identity: Number,
+    link_oficial_site: Number,
+    open_data_exp: Number,
+    all_dataset_link: Number,
+    dataset_search_system: Number,
+    examinator: Number
+  },
+  eval_uses_easiness: {
+      existence_api: Number,
+      api_documentation: Number
+  }
   // user_created: Schema.Types.ObjectId,
   // user_updated: Schema.Types.ObjectId,
-},
-{
+}, {
   timestamps: {createdAt: 'created_at', updatedAt: 'updated_at'}
 });
 
 portalSchema.plugin(slugHero, {doc: 'portal', field: 'title'});
 
 module.exports = mongoose.model('Portal', portalSchema);
+
+-
+    - oficial_identity
