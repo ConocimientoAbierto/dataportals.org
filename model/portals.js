@@ -54,6 +54,3 @@ const portalSchema = new Schema({
 portalSchema.plugin(slugHero, {doc: 'portal', field: 'title'});
 
 module.exports = mongoose.model('Portal', portalSchema);
-
--
-    - oficial_identity
