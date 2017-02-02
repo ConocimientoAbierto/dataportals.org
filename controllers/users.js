@@ -53,6 +53,13 @@ exports.createUser = (req, res, next) => {
 exports.updateUser = (req, res, next) => {
   User.findByIdAndUpdate(req.params.id, req.body, {new: true}, (err, updatedUser) => {
     if (err) return next(err);
+
+    if (!updatedUser) {
+      const msg = 'No es posible encontrar al ususario.';
+      req.flash('message', ['warning', msg])
+      return res.redirect('/');
+    }
+
     res.locals.user = updatedUser;
     res.render('users/view.html');
   });
@@ -60,12 +67,19 @@ exports.updateUser = (req, res, next) => {
 
 // DELETE - delete a user
 exports.deleteUser = (req, res) => {
+  //TODO
 };
 
 // GET - render edit view
 exports.renderEditView = (req, res) => {
-  User.findById(req.params.id, (err, user) => {
+  User.findById(req.params.id, (err, foundUser) => {
     if (err) return res.status(500).send(err.message);
+
+    if (!foundUser) {
+      const msg = 'No es posible encontrar al ususario.';
+      req.flash('message', ['warning', msg])
+      return res.redirect('/');
+    }
 
     res.render('users/edit.html', {'user': user});
   });
@@ -83,8 +97,6 @@ exports.renderLoginView = (req, res) => {
 
 // POST - login logic
 exports.logoutUser = (req, res) => {
-  // req.logout();
-  // res.redirect('/portals');
   req.session.destroy(function(err) {
     if(err) console.log(err);
     else res.redirect('/');

@@ -7,7 +7,7 @@ const mids = require('./../middlewheres');
 
 let router = express.Router();
 
-router.get('/', userCtrl.renderAllUsersView);
+router.get('/', mids.isLoggedIn, mids.roleAuthorization(['admin']), userCtrl.renderAllUsersView);
 router.post('/', mids.isLoggedIn, mids.roleAuthorization(['admin']), userCtrl.createUser);
 
 router.get('/new', mids.isLoggedIn, mids.roleAuthorization(['admin']), userCtrl.renderNewView);
@@ -19,12 +19,12 @@ router.post('/login', mids.isNotLogged, passport.authenticate('local-login', {
   failureFlash : true
 }));
 
-router.get('/logout', userCtrl.logoutUser);
+router.get('/logout', mids.isLoggedIn, userCtrl.logoutUser);
 
-router.get('/:id', mids.isLoggedIn, userCtrl.renderUserView);
-router.put('/:id', mids.isLoggedIn, userCtrl.updateUser);
+router.get('/:id', mids.isLoggedIn, mids.isItselfOrAdmin, userCtrl.renderUserView);
+router.put('/:id', mids.isLoggedIn, mids.isItselfOrAdmin, userCtrl.updateUser);
 router.delete('/:id', mids.isLoggedIn, mids.roleAuthorization(['admin']), userCtrl.deleteUser);
 
-router.get('/:id/edit', mids.isLoggedIn, userCtrl.renderEditView);
+router.get('/:id/edit', mids.isLoggedIn, mids.isItselfOrAdmin, userCtrl.renderEditView);
 
 module.exports = router;

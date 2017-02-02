@@ -1,6 +1,7 @@
 body {
   padding-top: 61px;
   font-family: 'PT Sans', Helvetica, Arial, sans-serif;
+  min-width: 90%;
 }
 
 .btn-inline {
@@ -27,6 +28,7 @@ a.navbar-brand img {
 .jumbotron.jumbotron-home {
   background-image: url('https://images.unsplash.com/photo-1431605695381-f4a9c3cdd150?dpr=1.25&auto=format&fit=crop&w=767&h=511&q=80&cs=tinysrgb&crop=');
   background-size: cover;
+  background-position: 100% 29%;
 }
 .jumbotron>.background-blur {
   color: #FFFFFF;

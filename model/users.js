@@ -27,9 +27,13 @@ const userSchema = new Schema({
   },
   role: {
     type: String,
-    enum: ['admin', 'evaluator'],
+    enum: ['admin', 'evaluator', 'owner'],
     required: true,
-  }
+  },
+  portals_to_evaluate: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Portal'
+  }]
 }, {
   timestamps: {createdAt: 'created_at', updatedAt: 'updated_at'}
 });

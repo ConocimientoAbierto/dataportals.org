@@ -44,6 +44,10 @@ const portalSchema = new Schema({
   eval_uses_easiness: {
       existence_api: Number,
       api_documentation: Number
+  },
+  owner: {
+    type: Schema.Types.ObjectId,
+    ref: 'User'
   }
   // user_created: Schema.Types.ObjectId,
   // user_updated: Schema.Types.ObjectId,
