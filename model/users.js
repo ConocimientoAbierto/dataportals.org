@@ -30,6 +30,10 @@ const userSchema = new Schema({
     enum: ['admin', 'evaluator', 'owner'],
     required: true,
   },
+  own_portal: {
+    type: Boolean,
+    default: false
+  },
   portals_to_evaluate: [{
     type: Schema.Types.ObjectId,
     ref: 'Portal'
@@ -39,7 +43,7 @@ const userSchema = new Schema({
 });
 
 // before save always hash pass
-userSchema.pre('save', function(next) { // not using => func to preserv this value
+userSchema.pre('save', function(next) { // not using => func to preserv 'this' value
   let user = this;
   const salt_factor = 32;
 

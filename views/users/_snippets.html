@@ -38,22 +38,37 @@
     { value: 'owner', description: 'Responsable'}
   ] %}
 
-  <div class="form-group">
-    <label for="name">Nombre</label>
-    <input type="text" class="form-control" id="name" name="name" value="{{user.name}}" required>
+  <div class="form-group {% if (formErr.name) %} has-error {% endif %}">
+    <label for="name">Nombre <span class="text-danger">*</span></label>
+    <input type="text" class="form-control" id="name" name="name" value="{{user.name}}" required autofocus>
+    {% if formErr.name %}
+      <span class="help-block">{{ formErr.name.msg }}</span>
+    {% endif %}
   </div>
-  <div class="form-group">
-    <label for="email">Mail</label>
-    <input type="email" class="form-control" id="email" name="email" value="{{user.email}}" >
+  <div class="form-group {% if (formErr.email) %} has-error {% endif %}">
+    <label for="email">Mail <span class="text-danger">*</span></label>
+    <input type="email" class="form-control" id="email" name="email" value="{{user.email}}" required>
+    {% if formErr.email %}
+      <span class="help-block">{{ formErr.email.msg }}</span>
+    {% endif %}
   </div>
-  <div class="form-group">
-    <label for="password">Contraseña</label>
-    <input type="password" class="form-control" id="password" name="password">
+  <div class="form-group {% if (formErr.password) %} has-error {% endif %}">
+    <label for="password">Contraseña <span class="text-danger">*</span></label>
+    <input type="password" class="form-control" id="password" name="password" required>
+    {% if formErr.password %}
+      <span class="help-block">{{ formErr.password.msg }}</span>
+    {% endif %}
   </div>
-  <div class="form-group">
-    <label for="role">Rol</label>
-    <select class="form-control" id="role" name ="role">
+  <div class="form-group {% if (formErr.role) %} has-error {% endif %}">
+    <label for="role">Rol <span class="text-danger">*</span></label>
+    <select class="form-control" id="role" name ="role" required>
       {{ partials.creatSelectOptions(roleOpt, user.role) }}
     </select>
+    {% if formErr.role %}
+      <span class="help-block">{{ formErr.role.msg }}</span>
+    {% endif %}
   </div>
+  <p class="help-block">
+    <span class="text-danger">*</span> Requerido
+  </p>
 {% endmacro %}

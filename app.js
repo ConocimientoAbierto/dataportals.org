@@ -1,6 +1,6 @@
 'use strict';
 
-// Requiring necesary modules
+/** DEPENDENCIES **/
 const express = require('express'),
   path = require('path'),
   nunjucks = require('nunjucks'),
@@ -10,23 +10,25 @@ const express = require('express'),
   mongoose = require('mongoose'),
   flash = require('connect-flash'),
   session = require('express-session'),
-  csurf = require('csurf');
+  csurf = require('csurf'),
+  validator = require('express-validator');
 
 const configAPP = require('./lib/configAPP');
 const app = express();
 
-// MODELS
+/** MODELS **/
 const Portal = require('./model/portals');
 
-// MONGOOSE CONFIG
+/** MONGOOSE CONFIG **/
 mongoose.connect(configAPP.dbURL, (err) => err ? console.log(err) : console.log('Conected to DB'));
 
-// CONFIG EXPRESS APP
+/** CONFIG EXPRESS APP **/
 app.set('views', __dirname + '/views');
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(validator());
 app.use(methodOverride(function(req, res){
   if (req.body && typeof req.body === 'object' && '_method' in req.body) {
     // look in urlencoded POST bodies and delete it
@@ -43,22 +45,24 @@ app.use(session({
 }));
 app.use(csurf());
 
-// PASSPORT CONFIG
+/** PASSPORT CONFIG **/
 require('./lib/configPassport')(app);
 
 const env = new nunjucks.Environment(new nunjucks.FileSystemLoader('views'));
 env.express(app);
 
-// ROUTES CONFIG
+/** ROUTES CONFIG **/
 const homeRoutes = require('./routes/home');
 const portalsRoutes = require('./routes/portals');
 const usersRoutes = require('./routes/users');
 
-// GENERAL MIDDLEWHERE
+/** GENERAL MIDDLEWHERE **/
 app.use(function(req, res, next) {
   res.locals.currentUser = req.user;
   res.locals.message     = req.flash('message');
   res.locals._csrf       = req.csrfToken();
+  res.locals.formErr     = req.flash('formErr')[0];
+  console.log(res.locals.formErr);
   next();
 });
 

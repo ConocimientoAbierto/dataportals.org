@@ -2,6 +2,7 @@
 
 const express = require('express');
 const homeCrtl = require('./../controllers/home');
+const validator = require('./../middlewheres/formValidator');
 
 let router = express.Router();
 
@@ -16,10 +17,11 @@ router.get('/capacitacion', homeCrtl.renderCapacitacion);
 
 // Sugerir Portales
 router.get('/sugerir-portal', homeCrtl.renderSugerirPortal);
+router.post('/sugerir-portal', validator.validateSuggestPortalForm, homeCrtl.sendSugerirPortal);
 
 // Contacto
 router.get('/contacto', homeCrtl.renderContacto);
-router.post('/contacto', homeCrtl.sendContactMail);
+router.post('/contacto', validator.validateContactForm, homeCrtl.sendContactMail);
 
 // Ranking
 router.get('/ranking', homeCrtl.renderRanking);

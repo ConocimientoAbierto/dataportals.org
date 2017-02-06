@@ -13,6 +13,7 @@
     "csv-parse": "",
     "express": "^4.x",
     "express-session": "^1.15.0",
+    "express-validator": "^3.1.2",
     "lodash": "^3.10.1",
     "marked": "",
     "method-override": "^2.3.7",

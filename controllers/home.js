@@ -29,6 +29,15 @@ exports.renderSugerirPortal = (req, res) => {
 };
 
 /**
+ * Save suggest in db
+ */
+exports.sendContactMail = (req, res) => {
+  // TODO
+  console.log('TODO: Terminar esta ruta de sugerir portal');
+  res.json(req.body);
+};
+
+/**
  * Render contacto view
  */
 exports.renderContacto = (req, res) => {
@@ -46,7 +55,8 @@ exports.renderRanking = (req, res) => {
 /**
  * Send Mail for contact
  */
-exports.sendContactMail = (req, res) => {
+exports.sendSugerirPortal = (req, res) => {
   // TODO
-  res.send('Terminar esta ruta de envio de mail');
+  console.log('TODO: Terminar esta ruta de envio de sugerencia de portal');
+  res.json(req.body);
 };

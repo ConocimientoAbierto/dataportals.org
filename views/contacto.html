@@ -20,21 +20,39 @@
       <div class="page-header">
         <h3>Escribinos</h3>
       </div>
-      <form method="post" action="/contacto">
+      <form method="post" action="/contacto" {% if (formErr.name) %} class="has-error" {% endif %}>
         <input type="hidden" name="_csrf" value="{{_csrf}}">
         <div class="form-group">
           <label for="name">Nombre <span class="text-danger">*</span></label>
-          <input type="text" class="form-control" id="name" name="name" required>
+          <input type="text" class="form-control" id="name" name="name" required autofocus>
+          {% if formErr.name %}
+            <span class="help-block">{{ formErr.name.msg }}</span>
+          {% endif %}
+        </div>
+        <div class="form-group">
+          <label for="email">E-mail</label>
+          <input type="email" class="form-control" id="email" name="email">
+          {% if formErr.email %}
+            <span class="help-block">{{ formErr.email.msg }}</span>
+          {% endif %}
         </div>
         <div class="form-group">
           <label for="subject">Asunto <span class="text-danger">*</span></label>
           <input type="text" class="form-control" id="subject" name="subject" required>
+          {% if formErr.subject %}
+            <span class="help-block">{{ formErr.subject.msg }}</span>
+          {% endif %}
         </div>
         <div class="form-group">
           <label for="message">Mensaje: <span class="text-danger">*</span></label>
           <textarea class="form-control" name="message" rows="8" cols="40"></textarea>
+          {% if formErr.message %}
+            <span class="help-block">{{ formErr.message.msg }}</span>
+          {% endif %}
         </div>
-
+        <p class="help-block">
+          <span class="text-danger">*</span> Requerido
+        </p>
         <button type="submit" class="btn btn-success btn-lg btn-block">Enviar</button>
       </form>
     </div>

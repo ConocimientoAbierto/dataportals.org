@@ -10,7 +10,7 @@
   </div>
 {%- endmacro %}
 
-{% macro portalForm(portal) %}
+{% macro portalForm(portal, formErr) %}
   {# chanchada, sacar esto #}
   {% set pubClasificationOpt = [
     { value: 'municipal_government', description: 'Gobierno Municipal'},
@@ -41,74 +41,120 @@
     { value: 'br', description: 'Brazíl'},
     { value: 'mx', description: 'México'}
   ] %}
-  <div class="form-group">
-    <label for="title">Título</label>
+  <div class="form-group {% if (formErr.title) %} has-error {% endif %}">
+    <label for="title">Título <span class="text-danger">*</span></label>
     <p class="help-block">Título completo del portal. ej: "Portal de datos del Ministerio de Modernización"</p>
-    <input type="text" class="form-control" id="title" name="title" value="{{portal.title}}" required>
+    <input type="text" class="form-control" id="title" name="title" value="{{portal.title}}" required autofocus>
+    {% if formErr.title %}
+      <span class="help-block">{{ formErr.title.msg }}</span>
+    {% endif %}
   </div>
-  <div class="form-group">
-    <label for="url">URL</label>
+  <div class="form-group {% if (formErr.url) %} has-error {% endif %}">
+    <label for="url">URL <span class="text-danger">*</span></label>
     <p class="help-block">URL del home del portal</p>
-    <input type="url" class="form-control" id="url" name="url" value="{{portal.url}}" >
+    <input type="url" class="form-control" id="url" name="url" value="{{portal.url}}" required>
+    {% if formErr.url %}
+      <span class="help-block">{{ formErr.url.msg }}</span>
+    {% endif %}
   </div>
-  <div class="form-group">
-    <label for="author">Autor</label>
+  <div class="form-group {% if (formErr.author) %} has-error {% endif %}">
+    <label for="author">Autor <span class="text-danger">*</span></label>
     <p class="help-block">Nombre o título de la persona o entidad que publica el sitio</p>
-    <input type="text" class="form-control" id="author" name="author" value="{{portal.author}}">
+    <input type="text" class="form-control" id="author" name="author" value="{{portal.author}}" required>
+    {% if formErr.author %}
+      <span class="help-block">{{ formErr.author.msg }}</span>
+    {% endif %}
   </div>
-  <div class="form-group">
-    <label for="publisher_clasification">Tipo de autor</label>
+  <div class="form-group {% if (formErr.publisher_clasification) %} has-error {% endif %}">
+    <label for="publisher_clasification">Tipo de autor <span class="text-danger">*</span></label>
     <p class="help-block">Categoría a la que el autor pertenece</p>
-    <select class="form-control" id="publisher_clasification" name ="publisher_clasification">
+    <select class="form-control" id="publisher_clasification" name ="publisher_clasification" required>
       {{ partials.creatSelectOptions(pubClasificationOpt, portal.publisher_clasification) }}
     </select>
+    {% if formErr.publisher_clasification %}
+      <span class="help-block">{{ formErr.publisher_clasification.msg }}</span>
+    {% endif %}
   </div>
-  <div class="form-group">
-    <label for="description">Descripción</label>
+  <div class="form-group {% if (formErr.description) %} has-error {% endif %}">
+    <label for="description">Descripción <span class="text-danger">*</span></label>
     <p class="help-block">Descripción o notas adicionales del portal</p>
-    <textarea row=5 class="form-control" id="description" name="description">{{portal.description}}</textarea>
+    <textarea row=5 class="form-control" id="description" name="description" required>{{portal.description}}</textarea>
+    {% if formErr.description %}
+      <span class="help-block">{{ formErr.description.msg }}</span>
+    {% endif %}
   </div>
-  <div class="form-group">
-    <label for="country">País</label>
+  <div class="form-group {% if (formErr.country) %} has-error {% endif %}">
+    <label for="country">País <span class="text-danger">*</span></label>
     <p class="help-block">País al que pertenece el portal</p>
-    <select class="form-control" id="country" name ="country">
+    <select class="form-control" id="country" name ="country" required>
       {{ partials.creatSelectOptions(countryOpt, portal.country) }}
     </select>
+    {% if formErr.country %}
+      <span class="help-block">{{ formErr.country.msg }}</span>
+    {% endif %}
   </div>
-  <div class="form-group">
-    <label for="city">Ciudad</label>
+  <div class="form-group {% if (formErr.city) %} has-error {% endif %}">
+    <label for="city">Ciudad <span class="text-danger">*</span></label>
     <p class="help-block">Ciudad a la que pertenece el portal</p>
-    <input type="text" class="form-control" id="city" name="city" value="{{portal.city}}">
+    <input type="text" class="form-control" id="city" name="city" value="{{portal.city}}" required>
+    {% if formErr.city %}
+      <span class="help-block">{{ formErr.city.msg }}</span>
+    {% endif %}
   </div>
-  <div class="form-group">
-    <label for="lenguage">Lenguaje</label>
+  <div class="form-group {% if (formErr.lenguage) %} has-error {% endif %}">
+    <label for="lenguage">Lenguaje <span class="text-danger">*</span></label>
     <p class="help-block">Lenguaje principal del portal</p>
-    <input type="text" class="form-control" id="lenguage" name="lenguage" value="{{portal.lenguage}}">
+    <input type="text" class="form-control" id="lenguage" name="lenguage" value="{{portal.lenguage}}" required>
+    {% if formErr.lenguage %}
+      <span class="help-block">{{ formErr.lenguage.msg }}</span>
+    {% endif %}
   </div>
-  <div class="form-group">
-    <label for="status">Estado</label>
+  <div class="form-group {% if (formErr.status) %} has-error {% endif %}">
+    <label for="status">Estado <span class="text-danger">*</span></label>
     <p class="help-block">Estado en el cual se encuentra el portal</p>
-    <select class="form-control" id="status" name ="status">
+    <select class="form-control" id="status" name ="status" required>
       {{ partials.creatSelectOptions(statusOpt, portal.status) }}
     </select>
+    {% if formErr.status %}
+      <span class="help-block">{{ formErr.status.msg }}</span>
+    {% endif %}
   </div>
-  <div class="form-group">
-    <label for="plataform">Plataforma</label>
+  <div class="form-group {% if (formErr.plataform) %} has-error {% endif %}">
+    <label for="plataform">Plataforma <span class="text-danger">*</span></label>
     <p class="help-block">Plataforma de portales para datos abiertos utilizada</p>
-    <select class="form-control" id="plataform" name ="plataform">
+    <select class="form-control" id="plataform" name ="plataform" required>
       {{ partials.creatSelectOptions(plataformOpt, portal.plataform) }}
     </select>
+    {% if formErr.plataform %}
+      <span class="help-block">{{ formErr.plataform.msg }}</span>
+    {% endif %}
   </div>
-  <div class="form-group">
-    <label for="api_endpoint">URL de API</label>
+  <div class="form-group {% if (formErr.api_endpoint) %} has-error {% endif %}">
+    <label for="api_endpoint">URL de API <span class="text-danger">*</span></label>
     <p class="help-block">URL base para el uso de la api</p>
-    <input type="url" class="form-control" id="api_endpoint" name="api_endpoint" value="{{portal.api_endpoint}}">
+    <input type="url" class="form-control" id="api_endpoint" name="api_endpoint" value="{{portal.api_endpoint}}" required>
+    {% if formErr.api_endpoint %}
+      <span class="help-block">{{ formErr.api_endpoint.msg }}</span>
+    {% endif %}
   </div>
-  <div class="form-group">
-    <label for="api_type">Tipo de API</label>
+  <div class="form-group {% if (formErr.api_type) %} has-error {% endif %}">
+    <label for="api_type">Tipo de API <span class="text-danger">*</span></label>
     <p class="help-block">API utilizada en el portal</p>
-    <select class="form-control" id="api_type" name ="api_type">
+    <select class="form-control" id="api_type" name ="api_type" required>
       {{ partials.creatSelectOptions(apiOpt, portal.api_type) }}
     </select>
+    {% if formErr.api_type %}
+      <span class="help-block">{{ formErr.api_type.msg }}</span>
+    {% endif %}
   </div>
+  <div class="form-group">
+    <label for="owner">Usuario responsable</label>
+    <p class="help-block">Ususario responsable del sitio. Podrá ver en detalle el informe.</p>
+    <select class="form-control" id="owner" name ="owner">
+      {{ partials.creatSelectOptions(ownersCandidates, portal.owner) }}
+    </select>
+  </div>
+  <p class="help-block">
+    <span class="text-danger">*</span> Requerido
+  </p>
 {% endmacro %}

@@ -8,12 +8,11 @@
       Edición de <strong>{{ portal.title }}</strong>
     </h1>
   </div>
-
   <section class="row">
     <form class="col-md-6 col-md-offset-3" method="POST" action="/portals/{{portal.slug}}">
       <input type="hidden" name="_method" value="PUT">
       <input type="hidden" name="_csrf" value="{{_csrf}}">
-      {{ snippets.portalForm(portal) }}
+      {{ snippets.portalForm(portal, formErr) }}
       <div class="btn-inline">
         <button type="submit" class="btn btn-success btn-lg">Gurdar cambios</button>
         <a href="/portals/{{portal.slug}}" class="btn btn-primary btn-lg"> Cancelar</a>

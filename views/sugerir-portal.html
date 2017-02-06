@@ -17,18 +17,24 @@
 <section>
   <div class="row">
     <div class="col-md-6 col-md-offset-3">
-      <form method="post" action="/sugerir-portal">
+      <form method="post" action="/sugerir-portal" {% if (formErr.name) %} class="has-error" {% endif %}>
         <input type="hidden" name="_csrf" value="{{_csrf}}">
         <div class="form-group">
           <label for="name">Nombre <span class="text-danger">*</span></label>
-          <input type="text" class="form-control" id="name" name="name" required>
+          <input type="text" class="form-control" id="name" name="name" required autofocus>
+          {% if formErr.name %}
+            <span class="help-block">{{ formErr.name.msg }}</span>
+          {% endif %}
         </div>
         <div class="form-group">
-          <label for="url">URL del portal</label>
+          <label for="url">URL del portal <span class="text-danger">*</span></label>
           <input type="url" class="form-control" id="url" name="url">
+          {% if formErr.url %}
+            <span class="help-block">{{ formErr.url.msg }}</span>
+          {% endif %}
         </div>
         <div class="form-group">
-          <h4>Utiliza la expresión datos abiertos</h4>
+          <h4>Utiliza la expresión datos abiertos <span class="text-danger">*</span></h4>
           <div class="radio">
             <label class="radio-inline">
               <input type="radio" name="exp-datos-abiertos" id="exp-datos-abiertos1" value="si" checked>
@@ -39,9 +45,12 @@
               no
             </label>
           </div>
+          {% if formErr.exp-datos-abiertos %}
+          <span class="help-block">{{ formErr.exp-datos-abiertos.msg }}</span>
+          {% endif %}
         </div>
         <div class="form-group">
-          <h4>Utiliza la expresión gobierno abierto</h4>
+          <h4>Utiliza la expresión gobierno abierto <span class="text-danger">*</span></h4>
           <div class="radio">
             <label class="radio-inline">
               <input type="radio" name="exp-gob-abiertos" id="exp-gob-abiertos1" value="si" checked>
@@ -52,9 +61,12 @@
               no
             </label>
           </div>
+          {% if formErr.exp-gob-abiertos %}
+            <span class="help-block">{{ formErr.exp-gob-abiertos.msg }}</span>
+          {% endif %}
         </div>
         <div class="form-group">
-          <h4>Utiliza la expresión transparencia</h4>
+          <h4>Utiliza la expresión transparencia <span class="text-danger">*</span></h4>
           <div class="radio">
             <label class="radio-inline">
               <input type="radio" name="exp-transparencia" id="exp-transparencia1" value="si" checked>
@@ -65,9 +77,12 @@
               no
             </label>
           </div>
+          {% if formErr.exp-transparencia %}
+            <span class="help-block">{{ formErr.exp-transparencia.msg }}</span>
+          {% endif %}
         </div>
         <div class="form-group">
-          <h4>Ofrece archivos para descargar</h4>
+          <h4>Ofrece archivos para descargar <span class="text-danger">*</span></h4>
           <div class="radio">
             <label class="radio-inline">
               <input type="radio" name="ofrece-descarga" id="ofrece-descarga1" value="si" checked>
@@ -78,7 +93,13 @@
               no
             </label>
           </div>
+          {% if formErr.ofrece-descarga %}
+            <span class="help-block">{{ formErr.ofrece-descarga.msg }}</span>
+          {% endif %}
         </div>
+        <p class="help-block">
+          <span class="text-danger">*</span> Requerido
+        </p>
         <button type="submit" class="btn btn-success btn-lg btn-block">Sugerir</button>
       </form>
     </div>

@@ -81,7 +81,7 @@ exports.renderEditView = (req, res) => {
       return res.redirect('/');
     }
 
-    res.render('users/edit.html', {'user': user});
+    res.render('users/edit.html', {'user': foundUser});
   });
 };
 
@@ -95,10 +95,26 @@ exports.renderLoginView = (req, res) => {
   res.render('users/login.html');
 };
 
-// POST - login logic
+// POST - logout logic
 exports.logoutUser = (req, res) => {
   req.session.destroy(function(err) {
     if(err) console.log(err);
     else res.redirect('/');
+  });
+};
+
+exports.getFreeOwnerCandidate = (req, res) => {
+  User.find({
+    role: 'owner',
+    own_portal: false
+  })
+  .select({
+    _id: 1,
+    name: 1
+  })
+  .exec((err, ownersCandidates) => {
+    if (err) return res.status(500).send(err.message);
+
+    return ownersCandidates ? ownersCandidates : 'Sin responsables disponibles.';
   });
 };

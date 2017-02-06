@@ -2,6 +2,7 @@
 
 const mongoose = require('mongoose');
 const Portal = mongoose.model('Portal');
+const userCtrl = require('./../controllers/users');
 
 // GET - return all portlas
 exports.findAllPortals = (req, res) => {
@@ -86,6 +87,12 @@ exports.renderNewView = (req, res) => res.render('portals/new.html');
 exports.renderEditView = (req, res) => {
   Portal.findBySlug(req.params.slug, (err, portal) => {
     if (err) return res.status(500).send(err.message);
-    res.render('portals/edit.html', {'portal': portal});
+
+    const ownersCandidates = userCtrl.getFreeOwnerCandidate();
+    const data = {
+      'portal': portal,
+      'ownersCandidates': ownersCandidates
+    }
+    res.render('portals/edit.html', data);
   });
 };
