@@ -2,6 +2,7 @@
 
 const mongoose = require('mongoose');
 const User = mongoose.model('User');
+const Portal = mongoose.model('Portal');
 
 // GET - render all users view
 exports.renderAllUsersView = (req, res) => {
@@ -81,7 +82,28 @@ exports.renderEditView = (req, res) => {
       return res.redirect('/');
     }
 
-    res.render('users/edit.html', {'user': foundUser});
+    let data = {
+      'user': foundUser,
+    }
+
+    // check if the user is admin or evaluator and get all portals to evaluate
+    if (['admin', 'evaluator'].indexOf(foundUser.role)) {
+      Portal.find({
+        to_evaluate: true
+      })
+      .select({
+        _id: 1,
+        title: 1
+      })
+      .exec((err, foundPortals) => {
+        if (err) return res.status(500).send(err.message);
+        data.portalsToEval = foundPortals;
+        console.log('data: ', data);
+        res.render('users/edit.html', data);
+      });
+    } else {
+      res.render('users/edit.html', data);
+    };
   });
 };
 

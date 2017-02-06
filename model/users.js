@@ -3,7 +3,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt-nodejs');
 // plugin ES6 promises default -> mpromise is deprecated
-mongoose.Promise = require('bluebird');
+mongoose.Promise = Promise;
 
 const Schema = mongoose.Schema;
 

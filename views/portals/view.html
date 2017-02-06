@@ -41,7 +41,7 @@
       </dl>
       {% if currentUser.role === 'admin' %}
       <div class="btn-inline">
-        <a class="btn btn-primary" href="/portals/{{portal.slug}}/edit" role="button">Editar Portal</a>
+        <a class="btn btn-primary" href="/portals/edit/{{portal.slug}}" role="button">Editar Portal</a>
         <form action="/portals/{{portal.slug}}" method="POST">
           <input type="hidden" name="_method" value="DELETE">
           <input type="hidden" name="_csrf" value="{{_csrf}}">

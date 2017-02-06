@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+
+{% block title %}
+  {{portal.title}} |
+{% endblock %}
+
+
+{% block content %}
+  <div class="page-header">
+    <h1>
+      {{portal.title}} <small>Evaluación Manual</small>
+    </h1>
+  </div>
+  <div class="row">
+    <form class="col-md-12" action="/portals/manual_evaluation/{{portal.slug}}" method="POST">
+      <input type="hidden" name="_csrf" value="{{_csrf}}">
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="panel panel-info">
+            <div class="panel-heading">Criterios de facilidad de uso del portal</div>
+            <div class="panel-body">
+              <div class="form-group">
+                <h4>Uso de identidad oficial
+                  <a id="popover-oficial_identity" href="#" data-toggle="popover" data-trigger="focus" data-placement="right" data-content="La entidad responsable del sitio web debe ser fácil de identificar, es necesario utilizar logo o isotipo de la entidad (municipio, ministerio, institución) en todas las páginas.">(?)</a>
+                  <span class="text-danger">*</span></h4>
+                <div class="radio">
+                  <label class="radio-inline">
+                    <input type="radio" name="oficial_identity" id="oficial_identity1" value="1">
+                    si
+                  </label>
+                  <label class="radio-inline">
+                    <input type="radio" name="oficial_identity" id="oficial_identity2" value="0">
+                    no
+                  </label>
+                </div>
+                {% if formErr.oficial_identity %}
+                <span class="help-block">{{ formErr.oficial_identity.msg }}</span>
+                {% endif %}
+              </div>
+              <div class="form-group">
+                <h4>Enlace al sitio oficial de la entidad
+                  <a id="popover-link_oficial_site" href="#" data-toggle="popover" data-trigger="focus" data-placement="right" data-content="La entidad responsable del sitio web debe ser fácil de acceder, es necesario colocar un enlace al sitio web de la entidad (municipio, ministerio, institución) en todas las páginas.">(?)</a>
+                  <span class="text-danger">*</span></h4>
+                <div class="radio">
+                  <label class="radio-inline">
+                    <input type="radio" name="link_oficial_site" id="link_oficial_site1" value="1">
+                    si
+                  </label>
+                  <label class="radio-inline">
+                    <input type="radio" name="link_oficial_site" id="link_oficial_site2" value="0">
+                    no
+                  </label>
+                </div>
+                {% if formErr.link_oficial_site %}
+                <span class="help-block">{{ formErr.link_oficial_site.msg }}</span>
+                {% endif %}
+              </div>
+              <div class="form-group">
+                <h4>Explicación de datos abiertos
+                  <a id="popover-open_data_exp" href="#" data-toggle="popover" data-trigger="focus" data-placement="right" data-content="La entidad responsable del sitio web debe ser fácil de acceder, es necesario colocar un enlace al sitio web de la entidad (municipio, ministerio, institución) en todas las páginas.">(?)</a>
+                  <span class="text-danger">*</span></h4>
+                <div class="radio">
+                  <label class="radio-inline">
+                    <input type="radio" name="open_data_exp" id="open_data_exp1" value="1">
+                    si
+                  </label>
+                  <label class="radio-inline">
+                    <input type="radio" name="open_data_exp" id="open_data_exp2" value="0">
+                    no
+                  </label>
+                </div>
+                {% if formErr.open_data_exp %}
+                <span class="help-block">{{ formErr.open_data_exp.msg }}</span>
+                {% endif %}
+              </div>
+
+              <div class="form-group">
+                <h4>Enlace a todos los conjuntos de datos
+                  <a id="popover-all_dataset_link" href="#" data-toggle="popover" data-trigger="focus" data-placement="right" data-content="El listado completo de todos los conjuntos de datos debe poder ser accesible.">(?)</a>
+                  <span class="text-danger">*</span></h4>
+                <div class="radio">
+                  <label class="radio-inline">
+                    <input type="radio" name="all_dataset_link" id="all_dataset_link1" value="1">
+                    si
+                  </label>
+                  <label class="radio-inline">
+                    <input type="radio" name="all_dataset_link" id="all_dataset_link2" value="0">
+                    no
+                  </label>
+                </div>
+                {% if formErr.all_dataset_link %}
+                <span class="help-block">{{ formErr.all_dataset_link.msg }}</span>
+                {% endif %}
+              </div>
+
+              <div class="form-group">
+                <h4>Sistema de búsqueda de conjunto de datos
+                  <a id="popover-dataset_search_system" href="#" data-toggle="popover" data-trigger="focus" data-placement="right" data-content="Debe ser fácil de encontrar un conjunto de datos mediante el sistema de búsqueda.">(?)</a>
+                  <span class="text-danger">*</span></h4>
+                <div class="radio">
+                  <label class="radio-inline">
+                    <input type="radio" name="dataset_search_system" id="dataset_search_system1" value="1">
+                    si
+                  </label>
+                  <label class="radio-inline">
+                    <input type="radio" name="dataset_search_system" id="dataset_search_system2" value="0">
+                    no
+                  </label>
+                </div>
+                {% if formErr.dataset_search_system %}
+                <span class="help-block">{{ formErr.dataset_search_system.msg }}</span>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="panel panel-warning">
+            <div class="panel-heading">Criterios de facilidad de uso de los datos</div>
+            <div class="panel-body">
+              <div class="form-group">
+                <h4>Uso de identidad oficial
+                  <a id="popover-existence_api" href="#" data-toggle="popover" data-trigger="focus" data-placement="left" data-content="Para facilitar el acceso automatizado a los conjuntos de datos se requiere una interfaz especial para que los sistemas accedan a los datos.">(?)</a>
+                  <span class="text-danger">*</span></h4>
+                <div class="radio">
+                  <label class="radio-inline">
+                    <input type="radio" name="existence_api" id="existence_api1" value="1">
+                    si
+                  </label>
+                  <label class="radio-inline">
+                    <input type="radio" name="existence_api" id="existence_api2" value="0">
+                    no
+                  </label>
+                </div>
+                {% if formErr.existence_api %}
+                <span class="help-block">{{ formErr.existence_api.msg }}</span>
+                {% endif %}
+              </div>
+              <div class="form-group">
+                <h4>Enlace al sitio oficial de la entidad
+                  <a id="popover-api_documentation" href="#" data-toggle="popover" data-trigger="focus" data-placement="left" data-content="Para que los desarrolladores de software puedan fácilmente desarrollar sistemas que consuman datos del portal de datos, es necesario un documento que detalle el funcionamiento de la API.">(?)</a>
+                  <span class="text-danger">*</span></h4>
+                <div class="radio">
+                  <label class="radio-inline">
+                    <input type="radio" name="api_documentation" id="api_documentation1" value="1">
+                    si
+                  </label>
+                  <label class="radio-inline">
+                    <input type="radio" name="api_documentation" id="api_documentation2" value="0">
+                    no
+                  </label>
+                </div>
+                {% if formErr.api_documentation %}
+                <span class="help-block">{{ formErr.api_documentation.msg }}</span>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="row">
+        <div class="col-md-6 col-md-offset-3 btn-inline">
+          <button type="submit" class="btn btn-success btn-lg">Evaluar</button>
+          <a href="/portals/{{portal.slug}}" class="btn btn-primary btn-lg"> Cancelar</a>
+        </div>
+      </div>
+    </form>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+  'use strict';
+
+  (function() {
+    $('#popover-oficial_identity').popover();
+    $('#popover-link_oficial_site').popover();
+    $('#popover-open_data_exp').popover();
+    $('#popover-all_dataset_link').popover();
+    $('#popover-dataset_search_system').popover();
+    $('#popover-existence_api').popover();
+    $('#popover-api_documentation').popover();
+  })();
+</script>
+{% endblock %}

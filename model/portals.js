@@ -3,7 +3,7 @@
 const mongoose = require('mongoose'),
       slugHero = require('mongoose-slug-hero');
 // plugin ES6 promises default -> mpromise is deprecated
-mongoose.Promise = require('bluebird');
+mongoose.Promise = Promise;
 
 const Schema = mongoose.Schema;
 
@@ -42,12 +42,24 @@ const portalSchema = new Schema({
     examinator: Number
   },
   eval_uses_easiness: {
-      existence_api: Number,
-      api_documentation: Number
+    existence_api: Number,
+    api_documentation: Number
+  },
+  manaul_evaluation_done: {
+    type: Boolean,
+    default: False
+  },
+  automatic_evaluation_done: {
+    type: Boolean,
+    default: False
   },
   owner: {
     type: Schema.Types.ObjectId,
     ref: 'User'
+  },
+  to_evaluate: {
+    type: Boolean,
+    required: true
   }
   // user_created: Schema.Types.ObjectId,
   // user_updated: Schema.Types.ObjectId,

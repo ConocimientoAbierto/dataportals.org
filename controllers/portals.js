@@ -37,8 +37,10 @@ exports.addPortal = (req, res) => {
     status                  : req.body.status,
     plataform               : req.body.plataform,
     api_endpoint            : req.body.api_endpoint,
-    api_type                : req.body.api_type
+    api_type                : req.body.api_type,
   });
+  portal.to_evaluate = req.body.to_evaluate === 'on' ? true : false;
+  if (req.body.owner) portal.owner = req.body.owner;
 
   portal.save((err, portal) => {
     if(err) return res.status(500).send(err.message);
@@ -62,6 +64,8 @@ exports.updatePortal = (req, res) => {
     portal.plataform               = req.body.plataform;
     portal.api_endpoint            = req.body.api_endpoint;
     portal.api_type                = req.body.api_type;
+    portal.to_evaluate = req.body.to_evaluate === 'on' ? true : false;
+    if (req.body.owner) portal.owner = req.body.owner;
 
     portal.save((err, portal) => {
       if(err) return res.status(500).send(err.message);
@@ -94,5 +98,43 @@ exports.renderEditView = (req, res) => {
       'ownersCandidates': ownersCandidates
     }
     res.render('portals/edit.html', data);
+  });
+};
+
+/** EVALUATIONS **/
+// GET - Manual Evaluation View
+exports.renderManualEvaluationView = (req, res) => {
+  Portal.findBySlug(req.params.slug, (err, portal) => {
+    if (err) return res.status(500).send(err.message);
+
+    res.render('portals/manual_evaluation.html', {'portal': portal});
+  });
+};
+
+// POST - Save Manual Evaluation
+exports.saveManualEvaluationView = (req, res) => {
+  Portal.findBySlug(req.params.slug, (err, portal) => {
+    if (err) return res.status(500).send(err.message);
+
+    portal.eval_use = {
+      oficial_identity: req.body.oficial_identity,
+      link_oficial_site: req.body.link_oficial_site,
+      open_data_exp: req.body.open_data_exp,
+      all_dataset_link: req.body.all_dataset_link,
+      dataset_search_system: req.body.dataset_search_system
+      // examinator: req.body.examinator
+    };
+
+    portal.eval_uses_easiness = {
+      existence_api: req.body.existence_api,
+      api_documentation: req.body.api_documentation
+    }
+
+    portal.manaul_evaluation_done: true;
+
+    portal.save((err, portal) => {
+      if(err) return res.status(500).send(err.message);
+      res.redirect('/portals/' + portal.slug);
+    });
   });
 };

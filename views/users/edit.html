@@ -14,6 +14,16 @@
       <input type="hidden" name="_method" value="PUT">
       <input type="hidden" name="_csrf" value="{{_csrf}}">
       {{ snippets.userForm(user) }}
+      {% if user.role in ['admin', 'evaluator'] %}
+        {{ user.portals_to_evaluate }}
+        <select multiple class="form-control" id="portals_to_evaluate" name="portals_to_evaluate">
+          {% for portal in portalsToEval %}
+          <option value="{{ portal._id }}" {% if portal._id in user.portals_to_evaluate %} selected {% endif %}>
+            {{ portal.title }}
+          </option>
+          {% endfor %}
+        </select>
+      {% endif %}
       <button type="submit" class="btn btn-success btn-lg btn-block">Guardar cambios</button>
     </form>
   </section>
