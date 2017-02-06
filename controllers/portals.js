@@ -103,11 +103,11 @@ exports.renderEditView = (req, res) => {
 
 /** EVALUATIONS **/
 // GET - Manual Evaluation View
-exports.renderManualEvaluationView = (req, res) => {
+exports.renderEvaluationView = (req, res) => {
   Portal.findBySlug(req.params.slug, (err, portal) => {
     if (err) return res.status(500).send(err.message);
 
-    res.render('portals/manual_evaluation.html', {'portal': portal});
+    res.render('portals/evaluation.html', {'portal': portal});
   });
 };
 

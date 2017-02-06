@@ -18,7 +18,7 @@ router.delete('/:slug', mids.isLoggedIn, mids.roleAuthorization(['admin']), port
 
 router.get('/edit/:slug', mids.isLoggedIn, mids.roleAuthorization(['admin']), portalCtrl.renderEditView);
 
-router.get('/manual_evaluation/:slug', mids.isLoggedIn, mids.roleAuthorization(['admin', 'evaluator']), portalCtrl.renderManualEvaluationView);
-router.post('/manual_evaluation/:slug', mids.isLoggedIn, mids.roleAuthorization(['admin', 'evaluator']),  portalCtrl.saveManualEvaluationView);
+router.get('/evaluation/:slug', mids.isLoggedIn, mids.roleAuthorization(['admin', 'evaluator']), portalCtrl.renderEvaluationView);
+router.post('/evaluation/:slug', mids.isLoggedIn, mids.roleAuthorization(['admin', 'evaluator']),  portalCtrl.saveManualEvaluationView);
 
 module.exports = router;
