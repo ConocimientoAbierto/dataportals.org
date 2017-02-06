@@ -130,7 +130,7 @@ exports.saveManualEvaluationView = (req, res) => {
       api_documentation: req.body.api_documentation
     }
 
-    portal.manaul_evaluation_done: true;
+    portal.manaul_evaluation_done = true;
 
     portal.save((err, portal) => {
       if(err) return res.status(500).send(err.message);

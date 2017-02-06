@@ -47,11 +47,11 @@ const portalSchema = new Schema({
   },
   manaul_evaluation_done: {
     type: Boolean,
-    default: False
+    default: false
   },
   automatic_evaluation_done: {
     type: Boolean,
-    default: False
+    default: false
   },
   owner: {
     type: Schema.Types.ObjectId,
