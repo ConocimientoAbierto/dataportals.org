@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-  {{portal.title}} | 
+  {{portal.title}} |
 {% endblock %}
 
 {% block content %}
@@ -39,6 +39,7 @@
           <dt>URL de API:</dt>
           <dd>{{ portal.api_endpoint }}</dd>
       </dl>
+      {% if currentUser.role === 'admin' %}
       <div class="btn-inline">
         <a class="btn btn-primary" href="/portals/{{portal.slug}}/edit" role="button">Editar Portal</a>
         <form action="/portals/{{portal.slug}}" method="POST">
@@ -47,6 +48,7 @@
           <input type="submit" class="btn btn-danger" value="Borrar Portal">
         </form>
       </div>
+      {% endif %}
     </div>
   </div>
 {% endblock %}
