@@ -87,10 +87,7 @@ app.use('/users', usersRoutes);
 // })
 //
 // app.get('/about', function(req, res) {
-//   res.render('about.html', {});
-// });
-//
-// app.get('/search', function(req, res) {
+//   res.render('about.htmlion(req, res) {
 //   const catalogs = model.catalog.query();
 //   const total = catalogs.length;
 //   res.render('search.html', {
