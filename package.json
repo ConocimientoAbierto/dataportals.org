@@ -2,8 +2,7 @@
   "name": "portalDeDatos",
   "version": "0.1.0",
   "scripts": {
-    "start": "node ./bin/www",
-    "makeConfigFile": "cp ./lib/sampleConfigApp.js ./lib/configAPP.js"
+    "start": "node ./bin/www"
   },
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",

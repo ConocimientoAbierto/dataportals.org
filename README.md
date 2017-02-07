@@ -4,7 +4,7 @@
 This app requires NodeJS (>= v4.7).
 
 1. Clone the dev branch of this repo.
-```
+```shell
 git clone -b dev --single-branch https://github.com/ConocimientoAbierto/dataportals.org.git
 ```
 
@@ -17,10 +17,10 @@ git clone -b dev --single-branch https://github.com/ConocimientoAbierto/dataport
 #in the mongo shell
 use yourDataBaseName
 db.createUser({
-   user: "yourUser",
-   pwd: "yourPass",
-   roles: [ { role: "readWrite", db: "yourDataBaseName" }
-  })
+  user: "yourUser",
+  pwd: "yourPass",
+  roles: { role: "readWrite", db: "yourDataBaseName" }
+})
 ```
 
 5. go to project dir
@@ -30,7 +30,7 @@ cd /path/to/project/dataportals.org
 
 6. make config file
 ```shell
-npm makeConfigFile
+cp ./lib/sampleConfigApp.js ./lib/configAPP.js
 ```
 
 7. change config file in `lib/configAPP.js` to populate with your dbName, dbUser, dbPass and sessionSecret.
@@ -44,7 +44,9 @@ npm install
 ```shell
 npm start
 ```
+
 10. app live at `http://localhost:5000`
+
 
 ---
 
