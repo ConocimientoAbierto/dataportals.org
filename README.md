@@ -19,7 +19,7 @@ use yourDataBaseName
 db.createUser({
   user: "yourUser",
   pwd: "yourPass",
-  roles: { role: "readWrite", db: "yourDataBaseName" }
+  roles: [ role: "readWrite", db: "yourDataBaseName" ]
 })
 ```
 
