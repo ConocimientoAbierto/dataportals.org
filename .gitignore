@@ -2,3 +2,10 @@ node_modules/*
 sandbox/*
 .*.swp
 lib/configAPP.js
+*.wt
+*.lock
+WiredTiger.turtle
+WiredTiger
+storage.bson
+diagnostic.data/*
+journal/*
