@@ -212,11 +212,3 @@ a.inverted {
   border-left:1px solid #f2f2f2;
   border-right:1px solid #ffffff;
 }
-
-.equal-sign {
-  font-size: 1.8em;
-  line-height: 0;
-  vertical-align: middle;
-  position: relative;
-  top: -2px;
-}

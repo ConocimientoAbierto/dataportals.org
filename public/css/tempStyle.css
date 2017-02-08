@@ -1,7 +1,11 @@
 body {
-  padding-top: 61px;
+  padding-top: 80px;
   font-family: 'PT Sans', Helvetica, Arial, sans-serif;
   min-width: 90%;
+}
+
+.navbar-brand {
+  height: auto;
 }
 
 .btn-inline {
@@ -13,12 +17,18 @@ body {
   padding-top: 10px;
 }
 
-.navbar-header {
-  padding-bottom: 10px;
+a.navbar-brand img {
+  max-width: 320px;
 }
 
-a.navbar-brand img {
-  max-width: 300px;
+.navbar-nav li a {
+  font-size: 1.2em;
+}
+
+
+ul.navbar-nav {
+  margin-top: 10px;
+  margin-left: 20px;
 }
 
 .jumbotron {
@@ -33,6 +43,73 @@ a.navbar-brand img {
 .jumbotron>.background-blur {
   color: #FFFFFF;
   background-color: rgba(0,0,0,.5);
+}
+
+
+.equal-sign {
+  font-size: 1.8em;
+  line-height: 0;
+  vertical-align: middle;
+  position: relative;
+  top: -2px;
+}
+
+.counter {
+  display: inline-block;
+  padding: 0 50px;
+  text-align: center;
+}
+
+.counter .value {
+  background-color: #333;
+  font-weight: 700;
+  display: inline-block;
+  text-align: center;
+  margin-left: 3px;
+  margin-right: 3px;
+  border-radius: 3px;
+  position: relative;
+  color: #fff;
+  font-size: 6em;
+  padding: 0 10px;
+  font-family: Lato,Helvetica Neue,Helvetica,Arial,sans-serif;
+}
+
+.counter .value:after {
+  content: '';
+  width: 100%;
+  height: 2px;
+  display: block;
+  position: absolute;
+  top: 50%;
+  margin-top: -1px;
+  margin-left: -10px;
+  background-color: #fff;
+}
+
+.counter .label {
+  color: #eee;
+  font-size: 20px;
+  font-weight: 400;
+  text-transform: uppercase;
+  margin-top: 15px;
+  display: block;
+  padding: 0;
+}
+
+#ranking {
+  font-size: 1.2em;
+}
+
+#ranking h2 {
+  margin-bottom: 1.5em;
+}
+
+.ranking_last_updated {
+  font-size: 0.9em;
+  text-align: right;
+  color: #999;
+  margin-bottom: 2em;
 }
 
 footer.footer {
@@ -50,4 +127,14 @@ footer.footer a {
 }
 footer.footer .footer-logo {
   max-width: 300px;
+}
+
+.score_summary {
+  width: 600px;
+  margin: 2em;
+}
+
+.score_summary td {
+  white-space: nowrap;
+  margin-bottom: 1em;
 }

@@ -6,20 +6,180 @@
 
 {% block content %}
   <div class="page-header">
+    <img src="http://placekitten.com/150/150" alt="Imágen del portal" style="float: left; width: 100px; margin-right: 1em;">
+    <p>Portal de datos</a>
     <h1>
       {{portal.title}}
       {% if (currentUser.role === 'admin' or  currentUser.role === 'evaluator') and portal.to_evaluate === true %}
         <a class="btn btn-warning pull-right" href="/portals/evaluation/{{portal.slug}}" role="button">Evaluar <i class="fa fa-graduation-cap" aria-hidden="true"></i></a>
       {% endif %}
     </h1>
+    <p> Cantidad de conjuntos de datos: <strong>25</strong> - Última actualización de puntaje: 22/02/2017 </p>
   </div>
   <div class="row">
-    <div class="col-md-6">
-        <img src="http://placekitten.com/150/150" alt="img-responsive">
-        <h2>Description</h2>
-        {{ portal.description }}
+    <div class="col-md-12">
+        <h2>Descripción</h2>
+        <img style="float: right" src="http://api.page2images.com/directlink?p2i_url=http://ckan.fcabierto.org&p2i_key=16631c3971d0f0b4&p2i_size=250x250" alt="Captura de pantalla del portal web" />
+        <p>
+          {{ portal.description }}
+        </p>
+        <p>
+          <a href="#">Acceder al portal</a>
+        </p>
     </div>
+  </div>
+  <div class="row" >
+    <section class="line-chart col-md-12" >
+      <h2>Histórico de puntajes</h2>
+      <div id="chartLegend" >
+        <ul style="list-style-type:none;float:right;" >
+          <li style="display:inline-block;margin-right:10px;" >
+            <span style="display:inline-block;width:22px;height:13px;margin-right:5px;background-color:rgba(122, 184, 0,1);" >
+            </span>
+            <span style="vertical-align:top;font-size:13px;" >
+              Puntaje total (%)
+            </span>
+          </li>
+          <li style="display:inline-block;margin-right:10px;" >
+            <span style="display:inline-block;width:22px;height:13px;margin-right:5px;background-color:rgba(119,119,119,1);" >
+            </span>
+            <span style="vertical-align:top;font-size:13px;" >aca irian todos los puntajes, no solo el total (%)</span>
+          </li>
+        </ul>
+      </div>
+      <canvas id="lineChart" width="1140" height="300"  style="width: 1140px; height: 300px;"></canvas>
+      <script src="/js/Chart.min.js"></script>
+      <script type="text/javascript">
+        var ctx = document.getElementById("lineChart");
+        var myChart = new Chart(ctx, {
+          type: "line",
+          data: {
+            labels: ["10/02/2017", "17/02/2017", "24/02/2017"],
+            datasets: [
+              {
+                label: "Puntaje total",
+                data: [65, 59, 80],
+                borderColor: "rgba(80,80,80,1)",
+                fill: false,
+                borderWidth: 5
+              },
+              {
+                label: "Uso del portal",
+                data: [69, 49, 90],
+                borderColor: "rgba(200,10,10,0.4)",
+                fill: false,
+                borderWidth: 2
+              },
+              {
+                label: "Uso de los datos",
+                data: [12, 15, 15],
+                borderColor: "rgba(10,10,200,0.4)",
+                fill: false,
+                borderWidth: 2
+              },
+              {
+                label: "Uso del portal",
+                data: [50, 80, 95],
+                borderColor: "rgba(200,200,10,0.4)",
+                fill: false,
+                borderWidth: 2
+              },
+              {
+                label: "Uso del portal",
+                data: [69, 49, 90],
+                borderColor: "rgba(200,10,10,0.4)",
+                fill: false,
+                borderWidth: 2
+              }
 
+            ]
+          }
+        })
+
+
+      </script>
+    </section>
+  </div>
+  <div class="row">
+    <h2>Valores actuales</h2>
+    <ul>
+      <li class="counter">
+        <span class="value">1</span>
+        <span class="label">Posición</span>
+        <span class="sublabel">Posición anterior: 2</span>
+      </li>
+      <li class="counter">
+        <span class="value">89%</span>
+        <span class="label">Puntaje</span>
+      </li>
+    </ul>
+
+    <h2>Evaluación resumida</h2>
+    Puntajes resumidos para cada uno de los criterios evaluados.
+
+    <table class="score_summary">
+      <thead>
+        <tr>
+          <th style="width: 30%">
+            Criterio
+          </th>
+          <th>
+            Puntaje
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            Uso del portal
+          </td>
+          <td>
+            <div style="background-color: red; width: 90%">&nbsp;</div>90%
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Uso de los datos
+          </td>
+          <td>
+            <div style="background-color: blue; width: 80%">&nbsp;</div>80%
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Calidad de metadatos
+          </td>
+          <td>
+            <div style="background-color: green; width: 100%">&nbsp;</div>100%
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Calidad de datos
+          </td>
+          <td>
+            <div style="background-color: yellow; width: 70%">&nbsp;</div>70%
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="row">
+    <h2>Detalles</h2>
+    <div class="col-md-6">
+      <div class="panel panel-info">
+        <div class="panel-heading">Informe detallado</div>
+        <div class="panel-body">
+          <p>
+            Solicite el informe detallado de errores en este portal de datos. Además del detalle de la evaluación automatizada de recurso, incluye una evaluación manual de la facilidad de uso del portal.
+          </p>
+          <p>
+            <button type="button" class="btn btn-lg btn-info" name="button">Solcitar informe deallado</button>
+            <a href="#">Ver ejemplo</a>
+          </p>
+        </div>
+      </div>
+    </div>
     <div class="col-md-6">
       <dl class="dl-horizontal">
           <dt>Autor:</dt>

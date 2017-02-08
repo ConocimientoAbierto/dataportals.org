@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}
+  Ranking de portales de datos abiertos de gobierno
+{% endblock %}
+
+
+{% block content %}
+<section id="ranking">
+  <div class="row">
+    <h2>Ranking de portales de datos abiertos de gobierno</h2>
+    <p>
+      Febrero 2017
+    </p>
+  </div>
+  <table class="table table-condensed">
+    <thead>
+      <tr>
+        <th class="text-center">Posición</th>
+        <th class="text-center">Nombre</th>
+        <th class="text-center">Evaluación manual
+          <a id="popover-manual" href="javascript:" class="popover-handle" data-toggle="popover" data-trigger="focus" data-placement="top" title="Evaluación manual" data-content="En algunos casos se evaluaron manualmente criterios adicionales. Ver <a href='/metodologia'>metodología</a>.">(?)</a>
+        </th>
+        <th class="text-center">
+          Puntaje
+          <a id="popover-calidad"  href="javascript:" class="popover-handle" data-toggle="popover" data-trigger="focus" data-placement="top" title="Nivel de Calidad" data-content="Se evalúan varios criterios sobre cada conjunto de datos. Ver <a href='/metodologia'>metodología</a>.">(?)</a>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="text-center">
+        <td>1 <span class="glyphicon glyphicon-menu-up text-success" title="Subió desde posición 2"></span></td>
+        <td><a href="/portals/fundacion-conocimiento-abierto">Corte Suprema de Justicia</a></td>
+        <td>Si</td>
+        <td>100%</td>
+      </tr>
+      <tr class="text-center">
+        <td>2 <span class="equal-sign text-default" title="Mantiene posición">=</span></td>
+        <td><a href="/portals/fundacion-conocimiento-abierto">Ministerio de Modernización</a></td>
+        <td>No</td>
+        <td>100%</td>
+      </tr>
+      <tr class="text-center">
+        <td>3 <span class="glyphicon glyphicon-menu-up text-success"  title="Subió desde posición 4"></span></td>
+        <td><a href="/portals/fundacion-conocimiento-abierto">Municipalidad de Córdoba</a></td>
+        <td>Si</td>
+        <td>70%</td>
+      </tr>
+      <tr class="text-center">
+        <td>4 <span class="glyphicon glyphicon-menu-up text-success"  title="Subió desde posición 5"></span></td>
+        <td><a href="/portals/fundacion-conocimiento-abierto">Ciudad de Mendoza</a></td>
+        <td>Si</td>
+        <td>90%</td>
+      </tr>
+      <tr class="text-center">
+        <td>5 <span class="glyphicon glyphicon-menu-down text-danger"  title="Bajó desde posición 3"></span></td>
+        <td><a href="/portals/fundacion-conocimiento-abierto">Gobierno de Jujuy</a></td>
+        <td>No</td>
+        <td>100%</td>
+      </tr>
+      <tr class="text-center">
+        <td></td>
+        <td><a href="/portals/fundacion-conocimiento-abierto">Gobierno de Jujuy</a></td>
+        <td></td>
+        <td>No evaluado
+          <a id="popover-noevaluado" class="popover-handle"  href="javascript:" data-toggle="popover" data-trigger="focus" data-placement="top" title="No evaluado" data-content="Este portal no pudo ser evaluado aún por razones técnicas. Ver <a href='/metodologia'>metodología</a>.">(?)</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="ranking_last_updated">
+    Ranking actualizado el: 25/02/2017
+  </p>
+</div>
+{% endblock %}
