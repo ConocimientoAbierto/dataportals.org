@@ -27,6 +27,7 @@
   <link rel="stylesheet" href="/css/tempStyle.css" >
 </head>
 <body>
+  <a href="#maincontent" style="text-indent: -9000em; display: block; height: 0;">Saltar al contenido</a>
 
 {{ partials.navBar(currentUser) }}
 <!-- /navbar -->
@@ -34,12 +35,66 @@
 {% block hero %}{% endblock %}
 <!-- /hero -->
 
-<main class="container">
+<main class="container" id="maincontent">
   {% if message.length > 0 %}
     {{ partials.flasgMsg(message[0], message[1]) }}
   {% endif %}
   {% block content %}{% endblock %}
 </main><!-- /container -->
+
+<section class="banner">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="panel panel-primary ">
+          <div class="panel-heading">
+            Capacitaciones y consultorías
+          </div>
+          <div class="panel-body">
+
+            <a href="/capacitacion"><span class="glyphicon glyphicon-list" aria-hidden="true"></span></a>
+            <h2><a href="/capacitacion">Mejoremos los portales</a></h2>
+            <p>
+              La Fundación Conocimiento Abierto tiene un compromiso con la apertura de datos abiertos de calidad,
+              desarrollando portales de datos y capacitaciones en organismos comprometidos con la transparencia.
+              Si está interesado en mejorar su portal de datos, conozca nuestras opciones de <a href="/capacitacion">capaciación y consultoría</a>.
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+      <div class="col-md-4">
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            Sume su portal
+          </div>
+          <div class="panel-body">
+            <a href="/sugerir-portal"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+            <h2><a href="/sugerir-portal">Agregar portales</a></h2>
+            <p>
+              Agregamos todos los portales de datos de gobierno que conocemos, si nos faltó alguno escuchamos tus <a href="/sugerir-portal">sugerencias</a>. Buscamos sitios web sobre datos abiertos, gobiernos abierto o transparencia que pertenezcan a alguna organización del estado y ofrezcan archivos para descargar.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            Contáctenos
+          </div>
+          <div class="panel-body">
+            <a href="/contacto"><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span></a>
+            <h2><a href="/contacto">Contacto y colaboración</a></h2>
+            <p>
+              Durante la etapa beta estamos recopilando feedback tanto sobre la metodología como sobre el sitio, estamos abiertos a sus comentarios. <a href="/contacto">Contáctenos</a>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <footer class="footer">
   <div class="container">
@@ -50,6 +105,9 @@
       <a2 href="https://fcabierto.org">
         <img src="/img/logo-ca.png" alt="Conocimiento Avierto Argentina" class="img-responsive center-block footer-logo">
       </a>
+      <p class="text-center">
+        Todos los contenidos se pueden reutilizar citando la fuente y compartiendo con las mismas condiciones CC-BY-SA 4.0
+      </p>
     </div>
   </div>
 </footer>
