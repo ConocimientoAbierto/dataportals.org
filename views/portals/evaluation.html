@@ -26,11 +26,15 @@
                   <span class="text-danger">*</span></h4>
                 <div class="radio">
                   <label class="radio-inline">
-                    <input type="radio" name="oficial_identity" id="oficial_identity1" value="1">
+                    <input type="radio" name="oficial_identity" id="oficial_identity1" value="1"
+                    {% if portal.eval_use.oficial_identity === 1 %} checked {% endif %}
+                    >
                     si
                   </label>
                   <label class="radio-inline">
-                    <input type="radio" name="oficial_identity" id="oficial_identity2" value="0">
+                    <input type="radio" name="oficial_identity" id="oficial_identity2" value="0"
+                    {% if portal.eval_use.oficial_identity === 0 %} checked {% endif %}
+                    >
                     no
                   </label>
                 </div>
@@ -44,11 +48,15 @@
                   <span class="text-danger">*</span></h4>
                 <div class="radio">
                   <label class="radio-inline">
-                    <input type="radio" name="link_oficial_site" id="link_oficial_site1" value="1">
+                    <input type="radio" name="link_oficial_site" id="link_oficial_site1" value="1"
+                    {% if portal.eval_use.link_oficial_site === 1 %} checked {% endif %}
+                    >
                     si
                   </label>
                   <label class="radio-inline">
-                    <input type="radio" name="link_oficial_site" id="link_oficial_site2" value="0">
+                    <input type="radio" name="link_oficial_site" id="link_oficial_site2" value="0"
+                    {% if portal.eval_use.link_oficial_site === 0 %} checked {% endif %}
+                    >
                     no
                   </label>
                 </div>
@@ -62,11 +70,15 @@
                   <span class="text-danger">*</span></h4>
                 <div class="radio">
                   <label class="radio-inline">
-                    <input type="radio" name="open_data_exp" id="open_data_exp1" value="1">
+                    <input type="radio" name="open_data_exp" id="open_data_exp1" value="1"
+                    {% if portal.eval_use.open_data_exp === 1 %} checked {% endif %}
+                    >
                     si
                   </label>
                   <label class="radio-inline">
-                    <input type="radio" name="open_data_exp" id="open_data_exp2" value="0">
+                    <input type="radio" name="open_data_exp" id="open_data_exp2" value="0"
+                    {% if portal.eval_use.open_data_exp === 0 %} checked {% endif %}
+                    >
                     no
                   </label>
                 </div>
@@ -81,11 +93,15 @@
                   <span class="text-danger">*</span></h4>
                 <div class="radio">
                   <label class="radio-inline">
-                    <input type="radio" name="all_dataset_link" id="all_dataset_link1" value="1">
+                    <input type="radio" name="all_dataset_link" id="all_dataset_link1" value="1"
+                    {% if portal.eval_use.all_dataset_link === 1 %} checked {% endif %}
+                    >
                     si
                   </label>
                   <label class="radio-inline">
-                    <input type="radio" name="all_dataset_link" id="all_dataset_link2" value="0">
+                    <input type="radio" name="all_dataset_link" id="all_dataset_link2" value="0"
+                    {% if portal.eval_use.all_dataset_link === 0 %} checked {% endif %}
+                    >
                     no
                   </label>
                 </div>
@@ -100,11 +116,14 @@
                   <span class="text-danger">*</span></h4>
                 <div class="radio">
                   <label class="radio-inline">
-                    <input type="radio" name="dataset_search_system" id="dataset_search_system1" value="1">
+                    <input type="radio" name="dataset_search_system" id="dataset_search_system1" value="1"
+                    {% if portal.eval_use.dataset_search_system === 1 %} checked {% endif %}>
                     si
                   </label>
                   <label class="radio-inline">
-                    <input type="radio" name="dataset_search_system" id="dataset_search_system2" value="0">
+                    <input type="radio" name="dataset_search_system" id="dataset_search_system2" value="0"
+                    {% if portal.eval_use.dataset_search_system === 0 %} checked {% endif %}
+                    >
                     no
                   </label>
                 </div>
@@ -126,11 +145,15 @@
                   <span class="text-danger">*</span></h4>
                 <div class="radio">
                   <label class="radio-inline">
-                    <input type="radio" name="existence_api" id="existence_api1" value="1">
+                    <input type="radio" name="existence_api" id="existence_api1" value="1"
+                    {% if portal.eval_uses_easiness.existence_api === 1 %} checked {% endif %}
+                    >
                     si
                   </label>
                   <label class="radio-inline">
-                    <input type="radio" name="existence_api" id="existence_api2" value="0">
+                    <input type="radio" name="existence_api" id="existence_api2" value="0"
+                    {% if portal.eval_uses_easiness.existence_api === 0 %} checked {% endif %}
+                    >
                     no
                   </label>
                 </div>
@@ -144,11 +167,15 @@
                   <span class="text-danger">*</span></h4>
                 <div class="radio">
                   <label class="radio-inline">
-                    <input type="radio" name="api_documentation" id="api_documentation1" value="1">
+                    <input type="radio" name="api_documentation" id="api_documentation1" value="1"
+                    {% if portal.eval_uses_easiness.api_documentation === 1 %} checked {% endif %}
+                    >
                     si
                   </label>
                   <label class="radio-inline">
-                    <input type="radio" name="api_documentation" id="api_documentation2" value="0">
+                    <input type="radio" name="api_documentation" id="api_documentation2" value="0"
+                    {% if portal.eval_uses_easiness.api_documentation === 0 %} checked {% endif %}
+                    >
                     no
                   </label>
                 </div>

@@ -62,7 +62,6 @@ app.use(function(req, res, next) {
   res.locals.message     = req.flash('message');
   res.locals._csrf       = req.csrfToken();
   res.locals.formErr     = req.flash('formErr')[0];
-  console.log(req.body);
   next();
 });
 

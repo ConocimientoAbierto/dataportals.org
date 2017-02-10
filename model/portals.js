@@ -45,11 +45,11 @@ const portalSchema = new Schema({
     existence_api: Number,
     api_documentation: Number
   },
-  manaul_evaluation_done: {
+  portal_evaluation: {
     type: Boolean,
     default: false
   },
-  automatic_evaluation_done: {
+  datasets_evaluation: {
     type: Boolean,
     default: false
   },
@@ -61,8 +61,6 @@ const portalSchema = new Schema({
     type: Boolean,
     required: true
   }
-  // user_created: Schema.Types.ObjectId,
-  // user_updated: Schema.Types.ObjectId,
 }, {
   timestamps: {createdAt: 'created_at', updatedAt: 'updated_at'}
 });

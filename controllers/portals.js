@@ -128,9 +128,9 @@ exports.saveManualEvaluationView = (req, res) => {
     portal.eval_uses_easiness = {
       existence_api: req.body.existence_api,
       api_documentation: req.body.api_documentation
-    }
+    };
 
-    portal.manaul_evaluation_done = true;
+    portal.portal_evaluation = true;
 
     portal.save((err, portal) => {
       if(err) return res.status(500).send(err.message);
