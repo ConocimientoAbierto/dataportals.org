@@ -34,9 +34,16 @@ const requestPromise = (url, json) => {
   });
 };
 
+const getDatasetsCount = (apiUrl) => {
+  return requestPromise(apiUrl, true)
+    .then( (data) => data.result.count );
+};
+
 const getPortalWithDatasetsList = (portalObj, query) => {
   const url = setApiUrl(portalObj.url, query);
-  return requestPromise(url, true)
+  // two request needed to get all datasets. Ckan API limit amount of datasets returned to 10
+  return getDatasetsCount(url+0)
+    .then( (datasetsCount) => requestPromise(url+datasetsCount, true))
     .then( (data) => {
       const newPortalObj = {
         portal_slug: portalObj.slug,
@@ -109,7 +116,7 @@ const evaluateDatasets = (portalObj) => {
     let report = {
       portal_slug: portalObj.portal_slug,
       total_score: null, // average of uses_dataset_cuality_score, metadata_score, resource_validity
-      datasets: [datasets]
+      datasets: datasets
     };
 
     resolve(report);
@@ -239,7 +246,7 @@ exports.makeAutomaticEvaluation = (req, res) => {
   const portalPromise = Portal.findBySlug(req.params.slug).exec();
   portalPromise
     .then((portal) => setPortalObject(portal))
-    .then((portalObj) => getPortalWithDatasetsList(portalObj, 'package_search'))
+    .then((portalObj) => getPortalWithDatasetsList(portalObj, 'package_search?rows='))
     .then((portalObj) => evaluateDatasets(portalObj))
     .then((evaluation) => {
       res.send(evaluation);
