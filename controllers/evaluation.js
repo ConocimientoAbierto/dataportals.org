@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const request = require('request');
 const Portal = mongoose.model('Portal');
 
-const setCkanClient = (portal) => {
+const setPortalObject = (portal) => {
   return {
     slug: portal.slug,
     url: portal.url
@@ -87,6 +87,7 @@ const evaluateDatasets = (portalObj) => {
           name: resource.name,
           url: resource.url,
           evaluable: resource.format.toLowerCase() === 'csv',
+          format: resource.format.toLowerCase(),
           validity: null,
           errors_count: null,
         };
@@ -114,6 +115,7 @@ const evaluateDatasets = (portalObj) => {
     resolve(report);
   });
 };
+
 const averageCriteria = (criteriaObject) => {
   let sum = 0;
   let criteriaCount = 0;
@@ -127,7 +129,7 @@ const averageCriteria = (criteriaObject) => {
 };
 
 const hasDescription = (dataset) => {
-  return dataset.notes ? 1 : 0;
+  return  dataset.notes && dataset.notes.length >= 150 ? 1 : 0;
 };
 
 const hasResponsable = (dataset) => {
@@ -236,7 +238,7 @@ const _getExtraField = (extras, searchArray) => {
 exports.makeAutomaticEvaluation = (req, res) => {
   const portalPromise = Portal.findBySlug(req.params.slug).exec();
   portalPromise
-    .then((portal) => setCkanClient(portal))
+    .then((portal) => setPortalObject(portal))
     .then((portalObj) => getPortalWithDatasetsList(portalObj, 'package_search'))
     .then((portalObj) => evaluateDatasets(portalObj))
     .then((evaluation) => {
