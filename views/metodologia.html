@@ -176,8 +176,8 @@
             <p>
               Estos criterios aplican a cada conjunto de datos y sus recursos, y sus valores son promediados para calcular el puntaje general del portal.
             </p>
-            <!-- <h3>Criterios de facilidad de uso de los datos</h3> -->
-            <!-- <div class="panel panel-default">
+            <h3>Criterios de calidad de metadatos</h3>
+            <div class="panel panel-default">
               <div class="panel-heading" role="tab" id="encabezado-criterio-uso-datos-1">
                 <h4 class="panel-title">
                   Explicación de los datasets (manual)
@@ -187,12 +187,14 @@
                 <p>
                   Cada conjunto de datos debe tener una descripción que explique el contenido de los campos, acrónimos, abreviaciones y cualquier otra aclaración necesaria para comprender el sentido de los datos y facilitar su reutilización.
                 </p>
+                <p>
+                  La descripción debe estar presente como campo de metadatos y tener una longitud superior a los 150 caracteres.
+                </p>
               </div>
               <div class="panel-footer">
                 Valores: 1 si cumple, 0 si no cumple.
               </div>
-            </div> -->
-            <h3>Criterios de calidad de metadatos</h3>
+            </div>
             <div class="panel panel-default">
               <div class="panel-heading" role="tab" id="encabezado-criterio-metadatos-1">
                 <h4 class="panel-title">
@@ -203,9 +205,12 @@
                 <p>
                   Los metadatos del conjunto de datos deben expresar un responsable para los mismos, esto incrementa la confiabilidad y facilita la retroalimentación.
                 </p>
+                <p>
+                  La dirección de correo electrónico del responsable debe estar publicada.
+                </p>
               </div>
               <div class="panel-footer">
-                Valores: 1 si cumple, 0 si no cumple.
+                Valores: 1 si incluye email, 0.5 si está presente, 0 si no está presente.
               </div>
             </div>
             <div class="panel panel-default">
@@ -217,6 +222,9 @@
               <div class="panel-body">
                 <p>
                   Los metadatos del conjunto de datos deben definir una expectativa para la actualización de los datos, esto aumenta la confiabilidad y permite planificar análisis periódicos.
+                </p>
+                <p>
+                  La frecuencia de actualización no debe decir "a demanda", "eventual" o ser inespecífica en algún otro sentido.
                 </p>
               </div>
               <div class="panel-footer">
@@ -234,7 +242,9 @@
                   El tiempo transcurrido desde la última fecha de actualización no debe ser superior a la frecuencia de actualización declarado. Los datos actualizados permiten realizar análisis con información más reciente.
                 </p>
               </div>
-            </div>
+              <div class="panel-footer">
+                Valores: 1 si cumple, 0 si no cumple.
+              </div>            </div>
             <div class="panel panel-default">
               <div class="panel-heading" role="tab" id="encabezado-criterio-metadatos-4">
                 <h4 class="panel-title">
@@ -334,7 +344,7 @@
         Si bien la metodología narrada coincide exactamente con la implementada en código, para facilitar el análisis a las personas más técnicas, dejamos aquí un enlace a la versión de producción del código fuente de la implementación del sistema de evaluación.
       </p>
       <p>
-        <a href="#">evaluacion.js en github</a>        
+        <a href="#">evaluacion.js en github</a>
       </p>
     </div>
   </div>

@@ -56,32 +56,28 @@ const evaluateDatasets = (portalObj) => {
       let datasetEval = {
         name: dataset.name,
         title: dataset.title,
-        dataset_uses_easiness_result: 0, // averange dataset_uses_easiness_criteria
-        dataset_uses_easiness_criteria: {
-          dataset_explanation: 0,
+        metadata_result: null, // average metadata_criteria
+        metadata_criteria: {
+          dataset_explanation: null,
+          responsable: null,
+          update_frequency: null,
+          actual_update_frequency: null,
+          licence: null,
+          format: null
         },
-        metadata_cuality_result: 0, // averange metadata_cuality_criteria
-        metadata_cuality_criteria: {
-          dataset_explanation: 0,
-          responsable: 0,
-          update_frequency: 0,
-          actual_update_frequency: 0,
-          licence: 0,
-          format: 0
-        },
-        resources_validity_result: 0,
+        resources_result: null,
         resources_count: dataset.num_resources,
         resources: []
       };
 
       // dataset_uses_easiness_criteria
-      datasetEval.dataset_uses_easiness_criteria.dataset_explanation = hasDescription(dataset);
-      // metadata_cuality_criteria
-      datasetEval.metadata_cuality_criteria.responsable = hasResponsable(dataset);
-      datasetEval.metadata_cuality_criteria.update_frequency = hasUpdateFrequency(dataset.extras);
-      datasetEval.metadata_cuality_criteria.actual_update_frequency = hasValidActualUpdateFrecuency(dataset, datasetEval.metadata_cuality_criteria.update_frequency);
-      datasetEval.metadata_cuality_criteria.licence = hasValidLicence(dataset.license_id);
-      datasetEval.metadata_cuality_criteria.format = hasValidFormat(dataset.resources);
+      datasetEval.metadata_criteria.dataset_explanation = hasDescription(dataset);
+      // metadata_criteria
+      datasetEval.metadata_criteria.responsable = hasResponsable(dataset);
+      datasetEval.metadata_criteria.update_frequency = hasUpdateFrequency(dataset.extras);
+      datasetEval.metadata_criteria.actual_update_frequency = hasValidActualUpdateFrecuency(dataset, datasetEval.metadata_criteria.update_frequency);
+      datasetEval.metadata_criteria.licence = hasValidLicence(dataset.license_id);
+      datasetEval.metadata_criteria.format = hasValidFormat(dataset.resources);
 
       // resources
       const resources = dataset.resources.reduce((resources, resource) => {
@@ -91,8 +87,8 @@ const evaluateDatasets = (portalObj) => {
           name: resource.name,
           url: resource.url,
           evaluable: resource.format.toLowerCase() === 'csv',
-          validity: false,
-          errors_count: 0,
+          validity: null,
+          errors_count: null,
         };
 
         resources.push(resourceEval);
@@ -101,10 +97,9 @@ const evaluateDatasets = (portalObj) => {
 
       datasetEval.resources = resources;
 
-      // averange points of each category
-      datasetEval.uses_dataset_cuality_result = averangeCriteria(datasetEval.uses_dataset_cuality_criteria);
-      datasetEval.metadata_cuality_result = averangeCriteria(datasetEval.metadata_cuality_criteria);
-      datasetEval.resources_validity_result = 0;
+      // average score of each category
+      datasetEval.metadata_result = averageCriteria(datasetEval.metadata_criteria);
+      datasetEval.resources_result = null;
 
       datasets.push(datasetEval);
       return datasets;
@@ -112,14 +107,14 @@ const evaluateDatasets = (portalObj) => {
 
     let report = {
       portal_slug: portalObj.portal_slug,
-      total_points: 0, // average of uses_dataset_cuality_points, metadata_cuality_points, resource_validity
+      total_score: null, // average of uses_dataset_cuality_score, metadata_score, resource_validity
       datasets: [datasets]
     };
 
     resolve(report);
   });
 };
-const averangeCriteria = (criteriaObject) => {
+const averageCriteria = (criteriaObject) => {
   let sum = 0;
   let criteriaCount = 0;
 
@@ -136,7 +131,7 @@ const hasDescription = (dataset) => {
 };
 
 const hasResponsable = (dataset) => {
-  let points = 0;
+  let score = 0;
   const res = dataset.maintainer;
   const res_mail = dataset.maintainer_email;
   const author = dataset.author;
@@ -144,11 +139,11 @@ const hasResponsable = (dataset) => {
   const email_regex = new RegExp('(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)');
 
   if ( (res && email_regex.test(res_mail)) || (author && email_regex.test(author_mail)) )
-    points = 1;
+    score = 1;
   else if (res || author)
-    points = 0.5;
+    score = 0.5;
 
-  return points;
+  return score;
 };
 
 const hasUpdateFrequency = (datasetExtras) => {
@@ -179,9 +174,9 @@ const hasUpdateFrequency = (datasetExtras) => {
   return hasValidFrecuency === -1 ? 0 : 1;
 };
 
-const hasValidActualUpdateFrecuency = (dataset, updateFrequencyPoints) => {
+const hasValidActualUpdateFrecuency = (dataset, updateFrequencyScore) => {
   // if the update frecuency is not informed = 0
-  if (updateFrequencyPoints === 0) return 0;
+  if (updateFrequencyScore === 0) return 0;
 
   const frecuencyFields = ['frecuency', 'accrualperiodicity'];
   const validFrecuency = {
@@ -247,5 +242,5 @@ exports.makeAutomaticEvaluation = (req, res) => {
     .then((evaluation) => {
       res.send(evaluation);
     })
-    .catch((err) => console.log('error buscando listado: ', err));
+    .catch((err) => console.log('error buscando listado de datasets en '+portal.url+': ', err));
 };

@@ -171,13 +171,312 @@
   </div>
   <div class="row">
     <h2>Detalles</h2>
-    <div class="col-md-6">
-        <img src="http://placekitten.com/150/150" alt="img-responsive">
-        <h2>Description</h2>
-        {{ portal.description }}
+    <div class="col-md-12">
+      <div class="panel panel-info">
+        <div class="panel-heading">Informe detallado por conjunto de datos</div>
+
+        <div class="panel-body">
+          {% if currentUser.role != 'admin' and currentUser.role != 'evaluator' %}
+          <p>
+            Solicite el informe detallado de errores en este portal de datos. Además del detalle de la evaluación automatizada de recurso, incluye una evaluación manual de la facilidad de uso del portal.
+          </p>
+          <p>
+            <button type="button" class="btn btn-lg btn-info" name="button">Solcitar informe deallado</button>
+            <a href="#">Ver ejemplo</a>
+          </p>
+          {% else %}
+          <table class="resources-table">
+            <thead>
+              <tr>
+                <th class="resource-name">
+                  Recurso
+                </th>
+                <th>
+                  Formato
+                </th>
+                <th>
+                  Evaluable
+                </th>
+                <th>
+                  Válido
+                </th>
+                <th>
+                  Errores
+                </th>
+                <th>
+                  Fuente
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="resource-name">
+                  Listado de víctimas del accionar represivo ilegal sin denuncia formal
+
+                </td>
+                <td class="resource-ok">
+                  CSV
+                </td>
+                <td class="resource-ok">
+                  Si
+                </td>
+                <td class="resource-error">
+                  No
+                </td>
+                <td class="resource-error">
+                  10
+                  <a href="http://goodtables.okfnlabs.org/reports?data_url=https://data.wprdc.org/dataset/5934b8d1-892f-4fd7-84c1-aa890d3ff529/resource/a61b6617-2f06-4745-8731-165139d41667/download/opendata-pubworks---field-listing-22015.csv&format=csv&encoding=&schema_url=">
+                    Ver detalles
+                  </a>
+                </td>
+                <td>
+                  <a href="#">Ver original</a>
+                </td>
+              </tr>
+              <tr>
+                <td class="resource-name">
+                  Listado de víctimas del accionar represivo ilegal sin denuncia formal
+
+                </td>
+                <td class="resource-error">
+                  PDF
+                </td>
+                <td class="resource-error">
+                  No
+                </td>
+                <td class="resource-error">
+
+                </td>
+                <td class="resource-error">
+                </td>
+                <td>
+                  <a href="#">Ver original</a>
+                </td>
+              </tr>
+              <tr>
+                <td class="resource-name">
+                  Listado de víctimas del accionar represivo ilegal sin denuncia formal
+
+                </td>
+                <td class="resource-ok">
+                  CSV
+                </td>
+                <td class="resource-ok">
+                  Si
+                </td>
+                <td class="resource-ok">
+                  Si
+                </td>
+                <td class="resource-ok">
+                  0
+                  <a href="http://goodtables.okfnlabs.org/reports?data_url=https://data.wprdc.org/dataset/5934b8d1-892f-4fd7-84c1-aa890d3ff529/resource/a61b6617-2f06-4745-8731-165139d41667/download/opendata-pubworks---field-listing-22015.csv&format=csv&encoding=&schema_url=">
+                    Ver detalle
+                  </a>
+                </td>
+                <td>
+                  <a href="#">Ver original</a>
+                </td>
+              </tr>
+              <tr>
+                <td class="resource-name">
+                  Listado de víctimas del accionar represivo ilegal sin denuncia formal
+
+                </td>
+                <td class="resource-ok">
+                  CSV
+                </td>
+                <td class="resource-ok">
+                  Si
+                </td>
+                <td class="resource-error">
+                  No
+                </td>
+                <td class="resource-error">
+                  10
+                  <a href="http://goodtables.okfnlabs.org/reports?data_url=https://data.wprdc.org/dataset/5934b8d1-892f-4fd7-84c1-aa890d3ff529/resource/a61b6617-2f06-4745-8731-165139d41667/download/opendata-pubworks---field-listing-22015.csv&format=csv&encoding=&schema_url=">
+                    Ver detalles
+                  </a>
+                </td>
+                <td>
+                  <a href="#">Ver original</a>
+                </td>
+              </tr>
+              <tr>
+                <td class="resource-name">
+                  Listado de víctimas del accionar represivo ilegal sin denuncia formal
+
+                </td>
+                <td class="resource-ok">
+                  CSV
+                </td>
+                <td class="resource-ok">
+                  Si
+                </td>
+                <td class="resource-error">
+                  No
+                </td>
+                <td class="resource-error">
+                  10
+                  <a href="http://goodtables.okfnlabs.org/reports?data_url=https://data.wprdc.org/dataset/5934b8d1-892f-4fd7-84c1-aa890d3ff529/resource/a61b6617-2f06-4745-8731-165139d41667/download/opendata-pubworks---field-listing-22015.csv&format=csv&encoding=&schema_url=">
+                    Ver detalles
+                  </a>
+                </td>
+                <td>
+                  <a href="#">Ver original</a>
+                </td>
+              </tr>
+              <tr>
+                <td class="resource-name">
+                  Listado de víctimas del accionar represivo ilegal sin denuncia formal
+
+                </td>
+                <td class="resource-ok">
+                  CSV
+                </td>
+                <td class="resource-ok">
+                  Si
+                </td>
+                <td class="resource-error">
+                  No
+                </td>
+                <td class="resource-error">
+                  10
+                  <a href="http://goodtables.okfnlabs.org/reports?data_url=https://data.wprdc.org/dataset/5934b8d1-892f-4fd7-84c1-aa890d3ff529/resource/a61b6617-2f06-4745-8731-165139d41667/download/opendata-pubworks---field-listing-22015.csv&format=csv&encoding=&schema_url=">
+                    Ver detalles
+                  </a>
+                </td>
+                <td>
+                  <a href="#">Ver original</a>
+                </td>
+              </tr>
+              <tr>
+                <td class="resource-name">
+                  Listado de víctimas del accionar represivo ilegal sin denuncia formal
+
+                </td>
+                <td class="resource-ok">
+                  CSV
+                </td>
+                <td class="resource-ok">
+                  Si
+                </td>
+                <td class="resource-error">
+                  No
+                </td>
+                <td class="resource-error">
+                  10
+                  <a href="http://goodtables.okfnlabs.org/reports?data_url=https://data.wprdc.org/dataset/5934b8d1-892f-4fd7-84c1-aa890d3ff529/resource/a61b6617-2f06-4745-8731-165139d41667/download/opendata-pubworks---field-listing-22015.csv&format=csv&encoding=&schema_url=">
+                    Ver detalle
+                  </a>
+                </td>
+                <a href="http://goodtables.okfnlabs.org/reports?data_url=https://data.wprdc.org/dataset/5934b8d1-892f-4fd7-84c1-aa890d3ff529/resource/a61b6617-2f06-4745-8731-165139d41667/download/opendata-pubworks---field-listing-22015.csv&format=csv&encoding=&schema_url=">
+                  Ver detalles
+                </a>
+              </tr>
+              <tr>
+                <td class="resource-name">
+                  Listado de víctimas del accionar represivo ilegal sin denuncia formal
+
+                </td>
+                <td class="resource-ok">
+                  CSV
+                </td>
+                <td class="resource-ok">
+                  Si
+                </td>
+                <td class="resource-error">
+                  No
+                </td>
+                <td class="resource-error">
+                  10
+                  <a href="http://goodtables.okfnlabs.org/reports?data_url=https://data.wprdc.org/dataset/5934b8d1-892f-4fd7-84c1-aa890d3ff529/resource/a61b6617-2f06-4745-8731-165139d41667/download/opendata-pubworks---field-listing-22015.csv&format=csv&encoding=&schema_url=">
+                    Ver detalles
+                  </a>
+                </td>
+                <td>
+                  <a href="#">Ver original</a>
+                </td>
+              </tr>
+              <tr>
+                <td class="resource-name">
+                  Listado de víctimas del accionar represivo ilegal sin denuncia formal
+
+                </td>
+                <td class="resource-ok">
+                  CSV
+                </td>
+                <td class="resource-ok">
+                  Si
+                </td>
+                <td class="resource-error">
+                  No
+                </td>
+                <td class="resource-error">
+                  10
+                  <a href="http://goodtables.okfnlabs.org/reports?data_url=https://data.wprdc.org/dataset/5934b8d1-892f-4fd7-84c1-aa890d3ff529/resource/a61b6617-2f06-4745-8731-165139d41667/download/opendata-pubworks---field-listing-22015.csv&format=csv&encoding=&schema_url=">
+                    Ver detalles
+                  </a>
+                </td>
+                <td>
+                  <a href="#">Ver original</a>
+                </td>
+              </tr>
+              <tr>
+                <td class="resource-name">
+                  Listado de víctimas del accionar represivo ilegal sin denuncia formal
+
+                </td>
+                <td class="resource-ok">
+                  CSV
+                </td>
+                <td class="resource-ok">
+                  Si
+                </td>
+                <td class="resource-error">
+                  No
+                </td>
+                <td class="resource-error">
+                  10
+                  <a href="http://goodtables.okfnlabs.org/reports?data_url=https://data.wprdc.org/dataset/5934b8d1-892f-4fd7-84c1-aa890d3ff529/resource/a61b6617-2f06-4745-8731-165139d41667/download/opendata-pubworks---field-listing-22015.csv&format=csv&encoding=&schema_url=">
+                    Ver detalles
+                  </a>
+                </td>
+                <td>
+                  <a href="#">Ver original</a>
+                </td>
+              </tr>
+              <tr>
+                <td class="resource-name">
+                  Listado de víctimas del accionar represivo ilegal sin denuncia formal
+
+                </td>
+                <td class="resource-ok">
+                  CSV
+                </td>
+                <td class="resource-ok">
+                  Si
+                </td>
+                <td class="resource-error">
+                  No
+                </td>
+                <td class="resource-error">
+                  10
+                  <a href="http://goodtables.okfnlabs.org/reports?data_url=https://data.wprdc.org/dataset/5934b8d1-892f-4fd7-84c1-aa890d3ff529/resource/a61b6617-2f06-4745-8731-165139d41667/download/opendata-pubworks---field-listing-22015.csv&format=csv&encoding=&schema_url=">
+                    Ver detalles
+                  </a>
+                </td>
+                <td>
+                  <a href="#">Ver original</a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          {% endif %}
+        </div>
+      </div>
     </div>
 
-    <div class="col-md-6">
+    <div class="col-md-12">
       <dl class="dl-horizontal">
           <dt>Autor:</dt>
           <dd>{{ portal.author }}</a></dd>
@@ -247,6 +546,9 @@
           </dd>
       </dl>
       {% if currentUser.role === 'admin' %}
+      <div class="btn-inline">
+        <a class="btn btn-primary" href="/portals/evaluate/{{portal.slug}}" role="button">Re-evaluar</a>
+      </div>
       <div class="btn-inline">
         <a class="btn btn-primary" href="/portals/edit/{{portal.slug}}" role="button">Editar Portal</a>
         <form action="/portals/{{portal.slug}}" method="POST">

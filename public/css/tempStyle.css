@@ -182,6 +182,40 @@ ul.navbar-nav {
   font-weight: bold;
 }
 
+.resources-table {
+  width: 100%;
+  border-spacing: 2px;
+  border-collapse: separate;
+}
+
+.resources-table a:link {
+  color: white;
+  text-decoration: underline;
+}
+
+.resources-table a:visied {
+  color: #eef;
+}
+
+.resources-table th:not(.resource-name),
+.resources-table td:not(.resource-name) {
+  text-align: center;
+}
+
+
+.resource-ok {
+  background-color: #45BFA5;
+  color: white;
+  font-weight: bold;
+}
+
+.resource-error {
+  background-color: #BF6E42;
+  color: white;
+  font-weight: bold;
+}
+
+
 .banner {
   border-top: 1px solid;
   border-color: #95b3e7;
