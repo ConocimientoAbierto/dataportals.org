@@ -138,3 +138,14 @@ exports.saveManualEvaluationView = (req, res) => {
     });
   });
 };
+
+
+/** DETAIL **/
+// GET - Detail View
+exports.renderDetailView = (req, res) => {
+  Portal.findBySlug(req.params.slug, (err, portal) => {
+    if (err) return res.status(500).send(err.message);
+
+    res.render('portals/view-detail.html', {'portal': portal});
+  });
+};

@@ -4,25 +4,29 @@
 <div class="jumbotron jumbotron-home">
   <div class="background-blur">
     <div class="container">
-      <h1>Ranking de Portales de Datos</h1>
+      <h1>Ranking de portales de datos [beta]</h1>
       <p>
-        Los portales de datos de gobierno deben contener información fácil de reutilizar por parte de analistas, periodistas, organizaciones y ciudadanos.
+        Los portales de datos abiertos deben contener información fácil de reutilizar por parte de analistas, periodistas, organizaciones y ciudadanos. Evaluamos portales de gobiernos municipales, provinciales y organismos nacionales de los tres poderes del estado argentino.
       </p>
-      <ul class="overview">
-        <li class="counter">
-          <span class="value">16</span>
-          <span class="label">portales evaluados</span>
-        </li>
-        <li class="counter">
-          <span class="value">326</span>
-          <span class="label">conjuntos de datos</span>
-        </li>
-        <li class="counter">
-          <span class="value">1421</span>
-          <span class="label">recursos válidos</span>
-        </li>
-      </ul>
+      <p>
+        El puntaje de cada portal se calcula de acuerdo a varios criterios detallados en nuestra <a href="/metodologia">metodología</a>.
+      </p>
+
     </div>
+    <ul class="overview row">
+      <li class="counter col-md-2 col-sm-12 col-md-offset-2">
+        <span class="value">16</span>
+        <span class="label">portales evaluados</span>
+      </li>
+      <li class="counter col-md-3 col-sm-12">
+        <span class="value">326</span>
+        <span class="label">conjuntos de datos</span>
+      </li>
+      <li class="counter col-md-3 col-sm-12">
+        <span class="value">1421</span>
+        <span class="label">recursos válidos</span>
+      </li>
+    </ul>
   </div>
 </div>
 {% endblock %}
@@ -30,14 +34,14 @@
 {% block content %}
 <section id="ranking">
   <div class="row">
-    <h2>Los mejores 10 de portales de febrero 2017</h2>
+    <h2>Los mejores portales de febrero 2017</h2>
   </div>
   <div class="row">
     <table class="table table-condensed">
       <thead>
         <tr>
           <th class="text-center">Posición</th>
-          <th class="text-center">Nombre</th>
+          <th class="text-center">Portal</th>
           <th class="text-center">Evaluación manual
             <a id="popover-manual" href="javascript:" class="popover-handle" data-toggle="popover" data-trigger="focus" data-placement="top" title="Evaluación manual" data-content="En algunos casos se evaluaron manualmente criterios adicionales. Ver <a href='/metodologia'>metodología</a>.">(?)</a>
           </th>
@@ -48,6 +52,186 @@
         </tr>
       </thead>
       <tbody>
+        <tr class="text-center">
+          <td>1 <span class="glyphicon glyphicon-menu-up text-success" title="Subió desde posición 2"></span></td>
+          <td><a href="/portals/fundacion-conocimiento-abierto">Corte Suprema de Justicia</a></td>
+          <td>Si</td>
+          <td>100%</td>
+        </tr>
+        <tr class="text-center">
+          <td>2 <span class="equal-sign text-default" title="Mantiene posición">=</span></td>
+          <td><a href="/portals/fundacion-conocimiento-abierto">Ministerio de Modernización</a></td>
+          <td>No</td>
+          <td>100%</td>
+        </tr>
+        <tr class="text-center">
+          <td>3 <span class="glyphicon glyphicon-menu-up text-success"  title="Subió desde posición 4"></span></td>
+          <td><a href="/portals/fundacion-conocimiento-abierto">Municipalidad de Córdoba</a></td>
+          <td>Si</td>
+          <td>70%</td>
+        </tr>
+        <tr class="text-center">
+          <td>4 <span class="glyphicon glyphicon-menu-up text-success"  title="Subió desde posición 5"></span></td>
+          <td><a href="/portals/fundacion-conocimiento-abierto">Ciudad de Mendoza</a></td>
+          <td>Si</td>
+          <td>90%</td>
+        </tr>
+        <tr class="text-center">
+          <td>5 <span class="glyphicon glyphicon-menu-down text-danger"  title="Bajó desde posición 3"></span></td>
+          <td><a href="/portals/fundacion-conocimiento-abierto">Gobierno de Jujuy</a></td>
+          <td>No</td>
+          <td>100%</td>
+        </tr>
+        <tr class="text-center">
+          <td>1 <span class="glyphicon glyphicon-menu-up text-success" title="Subió desde posición 2"></span></td>
+          <td><a href="/portals/fundacion-conocimiento-abierto">Corte Suprema de Justicia</a></td>
+          <td>Si</td>
+          <td>100%</td>
+        </tr>
+        <tr class="text-center">
+          <td>2 <span class="equal-sign text-default" title="Mantiene posición">=</span></td>
+          <td><a href="/portals/fundacion-conocimiento-abierto">Ministerio de Modernización</a></td>
+          <td>No</td>
+          <td>100%</td>
+        </tr>
+        <tr class="text-center">
+          <td>3 <span class="glyphicon glyphicon-menu-up text-success"  title="Subió desde posición 4"></span></td>
+          <td><a href="/portals/fundacion-conocimiento-abierto">Municipalidad de Córdoba</a></td>
+          <td>Si</td>
+          <td>70%</td>
+        </tr>
+        <tr class="text-center">
+          <td>4 <span class="glyphicon glyphicon-menu-up text-success"  title="Subió desde posición 5"></span></td>
+          <td><a href="/portals/fundacion-conocimiento-abierto">Ciudad de Mendoza</a></td>
+          <td>Si</td>
+          <td>90%</td>
+        </tr>
+        <tr class="text-center">
+          <td>5 <span class="glyphicon glyphicon-menu-down text-danger"  title="Bajó desde posición 3"></span></td>
+          <td><a href="/portals/fundacion-conocimiento-abierto">Gobierno de Jujuy</a></td>
+          <td>No</td>
+          <td>100%</td>
+        </tr>
+        <tr class="text-center">
+          <td>1 <span class="glyphicon glyphicon-menu-up text-success" title="Subió desde posición 2"></span></td>
+          <td><a href="/portals/fundacion-conocimiento-abierto">Corte Suprema de Justicia</a></td>
+          <td>Si</td>
+          <td>100%</td>
+        </tr>
+        <tr class="text-center">
+          <td>2 <span class="equal-sign text-default" title="Mantiene posición">=</span></td>
+          <td><a href="/portals/fundacion-conocimiento-abierto">Ministerio de Modernización</a></td>
+          <td>No</td>
+          <td>100%</td>
+        </tr>
+        <tr class="text-center">
+          <td>3 <span class="glyphicon glyphicon-menu-up text-success"  title="Subió desde posición 4"></span></td>
+          <td><a href="/portals/fundacion-conocimiento-abierto">Municipalidad de Córdoba</a></td>
+          <td>Si</td>
+          <td>70%</td>
+        </tr>
+        <tr class="text-center">
+          <td>4 <span class="glyphicon glyphicon-menu-up text-success"  title="Subió desde posición 5"></span></td>
+          <td><a href="/portals/fundacion-conocimiento-abierto">Ciudad de Mendoza</a></td>
+          <td>Si</td>
+          <td>90%</td>
+        </tr>
+        <tr class="text-center">
+          <td>5 <span class="glyphicon glyphicon-menu-down text-danger"  title="Bajó desde posición 3"></span></td>
+          <td><a href="/portals/fundacion-conocimiento-abierto">Gobierno de Jujuy</a></td>
+          <td>No</td>
+          <td>100%</td>
+        </tr>
+        <tr class="text-center">
+          <td>1 <span class="glyphicon glyphicon-menu-up text-success" title="Subió desde posición 2"></span></td>
+          <td><a href="/portals/fundacion-conocimiento-abierto">Corte Suprema de Justicia</a></td>
+          <td>Si</td>
+          <td>100%</td>
+        </tr>
+        <tr class="text-center">
+          <td>2 <span class="equal-sign text-default" title="Mantiene posición">=</span></td>
+          <td><a href="/portals/fundacion-conocimiento-abierto">Ministerio de Modernización</a></td>
+          <td>No</td>
+          <td>100%</td>
+        </tr>
+        <tr class="text-center">
+          <td>3 <span class="glyphicon glyphicon-menu-up text-success"  title="Subió desde posición 4"></span></td>
+          <td><a href="/portals/fundacion-conocimiento-abierto">Municipalidad de Córdoba</a></td>
+          <td>Si</td>
+          <td>70%</td>
+        </tr>
+        <tr class="text-center">
+          <td>4 <span class="glyphicon glyphicon-menu-up text-success"  title="Subió desde posición 5"></span></td>
+          <td><a href="/portals/fundacion-conocimiento-abierto">Ciudad de Mendoza</a></td>
+          <td>Si</td>
+          <td>90%</td>
+        </tr>
+        <tr class="text-center">
+          <td>5 <span class="glyphicon glyphicon-menu-down text-danger"  title="Bajó desde posición 3"></span></td>
+          <td><a href="/portals/fundacion-conocimiento-abierto">Gobierno de Jujuy</a></td>
+          <td>No</td>
+          <td>100%</td>
+        </tr>
+        <tr class="text-center">
+          <td>1 <span class="glyphicon glyphicon-menu-up text-success" title="Subió desde posición 2"></span></td>
+          <td><a href="/portals/fundacion-conocimiento-abierto">Corte Suprema de Justicia</a></td>
+          <td>Si</td>
+          <td>100%</td>
+        </tr>
+        <tr class="text-center">
+          <td>2 <span class="equal-sign text-default" title="Mantiene posición">=</span></td>
+          <td><a href="/portals/fundacion-conocimiento-abierto">Ministerio de Modernización</a></td>
+          <td>No</td>
+          <td>100%</td>
+        </tr>
+        <tr class="text-center">
+          <td>3 <span class="glyphicon glyphicon-menu-up text-success"  title="Subió desde posición 4"></span></td>
+          <td><a href="/portals/fundacion-conocimiento-abierto">Municipalidad de Córdoba</a></td>
+          <td>Si</td>
+          <td>70%</td>
+        </tr>
+        <tr class="text-center">
+          <td>4 <span class="glyphicon glyphicon-menu-up text-success"  title="Subió desde posición 5"></span></td>
+          <td><a href="/portals/fundacion-conocimiento-abierto">Ciudad de Mendoza</a></td>
+          <td>Si</td>
+          <td>90%</td>
+        </tr>
+        <tr class="text-center">
+          <td>5 <span class="glyphicon glyphicon-menu-down text-danger"  title="Bajó desde posición 3"></span></td>
+          <td><a href="/portals/fundacion-conocimiento-abierto">Gobierno de Jujuy</a></td>
+          <td>No</td>
+          <td>100%</td>
+        </tr>
+        <tr class="text-center">
+          <td>1 <span class="glyphicon glyphicon-menu-up text-success" title="Subió desde posición 2"></span></td>
+          <td><a href="/portals/fundacion-conocimiento-abierto">Corte Suprema de Justicia</a></td>
+          <td>Si</td>
+          <td>100%</td>
+        </tr>
+        <tr class="text-center">
+          <td>2 <span class="equal-sign text-default" title="Mantiene posición">=</span></td>
+          <td><a href="/portals/fundacion-conocimiento-abierto">Ministerio de Modernización</a></td>
+          <td>No</td>
+          <td>100%</td>
+        </tr>
+        <tr class="text-center">
+          <td>3 <span class="glyphicon glyphicon-menu-up text-success"  title="Subió desde posición 4"></span></td>
+          <td><a href="/portals/fundacion-conocimiento-abierto">Municipalidad de Córdoba</a></td>
+          <td>Si</td>
+          <td>70%</td>
+        </tr>
+        <tr class="text-center">
+          <td>4 <span class="glyphicon glyphicon-menu-up text-success"  title="Subió desde posición 5"></span></td>
+          <td><a href="/portals/fundacion-conocimiento-abierto">Ciudad de Mendoza</a></td>
+          <td>Si</td>
+          <td>90%</td>
+        </tr>
+        <tr class="text-center">
+          <td>5 <span class="glyphicon glyphicon-menu-down text-danger"  title="Bajó desde posición 3"></span></td>
+          <td><a href="/portals/fundacion-conocimiento-abierto">Gobierno de Jujuy</a></td>
+          <td>No</td>
+          <td>100%</td>
+        </tr>
         <tr class="text-center">
           <td>1 <span class="glyphicon glyphicon-menu-up text-success" title="Subió desde posición 2"></span></td>
           <td><a href="/portals/fundacion-conocimiento-abierto">Corte Suprema de Justicia</a></td>
@@ -91,14 +275,6 @@
     <p class="ranking_last_updated">
       Ranking actualizado el: 25/02/2017
     </p>
-    <div class="row center-block">
-      <div class="col-md-3 col-md-offset-3">
-        <a href="/ranking" class="btn btn-lg btn-info btn-block text-center">Ver ranking completo</a>
-      </div>
-      <div class="col-md-3">
-        <a href="/sugerir-portal" class="btn btn-lg btn-warning btn-block text-center">Sugerir portal</a>
-      </div>
-    </div>
   </div>
   <div class="row">
 

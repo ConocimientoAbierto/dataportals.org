@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}
+  Informe detallado {{portal.title}} |
+{% endblock %}
+
+{% block hero %}
+  <div class="jumbotron">
+    <div class="container">
+
+      <h1>
+        {{portal.title}}
+        {% if (currentUser.role === 'admin' or  currentUser.role === 'evaluator') and portal.to_evaluate === true %}
+          <a class="btn btn-warning pull-right" href="/portals/evaluation/{{portal.slug}}" role="button">Evaluar <i class="fa fa-graduation-cap" aria-hidden="true"></i></a>
+        {% endif %}
+      </h1>
+      <img style="float: left; margin: 0 2em 2em 0 " src="http://api.page2images.com/directlink?p2i_url=http://ckan.fcabierto.org&p2i_key=16631c3971d0f0b4&p2i_size=250x350" alt="Captura de pantalla del portal web" />
+      <p style="font-size: 1.2em">Informe detallado de Portal de datos CKAN</p>
+      <p>
+        {{ portal.description }}
+      </p>
+      <p>
+        <a href="{{ portal.url }}" style="text-decoration: underline; color:white">{{ portal.url }}</a>
+      </p>
+    </div>
+  </div>
+{% endblock %}
+{% block content %}
+
+  <div class="row" >
+    <h2>Detalles</h2>
+    <div class="col-md-12">
+      <div class="panel panel-info">
+        <div class="panel-heading">Informe detallado</div>
+        <div class="panel-body">
+          
+          <p>
+          </p>
+          <p>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-12">
+      <dl class="dl-horizontal">
+          <dt>Autor:</dt>
+          <dd>{{ portal.author }}</a></dd>
+          <dt>URL:</dt>
+          <dd><a href="{{ portal.url }}">{{ portal.url }}</a></dd>
+          <dt>Estado:</dt>
+          <dd>{{ portal.status }}</dd>
+          <dt>Tipo de author:</dt>
+          <dd>{{ portal.publisher_clasification }}</dd>
+          <dt>País/Lenguaje:</dt>
+          <dd>
+            <span class="label label-info">{{ portal.country }}</span>
+              /
+            <span class="label label-info">{{ portal.lenguage }}</span>
+          </dd>
+          <dt>Plataforma utilizada</dt>
+          <dd>{{ portal.plataform }}</dd>
+          <dt>Tipo de API:</dt>
+          <dd>{{ portal.api_type }}</dd>
+          <dt>URL de API:</dt>
+          <dd>{{ portal.api_endpoint }}</dd>
+          <dt>Responsable del Portal</dt>
+          <dd>
+            {% if portal.owner %}
+              {{ portal.owner }}
+            {% else %}
+            No asignado
+            {% endif %}
+          </dd>
+          {% if currentUser.role === 'admin' %}
+          <dt>Habilitado par evaluar:</dt>
+          <dd>
+            {% if portal.to_evaluate %}
+            <span class="text-success">
+              <i class="fa fa-check-circle" aria-hidden="true"></i>
+            </span>
+            {% else %}
+            <span class="text-danger">
+              <i class="fa fa-minus-circle" aria-hidden="true"></i>
+            </span>
+            {% endif %}
+          </dd>
+          {% endif %}
+      </dl>
+      <div class="btn-inline">
+        <a class="btn btn-primary" href="/portals/evaluate/{{portal.slug}}" role="button">Re-evaluar</a>
+      </div>
+
+      {% if currentUser.role === 'admin' %}
+      <div class="btn-inline">
+        <a class="btn btn-primary" href="/portals/edit/{{portal.slug}}" role="button">Editar Portal</a>
+        <form action="/portals/{{portal.slug}}" method="POST">
+          <input type="hidden" name="_method" value="DELETE">
+          <input type="hidden" name="_csrf" value="{{_csrf}}">
+          <input type="submit" class="btn btn-danger" value="Borrar Portal">
+        </form>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

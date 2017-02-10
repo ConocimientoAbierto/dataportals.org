@@ -23,8 +23,9 @@ router.get('/edit/:slug', mids.isLoggedIn, mids.roleAuthorization(['admin', 'eva
 router.get('/evaluation/:slug', mids.isLoggedIn, mids.roleAuthorization(['admin', 'evaluator']), portalCtrl.renderEvaluationView);
 router.post('/evaluation/:slug', mids.isLoggedIn, mids.roleAuthorization(['admin', 'evaluator']),  portalCtrl.saveManualEvaluationView);
 
+router.get('/detail/:slug', mids.isLoggedIn, mids.roleAuthorization(['admin', 'evaluator']), portalCtrl.renderDetailView);
+
 // prueba evaluación
 router.get('/evaluation/:slug', evaluationCtrl.makeAutomaticEvaluation);
-
 
 module.exports = router;
