@@ -48,7 +48,7 @@ app.use(csurf());
 /** PASSPORT CONFIG **/
 require('./lib/configPassport')(app);
 
-const env = new nunjucks.Environment(new nunjucks.FileSystemLoader('views'));
+const env = new nunjucks.Environment(new nunjucks.FileSystemLoader(path.resolve(__dirname + '/views')));
 env.express(app);
 
 /** ROUTES CONFIG **/
