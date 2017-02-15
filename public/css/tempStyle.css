@@ -9,12 +9,11 @@ body {
   height: auto;
 }
 
-@media all and (min-width: 990px) and (max-width: 1200px) {
-  body {
-    padding-top: 120px;
-
-  }
+.nav > li > a {
+  padding-left: 0.5vw;
+  padding-right: 0.5vw;
 }
+
 @media all and (min-width: 768px) and (max-width: 990px) {
   body {
     padding-top: 140px;
