@@ -14,7 +14,7 @@
           <a class="btn btn-warning pull-right" href="/portals/evaluation/{{portal.slug}}" role="button">Evaluar <i class="fa fa-graduation-cap" aria-hidden="true"></i></a>
         {% endif %}
       </h1>
-      <img style="float: left; margin: 0 2em 2em 0 " src="http://api.page2images.com/directlink?p2i_url=http://ckan.fcabierto.org&p2i_key=16631c3971d0f0b4&p2i_size=250x350" alt="Captura de pantalla del portal web" />
+      <img style="float: left; margin: 0 2em 2em 0 " src="http://api.page2images.com/directlink?p2i_url={{ portal.url }}&p2i_key=97c6f2d45d7ab41d&p2i_size=250x350" alt="Captura de pantalla del portal web" />
       <p style="font-size: 1.2em">Portal de datos CKAN</p>
       <p>
         {{ portal.description }}
@@ -22,18 +22,17 @@
       <p>
         <a href="{{ portal.url }}" style="text-decoration: underline; color:white">{{ portal.url }}</a>
       </p>
-
       <ul style="clear: both;" class="row">
         <li class="counter col-lg-2 col-md-4 col-sm-12 col-lg-offset-2 col-md-offset-0">
           <span class="value">1</span>
           <span class="label">Posición</span>
         </li>
         <li class="counter col-lg-3 col-md-4 col-sm-12">
-          <span class="value">89%</span>
+          <span class="value">{{evaluation[0].total_score * 100}}%</span>
           <span class="label">Puntaje</span>
         </li>
         <li class="counter col-lg-3 col-md-4 col-sm-12">
-          <span class="value">25</span>
+          <span class="value">{{evaluation[0].datasets.length}}</span>
           <span class="label">Conjuntos de datos</span>
         </li>
       </ul>
@@ -56,7 +55,7 @@
             datasets: [
               {
                 label: "Puntaje total",
-                data: [65, 59, 80],
+                data: [65, 59, {{evaluation[0].total_score*100}}],
                 borderColor: "rgba(80,80,80,1)",
                 backgroundColor: "rgba(80,80,80,1)",
                 fill: false,
@@ -126,7 +125,7 @@
               Puntaje total
             </td>
             <td>
-              <div style="background-color: rgba(80,80,80,1); width: 90%">90%</div>
+              <div style="background-color: rgba(80,80,80,1); width: {{evaluation[0].total_score*100}}%">{{evaluation[0].total_score*100}}%</div>
             </td>
           </tr>
           <tr>
@@ -209,30 +208,34 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td class="resource-name">
-                  Listado de víctimas del accionar represivo ilegal sin denuncia formal
+              {% for dataset in evaluation[0].datasets %}
+                {% for resource in dataset.resources %}
+                <tr>
+                  <td class="resource-name">
+                    {{resource.name}}
 
-                </td>
-                <td class="resource-ok">
-                  CSV
-                </td>
-                <td class="resource-ok">
-                  Si
-                </td>
-                <td class="resource-error">
-                  No
-                </td>
-                <td class="resource-error">
-                  10
-                  <a href="http://goodtables.okfnlabs.org/reports?data_url=https://data.wprdc.org/dataset/5934b8d1-892f-4fd7-84c1-aa890d3ff529/resource/a61b6617-2f06-4745-8731-165139d41667/download/opendata-pubworks---field-listing-22015.csv&format=csv&encoding=&schema_url=">
-                    Ver detalles
-                  </a>
-                </td>
-                <td>
-                  <a href="#">Ver original</a>
-                </td>
-              </tr>
+                  </td>
+                  <td class="resource-ok">
+                    {{resource.format}}
+                  </td>
+                  <td class="resource-ok">
+                    {{resource.name}}
+                  </td>
+                  <td class="resource-error">
+                    {{resource.valid}}
+                  </td>
+                  <td class="resource-error">
+                    {{resource.errors}}
+                    <a href="http://goodtables.okfnlabs.org/reports?data_url={{resource.url}}">
+                      Ver detalles
+                    </a>
+                  </td>
+                  <td>
+                    <a href="{{resource.url}}">Ver original</a>
+                  </td>
+                </tr>
+                {%endfor%}
+              {%endfor%}
               <tr>
                 <td class="resource-name">
                   Listado de víctimas del accionar represivo ilegal sin denuncia formal

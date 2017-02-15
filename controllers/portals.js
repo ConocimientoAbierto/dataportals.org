@@ -2,6 +2,8 @@
 
 const mongoose = require('mongoose');
 const Portal = mongoose.model('Portal');
+const Evaluation = mongoose.model('Evaluation');
+
 const userCtrl = require('./../controllers/users');
 
 // GET - return all portlas
@@ -17,8 +19,10 @@ exports.findAllPortals = (req, res) => {
 exports.findBySlug = (req, res) => {
   Portal.findBySlug(req.params.slug, (err, portal) => {
     if(err) return res.status(500).send(err.message);
-
-    res.render('portals/view.html', {'portal': portal});
+    Evaluation.find(req.params.slug, (err, evaluation) => {
+      if(err) return res.status(500).send(err.message);
+      res.render('portals/view.html', {'portal': portal, evaluation: evaluation});
+    });
   });
 };
 

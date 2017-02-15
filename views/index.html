@@ -55,9 +55,9 @@
         {% for evaluation in evaluations %}
           <tr class="text-center">
             <td>1 <span class="glyphicon glyphicon-menu-up text-success" title="Subió desde posición 2"></span></td>
-            <td><a href="/portals/fundacion-conocimiento-abierto">{{evaluation.portal_slug}}</a></td>
+            <td><a href="/portals/{{evaluation.portal_slug}}">{{evaluation.portal_slug}}</a></td>
             <td>No</td>
-            <td>{{evaluation.total_score}}</td>
+            <td>{{evaluation.total_score * 100}}%</td>
           </tr>
         {% endfor %}
         <tr class="text-center">
