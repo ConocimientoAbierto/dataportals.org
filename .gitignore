@@ -9,3 +9,4 @@ WiredTiger
 storage.bson
 diagnostic.data/*
 journal/*
+temp/*

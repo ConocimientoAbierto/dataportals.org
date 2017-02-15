@@ -1,10 +1,17 @@
 'use strict';
 
+const mongoose = require('mongoose');
+const Evaluation = mongoose.model('Evaluation');
+const Portal = mongoose.model('Portal');
+
 /**
  * Render Home View
  */
 exports.renderHome = (req, res) => {
-  res.render('index.html');
+  Evaluation.find({}, (err, evaluations) => {
+    if (err) return res.status(500).send(err.message);
+    res.render('index.html', {evaluations: evaluations});
+  });
 };
 
 /**

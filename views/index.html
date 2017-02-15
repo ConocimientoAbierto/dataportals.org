@@ -52,12 +52,14 @@
         </tr>
       </thead>
       <tbody>
-        <tr class="text-center">
-          <td>1 <span class="glyphicon glyphicon-menu-up text-success" title="Subió desde posición 2"></span></td>
-          <td><a href="/portals/fundacion-conocimiento-abierto">Corte Suprema de Justicia</a></td>
-          <td>Si</td>
-          <td>100%</td>
-        </tr>
+        {% for evaluation in evaluations %}
+          <tr class="text-center">
+            <td>1 <span class="glyphicon glyphicon-menu-up text-success" title="Subió desde posición 2"></span></td>
+            <td><a href="/portals/fundacion-conocimiento-abierto">{{evaluation.portal_slug}}</a></td>
+            <td>No</td>
+            <td>{{evaluation.total_score}}</td>
+          </tr>
+        {% endfor %}
         <tr class="text-center">
           <td>2 <span class="equal-sign text-default" title="Mantiene posición">=</span></td>
           <td><a href="/portals/fundacion-conocimiento-abierto">Ministerio de Modernización</a></td>

@@ -2,6 +2,8 @@
 
 const mongoose = require('mongoose');
 const request = require('request');
+const download = require('download');
+const Evaluation = mongoose.model('Evaluation');
 const Portal = mongoose.model('Portal');
 
 const setPortalObject = (portal) => {
@@ -43,85 +45,98 @@ const getPortalWithDatasetsList = (portalObj, query) => {
   const url = setApiUrl(portalObj.url, query);
   // two request needed to get all datasets. Ckan API limit amount of datasets returned to 10
   return getDatasetsCount(url+0)
-    .then( (datasetsCount) => requestPromise(url+datasetsCount, true))
-    .then( (data) => {
+    .then( datasetsCount => requestPromise(url+datasetsCount, true))
+    .then( data => {
       const newPortalObj = {
         portal_slug: portalObj.slug,
-        metadata: data.result
+        datasets_list: data.result,
+        report: {
+          portal_slug: portalObj.slug,
+          total_score: null, // average of uses_dataset_cuality_score, metadata_score, resource_validity
+          metadata_cuality_result: null,
+          data_cuality_result: null,
+          datasets: []
+        }
       };
       return newPortalObj;
     });
 };
 
-const evaluateDatasets = (portalObj) => {
+const evaluateDatasets = portalObj => {
   // reduce to a list of datasets
-  const datasetList = portalObj.metadata.results;
+  const datasetList = portalObj.datasets_list.results;
 
-  return new Promise((resolve, reject) => {
-    const datasets = datasetList.reduce((datasets, dataset) => {
-      // Eval report boilerplate
-      let datasetEval = {
-        name: dataset.name,
-        title: dataset.title,
-        metadata_result: null, // average metadata_criteria
-        metadata_criteria: {
-          dataset_explanation: null,
-          responsable: null,
-          update_frequency: null,
-          actual_update_frequency: null,
-          licence: null,
-          format: null
-        },
-        resources_result: null,
-        resources_count: dataset.num_resources,
-        resources: []
-      };
+  let metadataSum = 0;
 
-      // dataset_uses_easiness_criteria
-      datasetEval.metadata_criteria.dataset_explanation = hasDescription(dataset);
-      // metadata_criteria
-      datasetEval.metadata_criteria.responsable = hasResponsable(dataset);
-      datasetEval.metadata_criteria.update_frequency = hasUpdateFrequency(dataset.extras);
-      datasetEval.metadata_criteria.actual_update_frequency = hasValidActualUpdateFrecuency(dataset, datasetEval.metadata_criteria.update_frequency);
-      datasetEval.metadata_criteria.licence = hasValidLicence(dataset.license_id);
-      datasetEval.metadata_criteria.format = hasValidFormat(dataset.resources);
-
-      // resources
-      const resources = dataset.resources.reduce((resources, resource) => {
-
-        // evaluation boilerplate
-        let resourceEval = {
-          name: resource.name,
-          url: resource.url,
-          evaluable: resource.format.toLowerCase() === 'csv',
-          format: resource.format.toLowerCase(),
-          validity: null,
-          errors_count: null,
-        };
-
-        resources.push(resourceEval);
-        return resources;
-      }, []);
-
-      datasetEval.resources = resources;
-
-      // average score of each category
-      datasetEval.metadata_result = averageCriteria(datasetEval.metadata_criteria);
-      datasetEval.resources_result = null;
-
-      datasets.push(datasetEval);
-      return datasets;
-    }, []);
-
-    let report = {
-      portal_slug: portalObj.portal_slug,
-      total_score: null, // average of uses_dataset_cuality_score, metadata_score, resource_validity
-      datasets: datasets
+  const datasets = datasetList.reduce( (datasets, dataset) => {
+    // Eval report boilerplate
+    let datasetEval = {
+      name: dataset.name,
+      title: dataset.title,
+      metadata_result: null, // average metadata_criteria
+      metadata_criteria: {
+        dataset_explanation: null,
+        responsable: null,
+        update_frequency: null,
+        actual_update_frequency: null,
+        licence: null,
+        format: null
+      },
+      resources_result: null,
+      resources_count: dataset.num_resources,
+      resources: []
     };
 
-    resolve(report);
-  });
+    // dataset_uses_easiness_criteria
+    datasetEval.metadata_criteria.dataset_explanation = hasDescription(dataset);
+    // metadata_criteria
+    datasetEval.metadata_criteria.responsable = hasResponsable(dataset);
+    datasetEval.metadata_criteria.update_frequency = hasUpdateFrequency(dataset.extras);
+    datasetEval.metadata_criteria.actual_update_frequency = hasValidActualUpdateFrecuency(dataset, datasetEval.metadata_criteria.update_frequency);
+    datasetEval.metadata_criteria.licence = hasValidLicence(dataset.license_id);
+    datasetEval.metadata_criteria.format = hasValidFormat(dataset.resources);
+
+    // average score of each category
+    datasetEval.metadata_result = averageCriteria(datasetEval.metadata_criteria);
+    datasetEval.resources_result = null;
+
+    metadataSum += +datasetEval.metadata_result;
+
+    // Resources evaluation
+    const resourceEval = dataset.resources.reduce( (resources, resource) => {
+      let resourceEval = {
+        name: resource.name,
+        url: resource.url,
+        file_name: _getResourceFileName(resource.url),
+        evaluable: resource.format.toLocaleLowerCase() === 'csv',
+        format: resource.format.toLowerCase(),
+        validity: false, // TODO evaluar
+        errors_count: null // TODO evaluar
+      };
+      resources.push(datasetEval);
+      return resources;
+    }, []);
+
+    datasetEval.resources.push(datasetEval);
+    datasets.push(datasetEval);
+    return datasets;
+  }, []);
+  portalObj.report.datasets = datasets
+
+  portalObj.report.metadata_cuality_result = (metadataSum / datasets.length).toFixed(2);
+  portalObj.report.total_score = (metadataSum / datasets.length).toFixed(2);
+  console.log(metadataSum);
+  return portalObj;
 };
+
+/**
+ * TODO evaluación de recursos
+ */
+// const evaluateResources = portalObject => {
+//   const Pool = require('threads').Pool;
+//
+//   const pool = new Pool('_helper.js');
+// };
 
 const averageCriteria = (criteriaObject) => {
   let sum = 0;
@@ -242,14 +257,34 @@ const _getExtraField = (extras, searchArray) => {
   return extras[index];
 };
 
+const _getResourceFileName = (url) => {
+  const resourceFileName = url.split('/');
+  return resourceFileName[resourceFileName.length - 1];
+};
+
+const saveEvalToDB = portalObj => {
+  var portal = new Portal(portalObj.report);
+
+
+  portal.save((err, portal) => {
+    if(err) return res.status(500).send(err.message);
+    res.render('portals/view.html', {'portal': portal});
+  });
+};
+
 exports.makeAutomaticEvaluation = (req, res) => {
   const portalPromise = Portal.findBySlug(req.params.slug).exec();
   portalPromise
-    .then((portal) => setPortalObject(portal))
-    .then((portalObj) => getPortalWithDatasetsList(portalObj, 'package_search?rows='))
-    .then((portalObj) => evaluateDatasets(portalObj))
-    .then((evaluation) => {
-      res.send(evaluation);
+    .then( portal => setPortalObject(portal))
+    .then( portalObj => getPortalWithDatasetsList(portalObj, 'package_search?rows='))
+    .then( portalObj => evaluateDatasets(portalObj))
+    .then( portalObj => {
+      const evaluation = new Evaluation(portalObj.report);
+      evaluation.save( (err, evaluation) => {
+        if(err) return res.status(500).send(err);
+        console.log('guardado');
+        res.redirect('/');
+      });
     })
     .catch((err) => console.log('error buscando listado de datasets en '+portal.url+': ', err));
 };

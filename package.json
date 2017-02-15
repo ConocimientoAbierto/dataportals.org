@@ -12,6 +12,7 @@
     "connect-flash": "^0.1.1",
     "csurf": "^1.9.0",
     "csv-parse": "",
+    "download": "^5.0.3",
     "express": "^4.x",
     "express-session": "^1.15.0",
     "express-validator": "^3.1.2",
@@ -27,6 +28,7 @@
     "passport-local-mongoose": "^4.0.0",
     "request": "",
     "slug": "^0.9.1",
+    "threads": "^0.7.2",
     "underscore": ""
   },
   "engines": {
