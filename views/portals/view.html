@@ -121,7 +121,7 @@
         </thead>
         <tbody>
           <tr>
-            <td>
+            <td class="criteria_name">
               Puntaje total
             </td>
             <td>
@@ -129,7 +129,14 @@
             </td>
           </tr>
           <tr>
-            <td>
+            <td colspan="2">
+              <p class="criteria_description">
+                El puntaje total es un promedio de los puntajes de los cuatro criterios.
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td class="criteria_name">
               Navegación
             </td>
             <td>
@@ -137,7 +144,14 @@
             </td>
           </tr>
           <tr>
-            <td>
+            <td colspan="2">
+              <p class="criteria_description">
+                Este criterio evalúa la facilidad de navegación del portal de datos, la confiabildiad, claridad y usabilidad del acceso y búsqueda de conjuntos de datos. Su evaluacón es manual, excepto por la prueba automatizada de accesbilidad web.
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td class="criteria_name">
               Uso automático
             </td>
             <td>
@@ -145,7 +159,14 @@
             </td>
           </tr>
           <tr>
-            <td>
+            <td colspan="2">
+              <p class="criteria_description">
+                Este criterio evalúa las facilidades para el consumo automático de los datos presentes en el portal de datos, la existencia de una API y su documentación.
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td class="criteria_name">
               Metadatos
             </td>
             <td>
@@ -153,12 +174,26 @@
             </td>
           </tr>
           <tr>
-            <td>
+            <td colspan="2">
+              <p class="criteria_description">
+                Este criterio es un promedio de la evaluación de los metadatos de cada uno de los conjuntos de datos. Se verifica automáticamente la inclusión de responsable, frecuencia de actualización, licencia abierta y formatos abiertos.
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td class="criteria_name">
               Datos
             </td>
             <td>
               <div style="background-color: #BF6E42; width: 70%">70%</div>
               <!-- violetaa 9A63B6 -->
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <p class="criteria_description">
+                Este criterio se basa solamente en la evaluación automatizada de la calidad de los datos. Actualmente sólo evalúa archivos de tipo CSV en su corrección formal y no en su contenido.
+              </p>
             </td>
           </tr>
         </tbody>
@@ -177,8 +212,17 @@
         <div class="panel-body">
           {% if currentUser.role != 'admin' and currentUser.role != 'evaluator' %}
           <p>
-            Solicite el informe detallado de errores en este portal de datos. Además del detalle de la evaluación automatizada de recurso, incluye una evaluación manual de la facilidad de uso del portal.
+            Mejore su posición en el ranking solicitando un informe detallado de errores en este portal.
           </p>
+          <p>
+            Incluye:
+          </p>
+          <ul>
+            <li>Informe de errores en cada recurso y dataset. Sepa exactamente qué hacer para mejorar.</li>
+            <li>Informe de evaluación manual del portal. Evaluaremos todos los criterios manuales en este portal, para que mejore la facilidad de uso y acceso.</li>
+            <li>Capacitación (opcional)</li>
+            <li>Consultoría (opcional)</li>
+          </ul>
           <p>
             <button type="button" class="btn btn-lg btn-info" name="button">Solcitar informe deallado</button>
             <a href="#">Ver ejemplo</a>
@@ -372,9 +416,6 @@
                     Ver detalle
                   </a>
                 </td>
-                <a href="http://goodtables.okfnlabs.org/reports?data_url=https://data.wprdc.org/dataset/5934b8d1-892f-4fd7-84c1-aa890d3ff529/resource/a61b6617-2f06-4745-8731-165139d41667/download/opendata-pubworks---field-listing-22015.csv&format=csv&encoding=&schema_url=">
-                  Ver detalles
-                </a>
               </tr>
               <tr>
                 <td class="resource-name">

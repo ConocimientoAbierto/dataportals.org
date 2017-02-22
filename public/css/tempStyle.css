@@ -78,7 +78,7 @@ ul.navbar-nav {
   background-position: 100% 29%;
 }
 .jumbotron>.background-blur {
-  background-color: #102060B0;
+  background-color: rgba(16, 32, 96, 0.69);
 }
 
 .jumbotron a:link  {
@@ -178,6 +178,33 @@ ul.navbar-nav {
 .score_summary td div {
   padding: 3px;
   color: white;
+  font-weight: bold;
+}
+
+.score_summary th {
+  background-color: #e7eeff;
+  border: 1px solid;
+  border-color: #95b3e7;
+  border-radius: 10px;
+  padding: 0.7em;
+}
+
+.criteria_description {
+  white-space: normal;
+  font-size: 0.85em;
+  padding: 1em;
+  margin-bottom: 1.5em;
+  border-radius: 0 10px 10px 0;
+
+  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#000000+0,eaeaea+100&0+0,0.65+100 */
+  background: -moz-linear-gradient(top, rgba(0,0,0,0) 0%, rgba(234,234,234,0.65) 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(top, rgba(0,0,0,0) 0%,rgba(234,234,234,0.65) 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to bottom, rgba(0,0,0,0) 0%,rgba(234,234,234,0.65) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00000000', endColorstr='#a6eaeaea',GradientType=0 ); /* IE6-9 */
+}
+
+.criteria_name {
+  padding-left: 1em;
   font-weight: bold;
 }
 
