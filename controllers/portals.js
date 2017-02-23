@@ -100,49 +100,10 @@ exports.renderEditView = (req, res) => {
     const data = {
       'portal': portal,
       'ownersCandidates': ownersCandidates
-    }
+    };
     res.render('portals/edit.html', data);
   });
 };
-
-/** EVALUATIONS **/
-// GET - Manual Evaluation View
-exports.renderEvaluationView = (req, res) => {
-  Portal.findBySlug(req.params.slug, (err, portal) => {
-    if (err) return res.status(500).send(err.message);
-
-    res.render('portals/evaluation.html', {'portal': portal});
-  });
-};
-
-// POST - Save Manual Evaluation
-exports.saveManualEvaluationView = (req, res) => {
-  Portal.findBySlug(req.params.slug, (err, portal) => {
-    if (err) return res.status(500).send(err.message);
-
-    portal.eval_use = {
-      oficial_identity: req.body.oficial_identity,
-      link_oficial_site: req.body.link_oficial_site,
-      open_data_exp: req.body.open_data_exp,
-      all_dataset_link: req.body.all_dataset_link,
-      dataset_search_system: req.body.dataset_search_system
-      // examinator: req.body.examinator
-    };
-
-    portal.eval_uses_easiness = {
-      existence_api: req.body.existence_api,
-      api_documentation: req.body.api_documentation
-    };
-
-    portal.portal_evaluation = true;
-
-    portal.save((err, portal) => {
-      if(err) return res.status(500).send(err.message);
-      res.redirect('/portals/' + portal.slug);
-    });
-  });
-};
-
 
 /** DETAIL **/
 // GET - Detail View

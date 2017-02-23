@@ -6,7 +6,7 @@ const userCtrl = require('./../controllers/users');
 const mids = require('./../middlewheres/index');
 const validator = require('./../middlewheres/formValidator');
 
-let router = express.Router();
+const router = express.Router();
 
 router.get('/', mids.isLoggedIn, mids.roleAuthorization(['admin']), userCtrl.renderAllUsersView);
 router.post('/', mids.isLoggedIn, mids.roleAuthorization(['admin']), validator.validateUserForm, userCtrl.createUser);

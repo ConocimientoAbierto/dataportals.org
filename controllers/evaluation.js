@@ -2,264 +2,157 @@
 
 const mongoose = require('mongoose');
 const request = require('request');
-const download = require('download');
+const child_process = require('child_process');
 const Evaluation = mongoose.model('Evaluation');
 const Portal = mongoose.model('Portal');
 
-const setPortalObject = (portal) => {
-  return {
-    slug: portal.slug,
-    url: portal.url
-  }
-};
-
-const setApiUrl = (url, query) => {
-  const api = '/api/3/action/'
-  return url + api + query;
-};
-
-const requestPromise = (url, json) => {
-  return new Promise((resolve, reject) => {
-    request.get({
-      url: url,
-      json: json || false,
-      headers: {'User-Agent': 'request'}
-      }, (err, res, data) => {
-      if (err)
-        reject('Some thing goes wrong with the request: ' + err);
-      if (res.statusCode !== 200)
-        reject('Request status: ' + res.statusCode);
-
-      // data is already parsed as JSON
-      resolve(data);
-    });
-  });
-};
-
-const getDatasetsCount = (apiUrl) => {
-  return requestPromise(apiUrl, true)
-    .then( (data) => data.result.count );
-};
-
-const getPortalWithDatasetsList = (portalObj, query) => {
-  const url = setApiUrl(portalObj.url, query);
-  // two request needed to get all datasets. Ckan API limit amount of datasets returned to 10
-  return getDatasetsCount(url+0)
-    .then( datasetsCount => requestPromise(url+datasetsCount, true))
-    .then( data => {
-      const newPortalObj = {
-        portal_slug: portalObj.slug,
-        datasets_list: data.result,
-        report: {
-          portal_slug: portalObj.slug,
-          total_score: null, // average of uses_dataset_cuality_score, metadata_score, resource_validity
-          metadata_cuality_result: null,
-          data_cuality_result: null,
-          datasets: []
-        }
+exports.renderNewManualEvaluationView = (req, res) => {
+  Portal.findBySlug(req.params.slug)
+    .then( foundPortal => {
+      const query = {
+        portal_slug: foundPortal.slug,
+        is_finished: false,
+        manual_eval_done: false
       };
-      return newPortalObj;
+      Evaluation.findOne(query).exec()
+        .then( foundEval => {
+          const data = {
+            'portal': foundPortal,
+            'evaluation': foundEval
+          };
+
+          res.render('evaluations/evaluation.html', data);
+        })
+        .catch( err => res.status(500).send(err.message));
+    })
+    .catch( err => res.status(500).send(err.message));
+};
+
+exports.getEvaluation = (req, res) => {
+  Evaluation.find({portal_slug: req.params.slug}).exec()
+    .then(evaluation => res.send(evaluation))
+    .catch(err => {
+      console.log(err);
+      req.flash('message', ['warning', 'Lo sentimos. Tuvimos problemas, por favor intente nuevamente.']);
+      return res.redirect('back');
     });
 };
 
-const evaluateDatasets = portalObj => {
-  // reduce to a list of datasets
-  const datasetList = portalObj.datasets_list.results;
+exports.saveManualEvaluation = (req, res) => {
+  const query = {
+    portal_slug: req.params.slug,
+    is_finished: false
+  };
+  const evaluationPromise = Evaluation.findOne(query).exec();
 
-  let metadataSum = 0;
+  evaluationPromise
+    .then( evaluation => _checkCurrentEvaluation(evaluation) )
+    .then( evaluation => _mapRecBodyToEvaluationObj(evaluation) )
+    .then( evaluation => evaluation.save() )
+    .then( evaluationSaved => res.send(evaluationSaved) )
+    .catch( err => {
+      console.log('no encontré la evaluación: ', err);
 
-  const datasets = datasetList.reduce( (datasets, dataset) => {
-    // Eval report boilerplate
-    let datasetEval = {
-      name: dataset.name,
-      title: dataset.title,
-      metadata_result: null, // average metadata_criteria
-      metadata_criteria: {
-        dataset_explanation: null,
-        responsable: null,
-        update_frequency: null,
-        actual_update_frequency: null,
-        licence: null,
-        format: null
-      },
-      resources_result: null,
-      resources_count: dataset.num_resources,
-      resources: []
-    };
+      let flashMsg = 'Ups! algo salió mal. Por favor vuelve a intentarlo más tarde.';
+      // if already is an evaluation in progress and already has manual eval done
+      if (err.currentEval) flashMsg = err.currentEval;
 
-    // dataset_uses_easiness_criteria
-    datasetEval.metadata_criteria.dataset_explanation = hasDescription(dataset);
-    // metadata_criteria
-    datasetEval.metadata_criteria.responsable = hasResponsable(dataset);
-    datasetEval.metadata_criteria.update_frequency = hasUpdateFrequency(dataset.extras);
-    datasetEval.metadata_criteria.actual_update_frequency = hasValidActualUpdateFrecuency(dataset, datasetEval.metadata_criteria.update_frequency);
-    datasetEval.metadata_criteria.licence = hasValidLicence(dataset.license_id);
-    datasetEval.metadata_criteria.format = hasValidFormat(dataset.resources);
+      req.flash('message', ['warning', flashMsg]);
+      return res.redirect('back');
+    });
 
-    // average score of each category
-    datasetEval.metadata_result = averageCriteria(datasetEval.metadata_criteria);
-    datasetEval.resources_result = null;
+  // check for the status of the current evaluation
+  const _checkCurrentEvaluation = evaluation => {
+    if (!evaluation) return new Evaluation; // no current evaluation
 
-    metadataSum += +datasetEval.metadata_result;
+    if (evaluation.manual_eval_done) { // current evaluation manual already done
+      const msg = 'Existe una evaluación en proceso y ya posee evaluación manual para ' + req.params.slug;
+      return Promise.reject({currentEval: msg});
+    }
 
-    // Resources evaluation
-    const resourceEval = dataset.resources.reduce( (resources, resource) => {
-      let resourceEval = {
-        name: resource.name,
-        url: resource.url,
-        file_name: _getResourceFileName(resource.url),
-        evaluable: resource.format.toLocaleLowerCase() === 'csv',
-        format: resource.format.toLowerCase(),
-        validity: false, // TODO evaluar
-        errors_count: null // TODO evaluar
-      };
-      resources.push(datasetEval);
-      return resources;
-    }, []);
-
-    datasetEval.resources.push(datasetEval);
-    datasets.push(datasetEval);
-    return datasets;
-  }, []);
-  portalObj.report.datasets = datasets
-
-  portalObj.report.metadata_cuality_result = (metadataSum / datasets.length).toFixed(2);
-  portalObj.report.total_score = (metadataSum / datasets.length).toFixed(2);
-  console.log(metadataSum);
-  return portalObj;
-};
-
-/**
- * TODO evaluación de recursos
- */
-// const evaluateResources = portalObject => {
-//   const Pool = require('threads').Pool;
-//
-//   const pool = new Pool('_helper.js');
-// };
-
-const averageCriteria = (criteriaObject) => {
-  let sum = 0;
-  let criteriaCount = 0;
-
-  for (const criteria in criteriaObject) {
-    sum += criteriaObject[criteria];
-    criteriaCount++;
+    return evaluation; // current evaluation needs manual evaluation
   };
 
-  return (sum / criteriaCount).toFixed(2);
-};
+  // function to map the data from the form to EvaluationSchema
+  const _mapRecBodyToEvaluationObj = evaluation => {
+    // general values
+    evaluation.portal_slug = evaluation.portal_slug || req.params.slug;
+    evaluation.manual_eval_done = true;
+    // if automatic is already done this eval is finished
+    evaluation.is_finished = evaluation.automatic_eval_done || false;
 
-const hasDescription = (dataset) => {
-  return  dataset.notes && dataset.notes.length >= 150 ? 1 : 0;
-};
+    // ease_portal_navigation_criteria
+    evaluation.ease_portal_navigation_criteria.oficial_identity = req.body.oficial_identity;
+    evaluation.ease_portal_navigation_criteria.link_oficial_site = req.body.link_oficial_site;
+    evaluation.ease_portal_navigation_criteria.open_data_exp = req.body.open_data_exp;
+    evaluation.ease_portal_navigation_criteria.all_dataset_link = req.body.all_dataset_link;
+    evaluation.ease_portal_navigation_criteria.dataset_search_system= req.body.dataset_search_system;
+    evaluation.ease_portal_navigation_criteria.examinator = null;
+    const epn_criteriaValues = [
+      evaluation.ease_portal_navigation_criteria.oficial_identity,
+      evaluation.ease_portal_navigation_criteria.link_oficial_site,
+      evaluation.ease_portal_navigation_criteria.open_data_exp,
+      evaluation.ease_portal_navigation_criteria.all_dataset_link,
+      evaluation.ease_portal_navigation_criteria.dataset_search_system,
+      evaluation.ease_portal_navigation_criteria.examinator
+    ];
+    evaluation.ease_portal_navigation_score = _averageCriteria(epn_criteriaValues);
 
-const hasResponsable = (dataset) => {
-  let score = 0;
-  const res = dataset.maintainer;
-  const res_mail = dataset.maintainer_email;
-  const author = dataset.author;
-  const author_mail = dataset.author_email;
-  const email_regex = new RegExp('(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)');
+    // automated_portal_use_criteria
+    evaluation.automated_portal_use_criteria.existence_api = req.body.existence_api;
+    evaluation.automated_portal_use_criteria.api_documentation = req.body.api_documentation;
+    const aps_criteriaValues = [
+      req.body.existence_api,
+      req.body.api_documentation
+    ];
+    evaluation.automated_portal_use_score = _averageCriteria(aps_criteriaValues);
+    // total score
+    evaluation.total_score = _averageCriteria([evaluation.automated_portal_use_score, evaluation.ease_portal_navigation_score, evaluation.metadata_cuality_score || 0]);
 
-  if ( (res && email_regex.test(res_mail)) || (author && email_regex.test(author_mail)) )
-    score = 1;
-  else if (res || author)
-    score = 0.5;
-
-  return score;
-};
-
-const hasUpdateFrequency = (datasetExtras) => {
-  /* list of possible frecuencies references for DCAT
-  continual - R/PT1S
-  daily - R/P1D
-  weekly - R/P1W
-  fortnightly - R/P0.5M
-  monthly - R/P1M
-  quarterly - R/P3M
-  biannually - R/P0.5Y
-  asNeeded - irregular
-  irregular - irregular
-  notPlanned - irregular
-  unknown - irregular
-   */
-
-  const frecuencyFields = ['frecuency', 'accrualperiodicity'];
-  const validFrecuency = ['R/PT1S', 'R/P1D', 'R/P1W', 'R/P0.5M', 'R/P1M', 'R/P3M', 'R/P0.5Y'];
-
-  // check if a valid field is in dataset extra
-  const frecuencyField = _getExtraField(datasetExtras, frecuencyFields);
-
-  // check if the the field with a valid key for frecuency has a valid update frecuency
-  const hasValidFrecuency = validFrecuency.indexOf(frecuencyField.value);
-
-  // frecuency is not informed = 0 or is informed = 1
-  return hasValidFrecuency === -1 ? 0 : 1;
-};
-
-const hasValidActualUpdateFrecuency = (dataset, updateFrequencyScore) => {
-  // if the update frecuency is not informed = 0
-  if (updateFrequencyScore === 0) return 0;
-
-  const frecuencyFields = ['frecuency', 'accrualperiodicity'];
-  const validFrecuency = {
-    'R/PT1S': 1,
-    'R/P1D': 2,
-    'R/P1W': 7,
-    'R/P0.5M': 15,
-    'R/P1M': 30,
-    'R/P3M': 90,
-    'R/P0.5Y': 180
+    return evaluation;
   };
-  const frecuencyField = _getExtraField(dataset.extras, frecuencyFields);
-  const maxDiff = validFrecuency[frecuencyField.value];
-
-  const daysInMili = 24 * 60 * 60 * 1000;
-  const firstDate = Date.now();
-
-  // compare dates
-  const secondDate = new Date(dataset.metadata_modified);
-  const diff = firstDate - secondDate;
-  const daysDiff = Math.floor(diff / daysInMili);
-
-  return daysDiff <= maxDiff ? 1 : 0;
 };
 
-const hasValidLicence = (license_id) => {
-  const validLicencesIds = ['odc-pddl', 'odc-odbl', 'odc-by', 'cc-zero', 'cc-by', 'cc-by-sa', 'gfdl'];
-  return validLicencesIds.indexOf(license_id.toLowerCase()) === -1 ? 0 : 1;
-}
+exports.makeAutomaticEvaluation = (req, res) => {
+  const portalsPromise = Portal.find().exec(); // TODO reducir los datos que trae
 
-const hasValidFormat = (resources) => {
-  const validFormats = ['csv', 'json', 'xml', 'geojson', 'kml'];
-  return resources.some((resource) => {
-    return validFormats.indexOf(resource.format.toLowerCase()) !== -1 ? true : false;
-  }) ? 1 : 0; // converting to 1 or 0 if true or false
-};
-// return the first object of dataset extras array that correspond to one if the searchArray items
-// else return false
-const _getExtraField = (extras, searchArray) => {
+  portalsPromise
+    .then(portals => {
+      if (portals.length !== 0)  return portals;
 
-  // check if a valid field is in dataset extra
-  const foundFields = extras
-    .map((field) => field.key)
-    .filter((fieldKey) => searchArray.indexOf(fieldKey) === -1 ? false : true);
+      // if the portals collections is empty
+      const msg = 'Sin elementos para evaluar. La base de datos de portales está vasía.';
+      return Promise.reject({withOutPortals: msg});
+    })
+    // start child process
+    .then(portals => _startAutomaticEvaluation(portals))
+    // return flash message
+    .then(() => {
+      req.flash('message', ['success', 'La evaluación automática de los portales está en curso']);
+      res.send('comenzó');
+      // res.redirect('/');
+    })
+    .catch( err => {
+      console.log('Error en la evaluación Automática: ', err);
 
-  // dataset exras fields has not the search field
-  if (foundFields.length === 0) return false;
+      let flashMsg = 'Ups! algo salió mal. Por favor vuelve a intentarlo más tarde.';
+      // if already is an evaluation in progress and already has manual eval done
+      if (err.withOutPortals) flashMsg = err.withOutPortals;
 
-  // get the index of the searched field in the dataset extras array
-  const index = extras
-    .map((field) => field.key)
-    .indexOf(foundFields[0]);
+      req.flash('message', ['warning', flashMsg]);
+      // return res.redirect('back');
+      return res.send(err);
+    });
 
-  return extras[index];
-};
+  // make a new thread for the automatic evaluation
+  const _startAutomaticEvaluation = portals => {
+    const process = child_process.fork(__dirname + '/_automatic_evaluation.js');
 
-const _getResourceFileName = (url) => {
-  const resourceFileName = url.split('/');
-  return resourceFileName[resourceFileName.length - 1];
+    // send portals array
+    process.send({
+      portals: portals
+    });
+  };
 };
 
 const saveEvalToDB = portalObj => {
@@ -267,24 +160,18 @@ const saveEvalToDB = portalObj => {
 
 
   portal.save((err, portal) => {
-    if(err) return res.status(500).send(err.message);
-    res.render('portals/view.html', {'portal': portal});
+    if(err) throw new err(err);
   });
 };
 
-exports.makeAutomaticEvaluation = (req, res) => {
-  const portalPromise = Portal.findBySlug(req.params.slug).exec();
-  portalPromise
-    .then( portal => setPortalObject(portal))
-    .then( portalObj => getPortalWithDatasetsList(portalObj, 'package_search?rows='))
-    .then( portalObj => evaluateDatasets(portalObj))
-    .then( portalObj => {
-      const evaluation = new Evaluation(portalObj.report);
-      evaluation.save( (err, evaluation) => {
-        if(err) return res.status(500).send(err);
-        console.log('guardado');
-        res.redirect('/');
-      });
-    })
-    .catch((err) => console.log('error buscando listado de datasets en '+portal.url+': ', err));
+const _averageCriteria = criteriaObject => {
+  let sum = 0;
+  let criteriaCount = 0;
+
+  for (const criteria in criteriaObject) {
+    sum += +criteriaObject[criteria];
+    criteriaCount++;
+  }
+
+  return +(sum / criteriaCount).toFixed(2);
 };

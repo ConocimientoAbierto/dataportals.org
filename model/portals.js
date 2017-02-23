@@ -33,26 +33,6 @@ const portalSchema = new Schema({
     type: String,
     enum: ['CKAN_API_V1', 'CKAN_API_V2', 'CKAN_API_V3', 'JUNAR_API', 'Own_implementation', 'No_API']
   },
-  eval_use: {
-    oficial_identity: Number,
-    link_oficial_site: Number,
-    open_data_exp: Number,
-    all_dataset_link: Number,
-    dataset_search_system: Number,
-    examinator: Number
-  },
-  eval_uses_easiness: {
-    existence_api: Number,
-    api_documentation: Number
-  },
-  portal_evaluation: {
-    type: Boolean,
-    default: false
-  },
-  datasets_evaluation: {
-    type: Boolean,
-    default: false
-  },
   owner: {
     type: Schema.Types.ObjectId,
     ref: 'User'

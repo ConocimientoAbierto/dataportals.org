@@ -56,6 +56,7 @@ env.express(app);
 const homeRoutes = require('./routes/home');
 const portalsRoutes = require('./routes/portals');
 const usersRoutes = require('./routes/users');
+const evaluationRoutes = require('./routes/evaluation');
 
 /** GENERAL MIDDLEWHERE **/
 app.use(function(req, res, next) {
@@ -69,6 +70,7 @@ app.use(function(req, res, next) {
 app.use('/', homeRoutes);
 app.use('/portals', portalsRoutes);
 app.use('/users', usersRoutes);
+app.use('/evaluation', evaluationRoutes);
 
 
 // TODO ver esto
