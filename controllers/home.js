@@ -1,16 +1,17 @@
 'use strict';
 
 const mongoose = require('mongoose');
-const Evaluation = mongoose.model('Evaluation');
+const Ranking = mongoose.model('Ranking');
 const Portal = mongoose.model('Portal');
 
 /**
  * Render Home View
  */
 exports.renderHome = (req, res) => {
-  Evaluation.find({}, (err, evaluations) => {
+  Ranking.find({}, [],{sort:{_id:-1}, limit:1}, function(err, ranking) {
+    console.log(ranking)
     if (err) return res.status(500).send(err.message);
-    res.render('index.html', {evaluations: evaluations});
+    res.render('index.html', {ranking: ranking[0]});
   });
 };
 

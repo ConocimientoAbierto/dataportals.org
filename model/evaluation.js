@@ -52,7 +52,8 @@ const evaluationSchema = new Schema({
       errors_count: {type: Number, default: null},
       goodtables: {type: Boolean, default: false}
     }]
-  }]
+  }],
+  ranking_id: {type: Schema.Types.ObjectId, ref: "Ranking", required: true, default: null},
 }, {
   timestamps: {createdAt: 'created_at', updatedAt: 'updated_at'}
 });
