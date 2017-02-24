@@ -93,8 +93,8 @@ const _closeRanking = ranking => {
       })
 
       console.log(1,evaluations)
-      evaluations.forEach(function(evaluation,index,all) {
-        const prev_pos = null;
+        evaluations.forEach(function(evaluation,index,all) {
+        let prev_pos = null;
         console.log("previous_ranking",previous_ranking)
         for (let p in previous_ranking.portals) {
           console.log("previous_ranking",previous_ranking)
