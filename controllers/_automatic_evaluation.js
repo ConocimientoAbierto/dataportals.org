@@ -141,7 +141,7 @@ const _getPortalWithDatasetsList = (portalObj, query) => {
 
 const _requestPromise = (url, json) => {
   return new Promise((resolve, reject) => {
-    console.log("Making request: "+url)
+    console.log('Making request: '+url);
     request.get({
       url: url,
       json: json || false,
@@ -412,9 +412,9 @@ const _evalWithGoodTables = (resourceFileName) => {
   }
   catch(err) {
     result = {err: 'No se pudo evaluar con goodTable'};
-    // if (err.status === 1) {
-    //   result = JSON.parse(err.stdout.toString());
-    // }
+    if (err.status === 1) {
+      result = JSON.parse(err.stdout.toString());
+    }
   }
 
   return result;
