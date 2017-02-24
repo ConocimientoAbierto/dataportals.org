@@ -189,6 +189,10 @@ ul.navbar-nav {
   padding: 0.7em;
 }
 
+.criteria_bar {
+  min-width: 2em;
+}
+
 .criteria_description {
   white-space: normal;
   font-size: 0.85em;
@@ -206,6 +210,33 @@ ul.navbar-nav {
 .criteria_name {
   padding-left: 1em;
   font-weight: bold;
+}
+
+.portal_criteria {
+  margin: 0;
+  padding: 0 1em 1em 0;
+  list-style: none;
+  font-size: 1.1em;
+}
+
+.portal_criteria_name {
+  padding: 1em;
+  font-size: 1.1em;
+}
+
+.portal_criteria_value_error,
+.portal_criteria_value_ok {
+  padding: 1em;
+  color: white;
+  font-weight: bold;
+}
+
+.portal_criteria_value_ok {
+  background-color: #45BFA5;
+}
+
+.portal_criteria_value_error {
+  background-color: #BF6E42;
 }
 
 .resources-table {

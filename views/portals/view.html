@@ -11,7 +11,7 @@
       <h1>
         {{portal.title}}
         {% if (currentUser.role === 'admin' or  currentUser.role === 'evaluator') and portal.to_evaluate === true %}
-          <a class="btn btn-warning pull-right" href="/portals/evaluation/{{portal.slug}}" role="button">Evaluar <i class="fa fa-graduation-cap" aria-hidden="true"></i></a>
+          <a class="btn btn-warning pull-right" href="/evaluation/manual/{{portal.slug}}" role="button">Evaluación manual <i class="fa fa-graduation-cap" aria-hidden="true"></i></a>
         {% endif %}
       </h1>
       <img style="float: left; margin: 0 2em 2em 0 " src="http://api.page2images.com/directlink?p2i_url={{ portal.url }}&p2i_key=97c6f2d45d7ab41d&p2i_size=250x350" alt="Captura de pantalla del portal web" />
@@ -141,7 +141,7 @@
               Puntaje total
             </td>
             <td>
-              <div style="background-color: rgba(80,80,80,1); width: {{evaluations[0].total_score*100}}%">{{evaluations[0].total_score*100}}%</div>
+              <div class="criteria_bar" style="background-color: rgba(80,80,80,1); width: {{evaluations[0].total_score*100}}%">{{evaluations[0].total_score*100}}%</div>
             </td>
           </tr>
           <tr>
@@ -156,7 +156,7 @@
               Navegación
             </td>
             <td>
-              <div style="background-color: #5074D2; width: {{evaluations[0].ease_portal_navigation_score *100}}%">{{evaluations[0].ease_portal_navigation_score *100}}%</div>
+              <div class="criteria_bar" style="background-color: #5074D2; width: {{evaluations[0].ease_portal_navigation_score *100}}%">{{evaluations[0].ease_portal_navigation_score *100}}%</div>
             </td>
           </tr>
           <tr>
@@ -171,7 +171,7 @@
               Uso automático
             </td>
             <td>
-              <div style="background-color: #45BFA5; width: {{evaluations[0].automated_portal_use_score *100}}%">{{evaluations[0].automated_portal_use_score *100}}%</div>
+              <div class="criteria_bar" style="background-color: #45BFA5; width: {{evaluations[0].automated_portal_use_score *100}}%">{{evaluations[0].automated_portal_use_score *100}}%</div>
             </td>
           </tr>
           <tr>
@@ -186,7 +186,7 @@
               Metadatos
             </td>
             <td>
-              <div style="background-color: #BFBD3B; width: {{evaluations[0].metadata_cuality_score *100}}%">{{evaluations[0].metadata_cuality_score *100}}%</div>
+              <div class="criteria_bar" style="background-color: #BFBD3B; width: {{evaluations[0].metadata_cuality_score *100}}%">{{evaluations[0].metadata_cuality_score *100}}%</div>
             </td>
           </tr>
           <tr>
@@ -201,7 +201,7 @@
               Datos
             </td>
             <td>
-              <div style="background-color: #BF6E42; width: {{evaluations[0].data_cuality_score *100}}%">{{evaluations[0].data_cuality_score *100}}%</div>
+              <div class="criteria_bar" style="background-color: #BF6E42; width: {{evaluations[0].data_cuality_score *100}}%">{{evaluations[0].data_cuality_score *100}}%</div>
               <!-- violetaa 9A63B6 -->
             </td>
           </tr>
@@ -223,7 +223,7 @@
     <h2>Detalles</h2>
     <div class="col-md-12">
       <div class="panel panel-info">
-        <div class="panel-heading">Informe detallado por conjunto de datos</div>
+        <div class="panel-heading">Informe detallado</div>
 
         <div class="panel-body">
           {% if currentUser.role != 'admin' and currentUser.role != 'evaluator' %}
@@ -244,23 +244,117 @@
             <a href="#">Ver ejemplo</a>
           </p>
           {% else %}
+
+          <hr style="clear:both;" />
+
+          <h3>Criterios de todo el portal</h3>
+          <ul style="margin: 0; padding: 0;">
+            <li class="col-md-4 col-sm-12 portal_criteria">
+              <span class="portal_criteria_name">Uso de identidad oficial</span>
+              {%if evaluations[0].ease_portal_navigation_criteria.oficial_identity %}
+              <span class="portal_criteria_value_ok">Si</span>
+              {%else%}
+              <span class="portal_criteria_value_bad">No</span>
+              {%endif%}
+               <p class="criteria_description">
+                 Para aumentar la confiabilidad de la información publicada, la entidad responsable del portal debe ser fácil de identificar, es necesario utilizar logo o isotipo de la entidad (municipio, ministerio, institución) en todas las páginas.
+               </p>
+            </li>
+            <li class="col-md-4 col-sm-12 portal_criteria">
+              <span class="portal_criteria_name">Enlace al sitio oficial</span>
+              {%if evaluations[0].ease_portal_navigation_criteria.link_oficial_site %}
+              <span class="portal_criteria_value_ok">Si</span>
+              {%else%}
+              <span class="portal_criteria_value_bad">No</span>
+              {%endif%}
+              <p class="criteria_description">
+                 Para facilitar la verificación de la relación del portal con la entidad, el sitio web de la entidad responsable del portal debe ser fácil de acceder. Es necesario colocar un enlace al sitio web de la entidad (municipio, ministerio, institución) en todas las páginas.
+              </p>
+
+            </li>
+            <li class="col-md-4 col-sm-12 portal_criteria">
+              <span class="portal_criteria_name">Explicación de datos abiertos</span>
+              {%if evaluations[0].ease_portal_navigation_criteria.open_data_exp %}
+              <span class="portal_criteria_value_ok">Si</span>
+              {%else%}
+              <span class="portal_criteria_value_bad">No</span>
+              {%endif%}
+              <p class="criteria_description">
+                 Para muchos ciudadanos, el concepto de datos abiertos es novedoso, y por eso es necesario incluir una descripción de este concepto en la portada, o alternativamente en una página dedicada. El texto debe tener más de 20 palabras, mencionar algunos de los beneficios de los datos abiertos.
+              </p>
+
+            </li>
+            <li class="col-md-4 col-sm-12 portal_criteria">
+              <span class="portal_criteria_name">Enlace a todos los datasets</span>
+              {%if evaluations[0].ease_portal_navigation_criteria.all_dataset_link %}
+              <span class="portal_criteria_value_ok">Si</span>
+              {%else%}
+              <span class="portal_criteria_value_bad">No</span>
+              {%endif%}
+              <p class="criteria_description">
+                 Para facilitar la comprensión de todo el contenido del portal, el listado completo de todos los conjuntos de datos debe poder ser accedido, no un listado parcial.
+              </p>
+
+            </li>
+            <li class="col-md-4 col-sm-12 portal_criteria">
+              <span class="portal_criteria_name">Sistema de búsqueda</span>
+              {%if evaluations[0].ease_portal_navigation_criteria.dataset_search_system %}
+              <span class="portal_criteria_value_ok">Si</span>
+              {%else%}
+              <span class="portal_criteria_value_bad">No</span>
+              {%endif%}
+              <p class="criteria_description">
+                  Para facilitar la búsqueda de conjuntos de datos y recursos en el portal, debe existir un sistema de búsqueda que permita utlizar nombres, etiquetas y contenido para encontrar conjuntos de datos y devolver resultados relevantes.
+              </p>
+
+            </li>
+            <li class="col-md-4 col-sm-12 portal_criteria">
+              <span class="portal_criteria_name">Existencia de API</span>
+              {%if evaluations[0].automated_portal_use_criteria.existence_api %}
+              <span class="portal_criteria_value_ok">Si</span>
+              {%else%}
+              <span class="portal_criteria_value_bad">No</span>
+              {%endif%}
+              <p class="criteria_description">
+                 Para facilitar el acceso automatizado a los conjuntos de datos se requiere una interfaz especial para que los sistemas accedan a los datos. El portal debe tener una API REST. La API puede requerir el uso de un Token, siempre y cuando no sea necesario registrarse para obtenerlo.
+              </p>
+
+            </li>
+            <li class="col-md-4 col-sm-12 portal_criteria">
+              <span class="portal_criteria_name">Documentación de la API</span>
+              {%if evaluations[0].automated_portal_use_criteria.api_documentation %}
+              <span class="portal_criteria_value_ok">Si</span>
+              {%else%}
+              <span class="portal_criteria_value_bad">No</span>
+              {%endif%}
+              <p class="criteria_description">
+                 Para que los desarrolladores de software puedan fácilmente desarrollar sistemas que consuman datos del portal, es necesario un documento que detalle el funcionamiento de la API REST.
+              </p>
+
+            </li>
+          </ul>
+
+          <h3>Criterios por conjunto de datos</h3>
           <table class="resources-table">
             <thead>
               <tr>
                 <th class="resource-name">
-                  Recurso
+                  Nombre del recurso
                 </th>
                 <th>
                   Formato
                 </th>
                 <th>
                   Evaluable
+                  <a id="popover-evaluable" class="popover-handle"  href="javascript:" data-toggle="popover" data-trigger="focus" data-placement="top" title="¿Qué significa evaluable?" data-content="Esta columna indica si el formato de este recurso se presta para una evaluación automatizada, vea el listado de formatos evaluables en <a href='/metodologia'>metodología</a>.">(?)</a>
                 </th>
                 <th>
                   Validez
+                  <a id="popover-evaluable" class="popover-handle"  href="javascript:" data-toggle="popover" data-trigger="focus" data-placement="top" title="¿Qué significa validez?" data-content="Esta columna indica si el recurso evaluado resultó válido luego de la evaluación automática. Más detalles en <a href='/metodologia'>metodología</a>.">(?)</a>
                 </th>
                 <th>
                   Errores
+                  <a id="popover-evaluable" class="popover-handle"  href="javascript:" data-toggle="popover" data-trigger="focus" data-placement="top" title="¿Qué significa errores?" data-content="Esta columna indica la cantidad de errores detectados en la evaluación automática. Más detalles en <a href='/metodologia'>metodología</a>.">(?)</a>
                 </th>
                 <th>
                   Fuente
