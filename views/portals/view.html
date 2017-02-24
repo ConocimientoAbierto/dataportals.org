@@ -24,15 +24,15 @@
       </p>
       <ul style="clear: both;" class="row">
         <li class="counter col-lg-2 col-md-4 col-sm-12 col-lg-offset-2 col-md-offset-0">
-          <span class="value">1</span>
+          <span class="value">1 {{evaluations[0].ranking.portals[0].position}}</span>
           <span class="label">Posición</span>
         </li>
         <li class="counter col-lg-3 col-md-4 col-sm-12">
-          <span class="value">{{evaluation[0].total_score * 100}}%</span>
+          <span class="value">{{evaluations[0].total_score * 100}}%</span>
           <span class="label">Puntaje</span>
         </li>
         <li class="counter col-lg-3 col-md-4 col-sm-12">
-          <span class="value">{{evaluation[0].datasets.length}}</span>
+          <span class="value">{{evaluations[0].datasets.length}}</span>
           <span class="label">Conjuntos de datos</span>
         </li>
       </ul>
@@ -47,15 +47,31 @@
       <canvas id="lineChart"  style="width: 100%; height: 300px;"></canvas>
       <script src="/js/Chart.min.js"></script>
       <script type="text/javascript">
+        var labels = []
+        var puntajes_totales = []
+        var navegacion = []
+        var uso_automatico = []
+        var metadatos  = []
+        var datos = []
+
+        {% for evaluation in evaluations %}
+        labels.push("{{evaluation.updated_at}}");
+        puntajes_totales.push(Number({{evaluation.total_score}})*100);
+        navegacion.push(Number({{evaluation.ease_portal_navigation_score}})*100);
+        uso_automatico.push(Number({{evaluation.automated_portal_use_score}})*100);
+        metadatos.push(Number({{evaluation.metadata_cuality_score}})*100);
+        datos.push(Number({{evaluation.data_cuality_score}})*100);
+        {% endfor %}
+
         var ctx = document.getElementById("lineChart");
         var myChart = new Chart(ctx, {
           type: "line",
           data: {
-            labels: ["10/02/2017", "17/02/2017", "24/02/2017"],
+            labels: labels,
             datasets: [
               {
                 label: "Puntaje total",
-                data: [65, 59, {{evaluation[0].total_score*100}}],
+                data: puntajes_totales,
                 borderColor: "rgba(80,80,80,1)",
                 backgroundColor: "rgba(80,80,80,1)",
                 fill: false,
@@ -63,7 +79,7 @@
               },
               {
                 label: "Navegación",
-                data: [69, 49, 90],
+                data: navegacion,
                 borderColor: "#5074D2",
                 backgroundColor: "#5074D2",
                 fill: false,
@@ -71,7 +87,7 @@
               },
               {
                 label: "Uso automático",
-                data: [12, 15, 15],
+                data: uso_automatico,
                 borderColor: "#45BFA5",
                 backgroundColor: "#45BFA5",
                 fill: false,
@@ -79,7 +95,7 @@
               },
               {
                 label: "Metadatos",
-                data: [50, 80, 95],
+                data: metadatos,
                 borderColor: "#BFBD3B",
                 backgroundColor: "#BFBD3B",
                 fill: false,
@@ -87,7 +103,7 @@
               },
               {
                 label: "Datos",
-                data: [69, 49, 10],
+                data: datos,
                 borderColor: "#BF6E42",
                 backgroundColor: "#BF6E42",
                 fill: false,
@@ -125,7 +141,7 @@
               Puntaje total
             </td>
             <td>
-              <div style="background-color: rgba(80,80,80,1); width: {{evaluation[0].total_score*100}}%">{{evaluation[0].total_score*100}}%</div>
+              <div style="background-color: rgba(80,80,80,1); width: {{evaluations[0].total_score*100}}%">{{evaluations[0].total_score*100}}%</div>
             </td>
           </tr>
           <tr>
@@ -140,7 +156,7 @@
               Navegación
             </td>
             <td>
-              <div style="background-color: #5074D2; width: 90%">90%</div>
+              <div style="background-color: #5074D2; width: {{evaluations[0].ease_portal_navigation_score *100}}%">{{evaluations[0].ease_portal_navigation_score *100}}%</div>
             </td>
           </tr>
           <tr>
@@ -155,7 +171,7 @@
               Uso automático
             </td>
             <td>
-              <div style="background-color: #45BFA5; width: 80%">80%</div>
+              <div style="background-color: #45BFA5; width: {{evaluations[0].automated_portal_use_score *100}}%">{{evaluations[0].automated_portal_use_score *100}}%</div>
             </td>
           </tr>
           <tr>
@@ -170,7 +186,7 @@
               Metadatos
             </td>
             <td>
-              <div style="background-color: #BFBD3B; width: 100%">100%</div>
+              <div style="background-color: #BFBD3B; width: {{evaluations[0].metadata_cuality_score *100}}%">{{evaluations[0].metadata_cuality_score *100}}%</div>
             </td>
           </tr>
           <tr>
@@ -185,7 +201,7 @@
               Datos
             </td>
             <td>
-              <div style="background-color: #BF6E42; width: 70%">70%</div>
+              <div style="background-color: #BF6E42; width: {{evaluations[0].data_cuality_score *100}}%">{{evaluations[0].data_cuality_score *100}}%</div>
               <!-- violetaa 9A63B6 -->
             </td>
           </tr>
@@ -199,7 +215,7 @@
         </tbody>
       </table>
       <p>
-        Última actualización de puntaje: 22/02/2017
+        Última actualización de puntaje: {{evaluations[0].updated_at }}
       </p>
     </div>
   </div>
@@ -241,7 +257,7 @@
                   Evaluable
                 </th>
                 <th>
-                  Válido
+                  Validez
                 </th>
                 <th>
                   Errores
@@ -252,7 +268,7 @@
               </tr>
             </thead>
             <tbody>
-              {% for dataset in evaluation[0].datasets %}
+              {% for dataset in evaluations[0].datasets %}
                 {% for resource in dataset.resources %}
                 <tr>
                   <td class="resource-name">
@@ -260,259 +276,35 @@
 
                   </td>
                   <td class="resource-ok">
-                    {{resource.format}}
+                    {{resource.format|upper}}
                   </td>
                   <td class="resource-ok">
-                    {{resource.name}}
+                    {% if resource.evaluable == true %} Si {% else %} No {% endif %}
                   </td>
-                  <td class="resource-error">
-                    {{resource.valid}}
+                  <td class="{% if resource.validity or not resource.evaluable %} resource-ok {% else %} resource-error {% endif %}">
+                    {% if resource.evaluable %}
+                      {% if resource.validity %}
+                      Válido
+                      {%else %}
+                      Errores
+                      {%endif%}
+                    {% else %}
+                    {% endif %}
                   </td>
-                  <td class="resource-error">
-                    {{resource.errors}}
+                  <td class="{% if (resource.errors_count > 0 and resource.goodtables or not resource.evaluable) %} resource-ok {% else %} resource-error {% endif %}">
+                    {% if resource.evaluable %}
+                    {{resource.errors_count}}
                     <a href="http://goodtables.okfnlabs.org/reports?data_url={{resource.url}}">
                       Ver detalles
                     </a>
+                    {% endif %}
                   </td>
-                  <td>
+                  <td class="resource-ok">
                     <a href="{{resource.url}}">Ver original</a>
                   </td>
                 </tr>
                 {%endfor%}
               {%endfor%}
-              <tr>
-                <td class="resource-name">
-                  Listado de víctimas del accionar represivo ilegal sin denuncia formal
-
-                </td>
-                <td class="resource-error">
-                  PDF
-                </td>
-                <td class="resource-error">
-                  No
-                </td>
-                <td class="resource-error">
-
-                </td>
-                <td class="resource-error">
-                </td>
-                <td>
-                  <a href="#">Ver original</a>
-                </td>
-              </tr>
-              <tr>
-                <td class="resource-name">
-                  Listado de víctimas del accionar represivo ilegal sin denuncia formal
-
-                </td>
-                <td class="resource-ok">
-                  CSV
-                </td>
-                <td class="resource-ok">
-                  Si
-                </td>
-                <td class="resource-ok">
-                  Si
-                </td>
-                <td class="resource-ok">
-                  0
-                  <a href="http://goodtables.okfnlabs.org/reports?data_url=https://data.wprdc.org/dataset/5934b8d1-892f-4fd7-84c1-aa890d3ff529/resource/a61b6617-2f06-4745-8731-165139d41667/download/opendata-pubworks---field-listing-22015.csv&format=csv&encoding=&schema_url=">
-                    Ver detalle
-                  </a>
-                </td>
-                <td>
-                  <a href="#">Ver original</a>
-                </td>
-              </tr>
-              <tr>
-                <td class="resource-name">
-                  Listado de víctimas del accionar represivo ilegal sin denuncia formal
-
-                </td>
-                <td class="resource-ok">
-                  CSV
-                </td>
-                <td class="resource-ok">
-                  Si
-                </td>
-                <td class="resource-error">
-                  No
-                </td>
-                <td class="resource-error">
-                  10
-                  <a href="http://goodtables.okfnlabs.org/reports?data_url=https://data.wprdc.org/dataset/5934b8d1-892f-4fd7-84c1-aa890d3ff529/resource/a61b6617-2f06-4745-8731-165139d41667/download/opendata-pubworks---field-listing-22015.csv&format=csv&encoding=&schema_url=">
-                    Ver detalles
-                  </a>
-                </td>
-                <td>
-                  <a href="#">Ver original</a>
-                </td>
-              </tr>
-              <tr>
-                <td class="resource-name">
-                  Listado de víctimas del accionar represivo ilegal sin denuncia formal
-
-                </td>
-                <td class="resource-ok">
-                  CSV
-                </td>
-                <td class="resource-ok">
-                  Si
-                </td>
-                <td class="resource-error">
-                  No
-                </td>
-                <td class="resource-error">
-                  10
-                  <a href="http://goodtables.okfnlabs.org/reports?data_url=https://data.wprdc.org/dataset/5934b8d1-892f-4fd7-84c1-aa890d3ff529/resource/a61b6617-2f06-4745-8731-165139d41667/download/opendata-pubworks---field-listing-22015.csv&format=csv&encoding=&schema_url=">
-                    Ver detalles
-                  </a>
-                </td>
-                <td>
-                  <a href="#">Ver original</a>
-                </td>
-              </tr>
-              <tr>
-                <td class="resource-name">
-                  Listado de víctimas del accionar represivo ilegal sin denuncia formal
-
-                </td>
-                <td class="resource-ok">
-                  CSV
-                </td>
-                <td class="resource-ok">
-                  Si
-                </td>
-                <td class="resource-error">
-                  No
-                </td>
-                <td class="resource-error">
-                  10
-                  <a href="http://goodtables.okfnlabs.org/reports?data_url=https://data.wprdc.org/dataset/5934b8d1-892f-4fd7-84c1-aa890d3ff529/resource/a61b6617-2f06-4745-8731-165139d41667/download/opendata-pubworks---field-listing-22015.csv&format=csv&encoding=&schema_url=">
-                    Ver detalles
-                  </a>
-                </td>
-                <td>
-                  <a href="#">Ver original</a>
-                </td>
-              </tr>
-              <tr>
-                <td class="resource-name">
-                  Listado de víctimas del accionar represivo ilegal sin denuncia formal
-
-                </td>
-                <td class="resource-ok">
-                  CSV
-                </td>
-                <td class="resource-ok">
-                  Si
-                </td>
-                <td class="resource-error">
-                  No
-                </td>
-                <td class="resource-error">
-                  10
-                  <a href="http://goodtables.okfnlabs.org/reports?data_url=https://data.wprdc.org/dataset/5934b8d1-892f-4fd7-84c1-aa890d3ff529/resource/a61b6617-2f06-4745-8731-165139d41667/download/opendata-pubworks---field-listing-22015.csv&format=csv&encoding=&schema_url=">
-                    Ver detalle
-                  </a>
-                </td>
-              </tr>
-              <tr>
-                <td class="resource-name">
-                  Listado de víctimas del accionar represivo ilegal sin denuncia formal
-
-                </td>
-                <td class="resource-ok">
-                  CSV
-                </td>
-                <td class="resource-ok">
-                  Si
-                </td>
-                <td class="resource-error">
-                  No
-                </td>
-                <td class="resource-error">
-                  10
-                  <a href="http://goodtables.okfnlabs.org/reports?data_url=https://data.wprdc.org/dataset/5934b8d1-892f-4fd7-84c1-aa890d3ff529/resource/a61b6617-2f06-4745-8731-165139d41667/download/opendata-pubworks---field-listing-22015.csv&format=csv&encoding=&schema_url=">
-                    Ver detalles
-                  </a>
-                </td>
-                <td>
-                  <a href="#">Ver original</a>
-                </td>
-              </tr>
-              <tr>
-                <td class="resource-name">
-                  Listado de víctimas del accionar represivo ilegal sin denuncia formal
-
-                </td>
-                <td class="resource-ok">
-                  CSV
-                </td>
-                <td class="resource-ok">
-                  Si
-                </td>
-                <td class="resource-error">
-                  No
-                </td>
-                <td class="resource-error">
-                  10
-                  <a href="http://goodtables.okfnlabs.org/reports?data_url=https://data.wprdc.org/dataset/5934b8d1-892f-4fd7-84c1-aa890d3ff529/resource/a61b6617-2f06-4745-8731-165139d41667/download/opendata-pubworks---field-listing-22015.csv&format=csv&encoding=&schema_url=">
-                    Ver detalles
-                  </a>
-                </td>
-                <td>
-                  <a href="#">Ver original</a>
-                </td>
-              </tr>
-              <tr>
-                <td class="resource-name">
-                  Listado de víctimas del accionar represivo ilegal sin denuncia formal
-
-                </td>
-                <td class="resource-ok">
-                  CSV
-                </td>
-                <td class="resource-ok">
-                  Si
-                </td>
-                <td class="resource-error">
-                  No
-                </td>
-                <td class="resource-error">
-                  10
-                  <a href="http://goodtables.okfnlabs.org/reports?data_url=https://data.wprdc.org/dataset/5934b8d1-892f-4fd7-84c1-aa890d3ff529/resource/a61b6617-2f06-4745-8731-165139d41667/download/opendata-pubworks---field-listing-22015.csv&format=csv&encoding=&schema_url=">
-                    Ver detalles
-                  </a>
-                </td>
-                <td>
-                  <a href="#">Ver original</a>
-                </td>
-              </tr>
-              <tr>
-                <td class="resource-name">
-                  Listado de víctimas del accionar represivo ilegal sin denuncia formal
-
-                </td>
-                <td class="resource-ok">
-                  CSV
-                </td>
-                <td class="resource-ok">
-                  Si
-                </td>
-                <td class="resource-error">
-                  No
-                </td>
-                <td class="resource-error">
-                  10
-                  <a href="http://goodtables.okfnlabs.org/reports?data_url=https://data.wprdc.org/dataset/5934b8d1-892f-4fd7-84c1-aa890d3ff529/resource/a61b6617-2f06-4745-8731-165139d41667/download/opendata-pubworks---field-listing-22015.csv&format=csv&encoding=&schema_url=">
-                    Ver detalles
-                  </a>
-                </td>
-                <td>
-                  <a href="#">Ver original</a>
-                </td>
-              </tr>
             </tbody>
           </table>
           {% endif %}
