@@ -19,6 +19,7 @@ const app = express();
 /** MODELS **/
 const Portal = require('./model/portals');
 const Evaluation = require('./model/evaluation');
+const Ranking = require('./model/ranking');
 
 /** MONGOOSE CONFIG **/
 mongoose.connect(configAPP.dbURL, (err) => err ? console.log(err) : console.log('Conected to DB'));

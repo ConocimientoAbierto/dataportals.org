@@ -15,15 +15,15 @@
     </div>
     <ul class="overview row">
       <li class="counter col-lg-2 col-md-4 col-sm-12 col-lg-offset-2 col-md-offset-0">
-        <span class="value">16</span>
+        <span class="value">{{ ranking.portals_count }}</span>
         <span class="label">portales evaluados</span>
       </li>
       <li class="counter col-lg-3 col-md-4 col-sm-12 col-sm-">
-        <span class="value">326</span>
+        <span class="value">{{ ranking.datasets_count }}</span>
         <span class="label">conjuntos de datos</span>
       </li>
       <li class="counter col-lg-3 col-md-4 col-sm-12">
-        <span class="value">1421</span>
+        <span class="value">{{ ranking.resources_count }}</span>
         <span class="label">recursos válidos</span>
       </li>
     </ul>
@@ -34,7 +34,7 @@
 {% block content %}
 <section id="ranking">
   <div class="row">
-    <h2>Los mejores portales de febrero 2017</h2>
+    <h2>Los mejores portales de febrero 2017 {{ ranking.update_at }}</h2>
   </div>
   <div class="row">
     <table class="table table-condensed">
@@ -52,12 +52,26 @@
         </tr>
       </thead>
       <tbody>
-        {% for evaluation in evaluations %}
+        {% for portal in ranking.portals %}
           <tr class="text-center">
-            <td>1 <span class="glyphicon glyphicon-menu-up text-success" title="Subió desde posición 2"></span></td>
-            <td><a href="/portals/{{evaluation.portal_slug}}">{{evaluation.portal_slug}}</a></td>
-            <td>No</td>
-            <td>{{evaluation.total_score * 100}}%</td>
+            <td>{{portal.current_position}}
+              {% if portal.current_position > portal.previous_position %}
+              <span class="glyphicon glyphicon-menu-up text-success" title="Subió desde posición {{portal.previous_position}}"></span>
+              {% elseif portal.current_position < portal.previous_position %}
+              <span class="glyphicon glyphicon-menu-down text-danger"  title="Bajó desde posición {{portal.previous_position}}"></span>
+              {% elseif portal.current_position == portal.previous_position %}
+              <span class="equal-sign text-default" title="Mantiene posición">=</span>
+              {% endif %}
+            </td>
+            <td><a href="/portals/{{evaluation.portal_slug}}">{{portal.portal_title}}</a></td>
+            <td>
+              {% if portal.has_manual_evaluation %}
+              Si
+              {% else %}
+              No
+              {% endif %}
+            </td>
+            <td>{{portal.total_score * 100}}%</td>
           </tr>
         {% endfor %}
         <tr class="text-center">
@@ -275,7 +289,7 @@
       </tbody>
     </table>
     <p class="ranking_last_updated">
-      Ranking actualizado el: 25/02/2017
+      Ranking actualizado el: 25/02/2017 {{ ranking.update_at }}
     </p>
   </div>
   <div class="row">

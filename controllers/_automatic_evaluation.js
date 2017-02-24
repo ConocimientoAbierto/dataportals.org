@@ -20,17 +20,19 @@ process.on('message', portals => {
   const portalsSlug = portalsArr.map(portal => portal.slug);
 
   portalsArr.reduce((portals, portal) => {
-    return portals
-      .then( () => _setPortalObject(portal))
-      .then(portalObj => _getPortalWithDatasetsList(portalObj, 'package_search?rows='))
-      .then(portalObj => _checkCurrentAutomaticEvaluation(portalObj))
-      .then(portalObj => _downloadResources(portalObj))
-      .then(portalObj => _evaluateDatasets(portalObj))
-      .then(portalObj => {
-        return portalObj.report.save();
-      })
-      .then(() => console.log('guardada evaluación de ' + portal.slug))
-      .catch((err) => console.log('error generando la evaluación automática de '+ portal.slug +': \n', err));
+    if (portal.to_evaluate === true) {
+      return portals
+        .then( () => _setPortalObject(portal))
+        .then(portalObj => _getPortalWithDatasetsList(portalObj, 'package_search?rows='))
+        .then(portalObj => _checkCurrentAutomaticEvaluation(portalObj))
+        .then(portalObj => _downloadResources(portalObj))
+        .then(portalObj => _evaluateDatasets(portalObj))
+        .then(portalObj => {
+          return portalObj.report.save();
+        })
+        .then(() => console.log('guardada evaluación de ' + portal.slug))
+        .catch((err) => console.log('error generando la evaluación automática de '+ portal.slug +': \n', err));
+    }
   },
   Promise.resolve()
   ).then( () => {
@@ -139,6 +141,7 @@ const _getPortalWithDatasetsList = (portalObj, query) => {
 
 const _requestPromise = (url, json) => {
   return new Promise((resolve, reject) => {
+    console.log("Making request: "+url)
     request.get({
       url: url,
       json: json || false,
