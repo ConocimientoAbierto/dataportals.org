@@ -63,7 +63,7 @@
               <span class="equal-sign text-default" title="Mantiene posición">=</span>
               {% endif %}
             </td>
-            <td><a href="/portals/{{evaluation.portal_slug}}">{{portal.portal_title}}</a></td>
+            <td><a href="/portals/{{portal.portal_slug}}">{{portal.portal_name}}</a></td>
             <td>
               {% if portal.has_manual_evaluation %}
               Si
@@ -71,7 +71,7 @@
               No
               {% endif %}
             </td>
-            <td>{{portal.total_score * 100}}%</td>
+            <td>{{portal.score * 100}}%</td>
           </tr>
         {% endfor %}
         <tr class="text-center">

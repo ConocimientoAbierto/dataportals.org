@@ -11,41 +11,142 @@ const Pool = require('threads').Pool;
 
 require('./../model/evaluation');
 require('./../model/portals');
+require('./../model/ranking');
 
 const Evaluation = mongoose.model('Evaluation');
+const Ranking = mongoose.model('Ranking');
+const Portal = mongoose.model('Portal');
 
 process.on('message', portals => {
   const portalsArr = portals.portals;
   // get all portal's slugs
   const portalsSlug = portalsArr.map(portal => portal.slug);
 
-  portalsArr.reduce((portals, portal) => {
-    if (portal.to_evaluate === true) {
-      return portals
-        .then( () => _setPortalObject(portal))
-        .then(portalObj => _getPortalWithDatasetsList(portalObj, 'package_search?rows='))
-        .then(portalObj => _checkCurrentAutomaticEvaluation(portalObj))
-        .then(portalObj => _downloadResources(portalObj))
-        .then(portalObj => _evaluateDatasets(portalObj))
-        .then(portalObj => {
-          return portalObj.report.save();
-        })
-        .then(() => console.log('guardada evaluación de ' + portal.slug))
-        .catch((err) => console.log('error generando la evaluación automática de '+ portal.slug +': \n', err));
-    }
-  },
-  Promise.resolve()
-  ).then( () => {
-    console.log('FINAL!');
-  });
+  _openRanking(portalsArr).then(function(ranking){
+    portalsArr.reduce((portals_promise, portal) => {
+      if (portal.to_evaluate === true) {
+        console.log("Evaluating ",portal.slug)
+        return portals_promise
+          .then( () => _setPortalObject(portal))
+          .then(portalObj => _getPortalWithDatasetsList(portalObj, 'package_search?rows='))
+          .then(portalObj => _checkCurrentAutomaticEvaluation(portalObj))
+          .then(portalObj => _downloadResources(portalObj))
+          .then(portalObj => _evaluateDatasets(portalObj))
+          .then(portalObj => {
+            portalObj.report.ranking_id = ranking._id;
+            return portalObj.report.save();
+          })
+          .then(() => console.log('guardada evaluación de ' + portal.slug))
+          .catch((portalObj) => {
+            console.log('no se generó la evaluación automática de '+ portal.slug +': \n', portalObj)
+            portalObj.report.ranking_id = ranking._id;
+            return portalObj.report.save();
+          });
+      }
+      else {
+        console.log("Not evaluating ",portal.slug)
+        return portals_promise
+      }
+    },
+    Promise.resolve()
+    ).then( () => {
+      console.log('All portals evaluated.');
+      _closeRanking(ranking);
+    });
+
+  })
+
 });
+
+const _openRanking = portalsArr => {
+  //Crear una nueva entrada en la tabla rankings para que se defina created_at y la cantidad de portales a evaluar
+  // devolver el ID del ranking para asignar las evaluaciones a este
+  const ranking = new Ranking();
+  ranking.portals_count = portalsArr.length;
+  // ranking.save(function(err,saved_ranking) {
+  //     return saved_ranking;
+  // });
+  return ranking.save();
+}
+
+const _closeRanking = ranking => {
+  //Traer todas las evaluaciones de este ranking
+  //Calcular posiciones
+  //Guardar portales en ranking
+  //Marcar como finished
+
+  console.log("Starting ranking",ranking._id);
+
+  Evaluation.find({ ranking_id: ranking._id }, function (err,evaluations) {
+    console.log("Found evaluations for ranking",evaluations.length)
+
+    Ranking.find({}, [], {sort:{_id:-1}, limit:2}, function(err, rankings) {
+      const previous_ranking = rankings[1];
+      console.log("Found previous_ranking",previous_ranking._id,previous_ranking.created_at)
+
+      evaluations.sort(function(a,b){
+        if (a.total_score < b.total_score)
+          return -1;
+        if (a.total_score > b.total_score)
+          return 1;
+        return 0;
+      })
+
+      console.log(1,evaluations)
+      evaluations.forEach(function(evaluation,index,all) {
+        const prev_pos = null;
+        console.log("previous_ranking",previous_ranking)
+        for (let p in previous_ranking.portals) {
+          console.log("previous_ranking",previous_ranking)
+          if (previous_ranking.portals[p].portal_slug == evaluation.portal_slug) {
+            prev_pos = previous_ranking.portals[p].current_position
+          }
+        }
+        console.log("evaluation.portal_slug",evaluation.portal_slug)
+
+        const portal_name = null
+        Portal.findBySlug(evaluation.portal_slug, function(err,portal) {
+          console.log("portal",portal)
+          const portal_name = portal.title;
+          console.log("Found portal name",portal_name)
+
+          ranking.portals.push({
+            portal_slug: evaluation.portal_slug,
+            portal_name: portal_name,
+            current_position: (index+1),
+            previous_position: prev_pos,
+            score: evaluation.total_score,
+            was_evaluated: true,
+            has_manual_evaluation: evaluation.manual_eval_done,
+          })
+
+          ranking.datasets_count += +evaluation.datasets.length
+          ranking.resources_count = 0;//+= +evaluation.resources_count
+
+          ranking.is_finished = true;
+          ranking.save(function(err,ranking) {
+            console.log("finish ranking",err,ranking)
+
+          })
+
+
+        })
+
+      })
+    })
+  })
+
+  console.log("WTF",ranking._id);
+
+}
 
 const _checkCurrentAutomaticEvaluation = portalObj => {
   // verify if the automatic evaluation is needed
-  return Evaluation.find({portal_slug: portalObj.portal_slug, is_finished: false, }).exec()
+  return Evaluation.find({portal_slug: portalObj.portal_slug, is_finished: false }).sort({_id: -1}).exec()
   .then(evaluation => {
-    if (evaluation.length > 0 && evaluation.automatic_eval_done) { // current automatic evaluation already done
-      return Promise.reject('ya hay evaluacion automatica para la actual de ' + portalObj.slug);
+    if (evaluation.length > 0 && evaluation[0].automatic_eval_done) { // current automatic evaluation already done
+      portalObj.report = evaluation[0];
+      return Promise.reject(portalObj);
     }
 
     const newPortalObj = new Object(portalObj);
