@@ -107,7 +107,7 @@ exports.saveManualEvaluation = (req, res) => {
     ];
     evaluation.automated_portal_use_score = _averageCriteria(aps_criteriaValues);
     // total score
-    evaluation.total_score = _averageCriteria([evaluation.automated_portal_use_score, evaluation.ease_portal_navigation_score, evaluation.metadata_cuality_score || 0]);
+    evaluation.total_score = _averageCriteria([evaluation.automated_portal_use_score, evaluation.ease_portal_navigation_score, evaluation.metadata_cuality_score || 0, evaluation.data_cuality_score || 0]);
 
     return evaluation;
   };

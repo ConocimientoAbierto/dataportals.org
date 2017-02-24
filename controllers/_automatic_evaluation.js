@@ -27,12 +27,10 @@ process.on('message', portals => {
       .then(portalObj => _downloadResources(portalObj))
       .then(portalObj => _evaluateDatasets(portalObj))
       .then(portalObj => {
-        portalObj.report.save( (err, evaluation) => {
-          if(err) console.log(err);
-          console.log('guardado');
-        });
+        return portalObj.report.save();
       })
-      .catch((err) => console.log('error generando la evaluación automática de '+ portal.slug +': ', err));
+      .then(() => console.log('guardada evaluación de ' + portal.slug))
+      .catch((err) => console.log('error generando la evaluación automática de '+ portal.slug +': \n', err));
   },
   Promise.resolve()
   ).then( () => {
@@ -42,7 +40,7 @@ process.on('message', portals => {
 
 const _checkCurrentAutomaticEvaluation = portalObj => {
   // verify if the automatic evaluation is needed
-  return Evaluation.find({portal_slug: portalObj.portal_slug, is_finished: false}).exec()
+  return Evaluation.find({portal_slug: portalObj.portal_slug, is_finished: false, }).exec()
   .then(evaluation => {
     if (evaluation.length > 0 && evaluation.automatic_eval_done) { // current automatic evaluation already done
       return Promise.reject('ya hay evaluacion automatica para la actual de ' + portalObj.slug);
@@ -54,9 +52,6 @@ const _checkCurrentAutomaticEvaluation = portalObj => {
     newPortalObj.report.portal_slug = portalObj.portal_slug;
 
     return newPortalObj;
-  })
-  .catch(err => {
-    Promise.reject(err);
   });
 };
 
@@ -83,13 +78,18 @@ const _downloadResources = portalObj => {
         const filePath = input.filePath + input.fileName;
 
         download(input.fileUrl, {retries: 1})
-          .on('request', req => setTimeout(() => req.abort(), 5000)) // abortin after 2" without response
+          .on('request', req => setTimeout(() => req.abort(), 5000)) // abortin after 5" without response
           .on('error', (error, body, response) => {
             console.log(error);
             done();
           })
           .on('response', response => {
-            fs.writeFileSync(filePath, response._readableState.buffer);
+            try {
+              fs.writeFileSync(filePath, response._readableState.buffer);
+            }
+            catch(err) {
+              console.log('Error al guardar archivo. \narchivo: ' + input.fileName, err);
+            }
             done();
           });
       })
@@ -98,7 +98,7 @@ const _downloadResources = portalObj => {
 
     pool
     .on('message', (job, message) => console.log(message))
-    .on('error', (job, message) => console.log(message))
+    .on('error', (job, message) => reject('Error en el pool de descarga, error: \n' + message))
     .on('finished', () => {
       resolve(portalObj);
     });
@@ -145,7 +145,7 @@ const _requestPromise = (url, json) => {
       headers: {'User-Agent': 'request'}
     }, (err, res, data) => {
       if (err) {
-        reject('Some thing goes wrong with the request: ' + err);
+        reject('Some thing goes wrong with the request to : ' + url + '\nError: '+ err);
       } else if (res.statusCode !== 200) {
         reject('Request status: ' + res.statusCode);
       }
@@ -158,7 +158,7 @@ const _requestPromise = (url, json) => {
 
 const _getDatasetsCount = apiUrl => {
   return _requestPromise(apiUrl, true)
-    .then( (data) => data.result.count );
+    .then((data) => data.result.count);
 };
 
 /**
@@ -298,6 +298,7 @@ const _evaluateDatasets = portalObj => {
   // reduce to a list of datasets
   const datasetList = portalObj.datasets_list.results;
   let metadataSum = 0;
+  let resourceScore = 0;
 
   const datasets = datasetList.reduce( (datasets, dataset) => {
     // Eval report boilerplate
@@ -333,6 +334,7 @@ const _evaluateDatasets = portalObj => {
 
     metadataSum += +datasetEval.metadata_score;
 
+    let validityScore = 0;
     // Resources evaluation
     const resourcesEval = dataset.resources.reduce((resources, resource) => {
       const fileName = _getResourceFileName(resource.url);
@@ -360,18 +362,33 @@ const _evaluateDatasets = portalObj => {
         }
       }
 
+      validityScore += +resourceEval.validity;
+
       resources.push(resourceEval);
       return resources;
     }, []);
 
     datasetEval.resources = resourcesEval;
+    datasetEval.resources_score = +(validityScore / datasetEval.resources_count).toFixed(2);
     datasets.push(datasetEval);
+
+    resourceScore += datasetEval.resources_score;
     return datasets;
   }, []);
   portalObj.report.datasets = datasets;
 
   portalObj.report.metadata_cuality_score = +(metadataSum / datasets.length).toFixed(2);
-  portalObj.report.total_score = +(metadataSum / datasets.length).toFixed(2) ;
+  portalObj.report.data_cuality_score = +(resourceScore / datasets.length).toFixed(2) ;
+
+  // total score
+  const report = portalObj.report;
+  const totalCriteria = [
+    report.metadata_cuality_score,
+    report.data_cuality_score,
+    report.ease_portal_navigation_score || 0,
+    report.automated_portal_use_score || 0
+  ];
+  portalObj.report.total_score = _averageCriteria(totalCriteria);
   portalObj.report.automatic_eval_done = true;
   // if manual is already done this eval is finished
   portalObj.report.is_finished = portalObj.report.manual_eval_done || false;
@@ -386,16 +403,15 @@ const _evalWithGoodTables = (resourceFileName) => {
   // evaluar cada recurso
   try {
     if (!fs.existsSync(filePath)) {
-      throw new Error('no se descargó el mensaje');
+      throw new Error({fileNotDownload: 'no se descargó el mensaje'});
     }
     result = execSync('goodtables --json table ' + filePath);
   }
   catch(err) {
-    if (err.status !== 1) {
-      result = {err: 'No se pudo evaluar con goodTable'};
-    }
-    const json = JSON.parse(err.stdout.toString());
-    result = json;
+    result = {err: 'No se pudo evaluar con goodTable'};
+    // if (err.status === 1) {
+    //   result = JSON.parse(err.stdout.toString());
+    // }
   }
 
   return result;
