@@ -25,7 +25,7 @@ process.on('message', portals => {
   _openRanking(portalsArr).then(function(ranking){
     portalsArr.reduce((portals_promise, portal) => {
       if (portal.to_evaluate === true) {
-        console.log("Evaluating ",portal.slug)
+        console.log("Evaluating ",portal.slug);
         return portals_promise
           .then( () => _setPortalObject(portal))
           .then(portalObj => _getPortalWithDatasetsList(portalObj, 'package_search?rows='))
@@ -455,13 +455,15 @@ const _evaluateDatasets = portalObj => {
 
       if (resourceEval.evaluable) {
         const gtResult = _evalWithGoodTables(resourceEval.file_name);
+        console.log('file:', resourceEval.file_name);
+        console.log(gtResult);
         if (gtResult.hasOwnProperty('err')) {
           resourceEval.validity = 0;
           resourceEval.errors_count = 0;
           resourceEval.goodtables = false;
         } else {
           resourceEval.validity = gtResult.valid ? 1 : 0;
-          resourceEval.errors_count = gtResult['errors-count'];
+          resourceEval.errors_count = gtResult['error-count'];
           resourceEval.goodtables = true;
         }
       }
@@ -509,7 +511,8 @@ const _evalWithGoodTables = (resourceFileName) => {
     if (!fs.existsSync(filePath)) {
       throw new Error({fileNotDownload: 'no se descargó el mensaje'});
     }
-    result = execSync('goodtables --json table ' + filePath);
+    const gt = execSync('goodtables --json table ' + filePath);
+    result = JSON.parse(gt.toString());
   }
   catch(err) {
     result = {err: 'No se pudo evaluar con goodTable'};
