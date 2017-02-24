@@ -94,7 +94,7 @@ exports.saveManualEvaluation = (req, res) => {
       evaluation.ease_portal_navigation_criteria.open_data_exp,
       evaluation.ease_portal_navigation_criteria.all_dataset_link,
       evaluation.ease_portal_navigation_criteria.dataset_search_system,
-      evaluation.ease_portal_navigation_criteria.examinator
+      //evaluation.ease_portal_navigation_criteria.examinator
     ];
     evaluation.ease_portal_navigation_score = _averageCriteria(epn_criteriaValues);
 

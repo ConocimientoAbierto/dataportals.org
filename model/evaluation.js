@@ -14,12 +14,12 @@ const evaluationSchema = new Schema({
   total_score: {type: Number, default: null},
   ease_portal_navigation_score: {type: Number, default: null},
   ease_portal_navigation_criteria: {
-    oficial_identity: Number,
-    link_oficial_site: Number,
-    open_data_exp: Number,
-    all_dataset_link: Number,
-    dataset_search_system: Number,
-    examinator: Number
+    oficial_identity: {type: Number, default: null},
+    link_oficial_site: {type: Number, default: null},
+    open_data_exp: {type: Number, default: null},
+    all_dataset_link: {type: Number, default: null},
+    dataset_search_system: {type: Number, default: null},
+    examinator: {type: Number, default: null}
   },
   automated_portal_use_score: {type: Number, default: null},
   automated_portal_use_criteria: {
