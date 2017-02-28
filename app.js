@@ -11,7 +11,8 @@ const express = require('express'),
   flash = require('connect-flash'),
   session = require('express-session'),
   csurf = require('csurf'),
-  validator = require('express-validator');
+  validator = require('express-validator'),
+  dateFilter = require('nunjucks-date-filter');
 
 const configAPP = require('./lib/configAPP');
 const app = express();
@@ -51,7 +52,10 @@ app.use(csurf());
 require('./lib/configPassport')(app);
 
 const env = new nunjucks.Environment(new nunjucks.FileSystemLoader(path.resolve(__dirname + '/views')));
+
+dateFilter.install(env);
 env.express(app);
+
 
 /** ROUTES CONFIG **/
 const homeRoutes = require('./routes/home');

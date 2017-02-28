@@ -34,7 +34,7 @@
 {% block content %}
 <section id="ranking">
   <div class="row">
-    <h2>Los mejores portales de febrero 2017 {{ ranking.update_at }}</h2>
+    <h2>Los mejores portales de {{ ranking.updated_at | date("MMMM YYYY") }}</h2>
   </div>
   <div class="row">
     <table class="table table-condensed">
@@ -77,7 +77,7 @@
       </tbody>
     </table>
     <p class="ranking_last_updated">
-      Ranking actualizado el: 25/02/2017 {{ ranking.update_at }}
+      Ranking mensual actualizado el: {{ ranking.updated_at | date("DD/MM/YYYY") }}
     </p>
   </div>
   <div class="row">
