@@ -8,7 +8,7 @@ const Portal = mongoose.model('Portal');
  * Render Home View
  */
 exports.renderHome = (req, res) => {
-  Ranking.find({}, [],{sort:{_id:-1}, limit:1}, function(err, ranking) {
+  Ranking.find({}, null,{sort:{_id:-1}, limit:1}, function(err, ranking) {
     console.log(ranking)
     if (err) return res.status(500).send(err.message);
     res.render('index.html', {ranking: ranking[0]});

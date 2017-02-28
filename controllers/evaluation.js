@@ -79,7 +79,7 @@ exports.saveManualEvaluation = (req, res) => {
     evaluation.portal_slug = evaluation.portal_slug || req.params.slug;
     evaluation.manual_eval_done = true;
     // if automatic is already done this eval is finished
-    evaluation.is_finished = evaluation.automatic_eval_done || false;
+    evaluation.is_finished = false;
 
     // ease_portal_navigation_criteria
     evaluation.ease_portal_navigation_criteria.oficial_identity = req.body.oficial_identity;
@@ -107,7 +107,7 @@ exports.saveManualEvaluation = (req, res) => {
     ];
     evaluation.automated_portal_use_score = _averageCriteria(aps_criteriaValues);
     // total score
-    evaluation.total_score = _averageCriteria([evaluation.automated_portal_use_score, evaluation.ease_portal_navigation_score, evaluation.metadata_cuality_score || 0, evaluation.data_cuality_score || 0]);
+    evaluation.total_score = _averageCriteria([evaluation.automated_portal_use_score, evaluation.ease_portal_navigation_score]);
 
     return evaluation;
   };

@@ -12,6 +12,7 @@ const evaluationSchema = new Schema({
   manual_eval_done: {type: Boolean, default: false},
   is_finished: {type: Boolean, default: false},
   total_score: {type: Number, default: null},
+  resources_count: {type: Number, default: null},
   ease_portal_navigation_score: {type: Number, default: null},
   ease_portal_navigation_criteria: {
     oficial_identity: {type: Number, default: null},
@@ -53,7 +54,7 @@ const evaluationSchema = new Schema({
       goodtables: {type: Boolean, default: false}
     }]
   }],
-  ranking_id: {type: Schema.Types.ObjectId, ref: "Ranking", required: true, default: null},
+  ranking_id: {type: Schema.Types.ObjectId, ref: 'Ranking', required: true, default: null},
 }, {
   timestamps: {createdAt: 'created_at', updatedAt: 'updated_at'}
 });
