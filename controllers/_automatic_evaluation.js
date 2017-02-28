@@ -29,7 +29,7 @@ process.on('message', portals => {
         return portals_promise
           .then( () => _setPortalObject(portal))
           .then(portalObj => _getPortalWithDatasetsList(portalObj, 'package_search?rows='))
-          .then(portalObj => _checkCurrentAutomaticEvaluation(portalObj))
+          .then(portalObj => _checkForPreviousManualEvaluation(portalObj))
           .then(portalObj => _downloadResources(portalObj))
           .then(portalObj => _evaluateDatasets(portalObj))
           .then(portalObj => {
@@ -78,11 +78,15 @@ const _closeRanking = ranking => {
   console.log("Starting ranking",ranking._id);
 
   Evaluation.find({ ranking_id: ranking._id }, function (err,evaluations) {
-    console.log("Found evaluations for ranking",evaluations.length)
+    console.log("Found evaluations for ranking ",evaluations.length);
 
-    Ranking.find({}, [], {sort:{_id:-1}, limit:2}, function(err, rankings) {
-      const previous_ranking = rankings[1];
-      console.log("Found previous_ranking",previous_ranking._id,previous_ranking.created_at)
+    Ranking.find({}, null,  {sort:{_id:-1}, limit:2}, function(err, rankings) {
+      // chek for previous ranking
+      const previous_ranking = rankings[0];
+      if (rankings.length >2) {
+        const previous_ranking = rankings[1];
+        console.log("Found previous_ranking",previous_ranking._id,previous_ranking.created_at);
+      }
 
       evaluations.sort(function(a,b){
         if (a.total_score < b.total_score)
@@ -90,25 +94,25 @@ const _closeRanking = ranking => {
         if (a.total_score > b.total_score)
           return 1;
         return 0;
-      })
+      });
 
-      console.log(1,evaluations)
-        evaluations.forEach(function(evaluation,index,all) {
+      console.log(1,evaluations);
+      evaluations.forEach(function(evaluation,index,all) {
         let prev_pos = null;
-        console.log("previous_ranking",previous_ranking)
+        console.log("previous_ranking",previous_ranking);
         for (let p in previous_ranking.portals) {
           console.log("previous_ranking",previous_ranking)
           if (previous_ranking.portals[p].portal_slug == evaluation.portal_slug) {
             prev_pos = previous_ranking.portals[p].current_position
           }
         }
-        console.log("evaluation.portal_slug",evaluation.portal_slug)
+        console.log("evaluation.portal_slug",evaluation.portal_slug);
 
-        const portal_name = null
+        const portal_name = null;
         Portal.findBySlug(evaluation.portal_slug, function(err,portal) {
-          console.log("portal",portal)
+          console.log("portal",portal);
           const portal_name = portal.title;
-          console.log("Found portal name",portal_name)
+          console.log("Found portal name",portal_name);
 
           ranking.portals.push({
             portal_slug: evaluation.portal_slug,
@@ -118,42 +122,49 @@ const _closeRanking = ranking => {
             score: evaluation.total_score,
             was_evaluated: true,
             has_manual_evaluation: evaluation.manual_eval_done,
-          })
+          });
 
-          ranking.datasets_count += +evaluation.datasets.length
-          ranking.resources_count = 0;//+= +evaluation.resources_count
+          ranking.datasets_count += +evaluation.datasets.length;
+          ranking.resources_count += +evaluation.resources_count;
 
           ranking.is_finished = true;
           ranking.save(function(err,ranking) {
-            console.log("finish ranking",err,ranking)
+            console.log("finish ranking",err,ranking);
 
-          })
-
-
-        })
-
-      })
-    })
-  })
+          });
+        });
+      });
+    });
+  });
 
   console.log("WTF",ranking._id);
 
-}
+};
 
-const _checkCurrentAutomaticEvaluation = portalObj => {
+const _checkForPreviousManualEvaluation = portalObj => {
   // verify if the automatic evaluation is needed
-  return Evaluation.find({portal_slug: portalObj.portal_slug, is_finished: false }).sort({_id: -1}).exec()
+  return Evaluation.find({portal_slug: portalObj.portal_slug, manual_eval_done: true}).sort({_id: -1}).exec()
   .then(evaluation => {
-    if (evaluation.length > 0 && evaluation[0].automatic_eval_done) { // current automatic evaluation already done
-      portalObj.report = evaluation[0];
-      return Promise.reject(portalObj);
-    }
-
     const newPortalObj = new Object(portalObj);
-    newPortalObj.report = evaluation[0] ? evaluation[0] : new Evaluation;
-    // current evaluation needs automatic evaluation
-    newPortalObj.report.portal_slug = portalObj.portal_slug;
-
+    if (evaluation.length > 0) { // has a previous evaluation manual
+      portalObj.report = {
+        manual_eval_done: true,
+        ease_portal_navigation_score: evaluation.ease_portal_navigation_score,
+        ease_portal_navigation_criteria: {
+          oficial_identity: evaluation.oficial_identity,
+          link_oficial_site: evaluation.link_oficial_site,
+          open_data_exp: evaluation.open_data_exp,
+          all_dataset_link: evaluation.all_dataset_link,
+          dataset_search_system: evaluation.dataset_search_system,
+          examinator: evaluation.examinator
+        },
+        automated_portal_use_score: evaluation.automated_portal_use_score,
+        automated_portal_use_criteria: {
+          existence_api: evaluation.existence_api,
+          api_documentation: evaluation.api_documentation
+        },
+      };
+    }
     return newPortalObj;
   });
 };
@@ -228,14 +239,9 @@ const _getPortalWithDatasetsList = (portalObj, query) => {
       const newPortalObj = {
         portal_slug: portalObj.slug,
         datasets_list: data.result,
-        report: {
-          portal_slug: portalObj.slug,
-          total_score: null, // average of uses_dataset_cuality_score, metadata_score, resource_validity
-          metadata_cuality_score: null,
-          data_cuality_score: null,
-          datasets: []
-        }
+        report: new Evaluation
       };
+      newPortalObj.report.portal_slug = portalObj.slug;
       return newPortalObj;
     });
 };
@@ -403,6 +409,7 @@ const _evaluateDatasets = portalObj => {
   const datasetList = portalObj.datasets_list.results;
   let metadataSum = 0;
   let resourceScore = 0;
+  let resourcesCount = 0;
 
   const datasets = datasetList.reduce( (datasets, dataset) => {
     // Eval report boilerplate
@@ -455,8 +462,6 @@ const _evaluateDatasets = portalObj => {
 
       if (resourceEval.evaluable) {
         const gtResult = _evalWithGoodTables(resourceEval.file_name);
-        console.log('file:', resourceEval.file_name);
-        console.log(gtResult);
         if (gtResult.hasOwnProperty('err')) {
           resourceEval.validity = 0;
           resourceEval.errors_count = 0;
@@ -478,26 +483,30 @@ const _evaluateDatasets = portalObj => {
     datasetEval.resources_score = +(validityScore / datasetEval.resources_count).toFixed(2);
     datasets.push(datasetEval);
 
+    resourcesCount += +datasetEval.resources_count;
     resourceScore += datasetEval.resources_score;
     return datasets;
   }, []);
   portalObj.report.datasets = datasets;
 
   portalObj.report.metadata_cuality_score = +(metadataSum / datasets.length).toFixed(2);
-  portalObj.report.data_cuality_score = +(resourceScore / datasets.length).toFixed(2) ;
+  portalObj.report.data_cuality_score = +(resourceScore / datasets.length).toFixed(2);
+  portalObj.report.resources_count = +resourcesCount;
 
   // total score
   const report = portalObj.report;
   const totalCriteria = [
     report.metadata_cuality_score,
     report.data_cuality_score,
-    report.ease_portal_navigation_score || 0,
-    report.automated_portal_use_score || 0
   ];
+  // if already has a manual evaluation
+  if (report.manual_eval_done) {
+    totalCriteria.push(report.ease_portal_navigation_score);
+    totalCriteria.push(report.automated_portal_use_score);
+  }
   portalObj.report.total_score = _averageCriteria(totalCriteria);
   portalObj.report.automatic_eval_done = true;
-  // if manual is already done this eval is finished
-  portalObj.report.is_finished = portalObj.report.manual_eval_done || false;
+  portalObj.report.is_finished = true;
 
   return portalObj;
 };
