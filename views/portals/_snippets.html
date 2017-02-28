@@ -14,9 +14,10 @@
   {# chanchada, sacar esto #}
   {% set pubClasificationOpt = [
     { value: 'municipal_government', description: 'Gobierno Municipal'},
+    { value: 'provincial_government', description: 'Gobierno Provincial'},
     { value: 'national_government', description: 'Gobierno Nacional'},
-    { value: 'ministry', description: 'Ministerio'},
-    { value: 'org', description: 'Organización no Gubernamental'},
+    { value: 'ministry', description: 'Ministerio Nacional'},
+    { value: 'org', description: 'Organización No Gubernamental'},
     { value: 'other', description: 'Otro'}
   ] %}
   {% set statusOpt = [
@@ -38,7 +39,7 @@
   ] %}
   {% set countryOpt = [
     { value: 'ar', description: 'Argentina'},
-    { value: 'br', description: 'Brazíl'},
+    { value: 'br', description: 'Brasil'},
     { value: 'mx', description: 'México'}
   ] %}
   <div class="form-group {% if (formErr.title) %} has-error {% endif %}">
@@ -94,16 +95,16 @@
     {% endif %}
   </div>
   <div class="form-group {% if (formErr.city) %} has-error {% endif %}">
-    <label for="city">Ciudad <span class="text-danger">*</span></label>
-    <p class="help-block">Ciudad a la que pertenece el portal</p>
+    <label for="city">Lugar <span class="text-danger">*</span></label>
+    <p class="help-block">Ciudad, provincia o territorio al que pertenece el portal</p>
     <input type="text" class="form-control" id="city" name="city" value="{{portal.city}}" required>
     {% if formErr.city %}
       <span class="help-block">{{ formErr.city.msg }}</span>
     {% endif %}
   </div>
   <div class="form-group {% if (formErr.lenguage) %} has-error {% endif %}">
-    <label for="lenguage">Lenguaje <span class="text-danger">*</span></label>
-    <p class="help-block">Lenguaje principal del portal</p>
+    <label for="lenguage">Idioma <span class="text-danger">*</span></label>
+    <p class="help-block">Idioma principal del portal</p>
     <input type="text" class="form-control" id="lenguage" name="lenguage" value="{{portal.lenguage}}" required>
     {% if formErr.lenguage %}
       <span class="help-block">{{ formErr.lenguage.msg }}</span>
@@ -111,7 +112,7 @@
   </div>
   <div class="form-group {% if (formErr.status) %} has-error {% endif %}">
     <label for="status">Estado <span class="text-danger">*</span></label>
-    <p class="help-block">Estado en el cual se encuentra el portal</p>
+    <p class="help-block">Estado de actividad en el cual se encuentra el portal</p>
     <select class="form-control" id="status" name ="status" required>
       {{ partials.creatSelectOptions(statusOpt, portal.status) }}
     </select>

@@ -8,7 +8,7 @@ const Portal = mongoose.model('Portal');
  * Render Home View
  */
 exports.renderHome = (req, res) => {
-  Ranking.find({}, [],{sort:{_id:-1}, limit:1}, function(err, ranking) {
+  Ranking.find({is_finished:true}, [],{sort:{_id:-1}, limit:1}, function(err, ranking) {
     console.log(ranking)
     if (err) return res.status(500).send(err.message);
     res.render('index.html', {ranking: ranking[0]});
@@ -42,7 +42,8 @@ exports.renderSugerirPortal = (req, res) => {
 exports.sendContactMail = (req, res) => {
   // TODO
   console.log('TODO: Terminar esta ruta de sugerir portal');
-  res.json(req.body);
+  // res.json(req.body);
+  res.render('contacto.html', {enviado: true});
 };
 
 /**
@@ -66,5 +67,6 @@ exports.renderRanking = (req, res) => {
 exports.sendSugerirPortal = (req, res) => {
   // TODO
   console.log('TODO: Terminar esta ruta de envio de sugerencia de portal');
-  res.json(req.body);
+  // res.json(req.body);
+  res.render('sugerir-portal.html', {enviado: true});
 };

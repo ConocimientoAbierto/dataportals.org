@@ -22,7 +22,7 @@ exports.findBySlug = (req, res) => {
     Evaluation.find({portal_slug: req.params.slug}, [],{sort: {_id:-1}}, (err, evaluations) => {
       // evaluations[0].populate();
       if(err) return res.status(500).send(err.message);
-      res.render('portals/view.html', {'portal': portal, evaluations: evaluations});
+      res.render('portals/view.html', {'portal': portal, evaluations: evaluations, detailed: req.param("detailed")});
     });
   });
 };

@@ -279,6 +279,12 @@ ul.navbar-nav {
   background-color: #e7eeff;
   margin-top: 2em;
 }
+
+.panel-heading {
+  font-size: 1.3em;
+  font-weight: bold;
+}
+
 .banner .panel {
   margin-top: 3em;
 }

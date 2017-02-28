@@ -22,6 +22,7 @@
       <p>
         <a href="{{ portal.url }}" style="text-decoration: underline; color:white">{{ portal.url }}</a>
       </p>
+      {% if evaluations[0] %}
       <ul style="clear: both;" class="row">
         <li class="counter col-lg-2 col-md-4 col-sm-12 col-lg-offset-2 col-md-offset-0">
           <span class="value">1 {{evaluations[0].ranking.portals[0].position}}</span>
@@ -36,11 +37,13 @@
           <span class="label">Conjuntos de datos</span>
         </li>
       </ul>
+      {% endif %}
     </div>
   </div>
 {% endblock %}
 {% block content %}
 
+{% if evaluations[0] %}
   <div class="row" >
     <section class="line-chart col-md-12" >
       <h2>Historial de puntajes</h2>
@@ -54,7 +57,7 @@
         var metadatos  = []
         var datos = []
 
-        {% for evaluation in evaluations %}
+        {% for evaluation in evaluations|reverse %}
         labels.push("{{evaluation.updated_at}}");
         puntajes_totales.push(Number({{evaluation.total_score}})*100);
         navegacion.push(Number({{evaluation.ease_portal_navigation_score}})*100);
@@ -147,7 +150,7 @@
           <tr>
             <td colspan="2">
               <p class="criteria_description">
-                El puntaje total es un promedio de los puntajes de los cuatro criterios.
+                El promedio de los cuatro criterios se utiliza para definir las posiciones del ranking. Para más detalles vea la <a href="/metodologia">metodología</a>.
               </p>
             </td>
           </tr>
@@ -162,7 +165,7 @@
           <tr>
             <td colspan="2">
               <p class="criteria_description">
-                Este criterio evalúa la facilidad de navegación del portal de datos, la confiabildiad, claridad y usabilidad del acceso y búsqueda de conjuntos de datos. Su evaluacón es manual, excepto por la prueba automatizada de accesbilidad web.
+                Este criterio evalúa la facilidad de navegación del portal de datos, la confiabildiad, claridad y usabilidad del acceso y búsqueda de conjuntos de datos. Su evaluacón es manual, excepto por la prueba automatizada de accesbilidad web. Para más detalles vea la <a href="/metodologia">metodología</a>.
               </p>
             </td>
           </tr>
@@ -178,12 +181,13 @@
             <td colspan="2">
               <p class="criteria_description">
                 Este criterio evalúa las facilidades para el consumo automático de los datos presentes en el portal de datos, la existencia de una API y su documentación.
+                Para más detalles vea la <a href="/metodologia">metodología</a>.
               </p>
             </td>
           </tr>
           <tr>
             <td class="criteria_name">
-              Metadatos
+              Calidad de metadatos
             </td>
             <td>
               <div class="criteria_bar" style="background-color: #BFBD3B; width: {{evaluations[0].metadata_cuality_score *100}}%">{{evaluations[0].metadata_cuality_score *100}}%</div>
@@ -193,12 +197,13 @@
             <td colspan="2">
               <p class="criteria_description">
                 Este criterio es un promedio de la evaluación de los metadatos de cada uno de los conjuntos de datos. Se verifica automáticamente la inclusión de responsable, frecuencia de actualización, licencia abierta y formatos abiertos.
+                 Para más detalles vea la <a href="/metodologia">metodología</a>.
               </p>
             </td>
           </tr>
           <tr>
             <td class="criteria_name">
-              Datos
+              Calidad de datos
             </td>
             <td>
               <div class="criteria_bar" style="background-color: #BF6E42; width: {{evaluations[0].data_cuality_score *100}}%">{{evaluations[0].data_cuality_score *100}}%</div>
@@ -209,6 +214,7 @@
             <td colspan="2">
               <p class="criteria_description">
                 Este criterio se basa solamente en la evaluación automatizada de la calidad de los datos. Actualmente sólo evalúa archivos de tipo CSV en su corrección formal y no en su contenido.
+                 Para más detalles vea la <a href="/metodologia">metodología</a>.
               </p>
             </td>
           </tr>
@@ -219,6 +225,16 @@
       </p>
     </div>
   </div>
+  {% else %}
+  <div class="row">
+    <h2>Este portal no ha sido evaluado</h2>
+    <p>
+      Está viendo un portal que no ha sido evaluado. Esto se puede deber a limitaciones técnicas que nos impiden evaluar este portal, o que ha sido agregado recientemente y no se ha evaluado aún.
+    </p>
+
+
+  </div>
+  {% endif %}
   <div class="row">
     <h2>Detalles</h2>
     <div class="col-md-12">
@@ -226,24 +242,12 @@
         <div class="panel-heading">Informe detallado</div>
 
         <div class="panel-body">
-          {% if currentUser.role != 'admin' and currentUser.role != 'evaluator' %}
-          <p>
-            Mejore su posición en el ranking solicitando un informe detallado de errores en este portal.
-          </p>
-          <p>
-            Incluye:
-          </p>
-          <ul>
-            <li>Informe de errores en cada recurso y dataset. Sepa exactamente qué hacer para mejorar.</li>
-            <li>Informe de evaluación manual del portal. Evaluaremos todos los criterios manuales en este portal, para que mejore la facilidad de uso y acceso.</li>
-            <li>Capacitación (opcional)</li>
-            <li>Consultoría (opcional)</li>
-          </ul>
-          <p>
-            <button type="button" class="btn btn-lg btn-info" name="button">Solcitar informe deallado</button>
-            <a href="#">Ver ejemplo</a>
-          </p>
-          {% else %}
+          {% if currentUser.role == 'admin'
+          or portal.slug=="datosgobar" or portal.slug=="datos-gob-ar" and detailed=="true"
+          %}
+          {#
+          #//or  and currentUser.role != 'evaluator' and portal.user = currentUser
+          #}
 
           <hr style="clear:both;" />
 
@@ -401,12 +405,33 @@
               {%endfor%}
             </tbody>
           </table>
+          {% else %}
+          <div class="" style="font-size: 1.5em; line-height: 1.7em">
+
+            <p>
+              <strong>Mejore su posición en el ranking</strong>. Solicite acceso al informe detallado de errores en este portal.
+            </p>
+            <p>
+              Esto le permitirá:
+            </p>
+            <ul>
+              <li>Saber exactamente qué hacer para mejorar gracias al informe de errores en cada recurso y dataset. .</li>
+              <li>Recibir un informe de evaluación manual del portal. Evaluaremos todos los criterios manuales en este portal, para que mejore la facilidad de uso y acceso.</li>
+              <li>Opcionalmente podemos asistirlo <a href="/capacitaciones">capacitando</a> e inspirando a su equipo.</li>
+              <li>Si lo necesita, tenemos disponibles opciones de <a href="/capacitaciones">consultoría</a></li>
+            </ul>
+            <p>
+              <button type="button" class="btn btn-lg btn-info" name="button" style="font-size: 1.2em; font-weight: bold; margin-top: 1.1em">Solcitar informe deallado</button>
+              <a href="/portales/datosgobar/?detailed=true" style="position: relative; top: 0.6em; text-decoration: underline; left: 1em">Ver un ejemplo</a>
+            </p>
+          </div>
           {% endif %}
         </div>
       </div>
     </div>
 
     <div class="col-md-12">
+      <h3>Metadatos del portal (cargados a mano)</h3>
       <dl class="dl-horizontal">
           <dt>Autor:</dt>
           <dd>{{ portal.author }}</a></dd>

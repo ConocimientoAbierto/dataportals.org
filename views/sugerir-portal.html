@@ -14,23 +14,37 @@
 {% endblock %}
 
 {% block content %}
+{% if enviado %}
+<section>
+  <div class="panel panel-success">
+    <div class="panel-heading">
+      <h2>Portal enviado</h2>
+
+    </div>
+    <div class="panel-body">
+      Su sugerencia ha sido recibida y será revisada en breve. Por cualquier consulta puede <a href="/contacto">escribirnos</a>.      
+    </div>
+
+  </div>
+</section>
+{% endif %}
 <section>
   <div class="row">
     <div class="col-md-6 col-md-offset-3">
       <form method="post" action="/sugerir-portal" {% if (formErr.name) %} class="has-error" {% endif %}>
         <input type="hidden" name="_csrf" value="{{_csrf}}">
         <div class="form-group">
-          <label for="name">Nombre <span class="text-danger">*</span></label>
+          <label for="name">Nombre del portal <span class="text-danger">*</span></label>
           <input type="text" class="form-control" id="name" name="name" required autofocus>
           {% if formErr.name %}
             <span class="help-block">{{ formErr.name.msg }}</span>
           {% endif %}
         </div>
         <div class="form-group">
-          <label for="url">URL del portal <span class="text-danger">*</span></label>
+          <label for="url">URL del portal (incluye https://) <span class="text-danger">*</span></label>
           <input type="url" class="form-control" id="url" name="url">
           {% if formErr.url %}
-            <span class="help-block">{{ formErr.url.msg }}</span>
+            <span class="help-block">{{ formErr.url.msg }}.</span>
           {% endif %}
         </div>
         <div class="form-group">
@@ -95,6 +109,13 @@
           </div>
           {% if formErr.ofrece-descarga %}
             <span class="help-block">{{ formErr.ofrece-descarga.msg }}</span>
+          {% endif %}
+        </div>
+        <div class="form-group">
+          <label for="mail">Email <span class="text-info">(opcional)</span></label>
+          <input type="text" class="form-control" id="mail" name="mail">
+          {% if formErr.mail %}
+            <span class="help-block">{{ formErr.mail.msg }}</span>
           {% endif %}
         </div>
         <p class="help-block">

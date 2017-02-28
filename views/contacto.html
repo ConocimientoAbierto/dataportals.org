@@ -7,13 +7,27 @@
   <div class="container">
     <h1>Contacto</h1>
     <p>
-      Gracias por su interés, cualquier consulta estamos a su disposición.
+      Gracias por su interés, estamos a su disposición para cualquier consulta.
     </p>
   </div>
 </div>
 {% endblock %}
 
 {% block content %}
+{% if enviado %}
+<section>
+  <div class="panel panel-success">
+    <div class="panel-heading">
+      <h2>Mensaje enviado</h2>
+
+    </div>
+    <div class="panel-body">
+      Su mensaje ha sido recibido y será revisado en breve.
+    </div>
+
+  </div>
+</section>
+{% endif %}
 <section>
   <div class="row">
     <div class="col-md-6">
@@ -64,7 +78,7 @@
         <strong>Fundación Conocimiento Abierto Argentina</strong><br>
         <i class="fa fa-map-marker" aria-hidden="true"></i> Avenida de Mayo 1161, 1° piso<br>
         Ciudad Autónoma de Buenos Aires, C1085ABB<br>
-        <i class="fa fa-phone" aria-hidden="true"></i> (011) nananana-nananana
+        <!-- <i class="fa fa-phone" aria-hidden="true"></i> (011) nananana-nananana -->
       </address>
 
       <address>
