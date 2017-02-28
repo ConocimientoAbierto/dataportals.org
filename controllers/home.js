@@ -50,7 +50,11 @@ exports.sendContactMail = (req, res) => {
  * Render contacto view
  */
 exports.renderContacto = (req, res) => {
-  res.render('contacto.html');
+  let asunto = null
+  if (req.param("portal")) {
+    asunto = "Solicito evaluación detallada de "+req.params.portal
+  }
+  res.render('contacto.html',{asunto: asunto});
 };
 
 /**
