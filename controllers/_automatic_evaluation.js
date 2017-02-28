@@ -130,7 +130,7 @@ const _closeRanking = ranking => {
           ranking.is_finished = true;
           ranking.save(function(err,ranking) {
             console.log("finish ranking",err,ranking);
-
+            console.log('terminó el ranking');
           });
         });
       });
