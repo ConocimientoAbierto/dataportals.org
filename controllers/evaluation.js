@@ -114,7 +114,7 @@ exports.saveManualEvaluation = (req, res) => {
 };
 
 exports.makeAutomaticEvaluation = (req, res) => {
-  const portalsPromise = Portal.find().exec(); // TODO reducir los datos que trae
+  const portalsPromise = Portal.find({to_evaluate: true, api_type: 'CKAN_API_V3'}).exec();
 
   portalsPromise
     .then(portals => {
