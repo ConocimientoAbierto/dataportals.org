@@ -222,6 +222,7 @@ ul.navbar-nav {
 .portal_criteria_name {
   padding: 1em;
   font-size: 1.1em;
+  line-height: 3em;
 }
 
 .portal_criteria_value_error,
@@ -229,13 +230,16 @@ ul.navbar-nav {
   padding: 1em;
   color: white;
   font-weight: bold;
+  float: right;
+  border-top-right-radius: 1em;
+  box-shadow: 2px 2px 5px #666;
 }
 
 .portal_criteria_value_ok {
   background-color: #45BFA5;
 }
 
-.portal_criteria_value_error {
+.portal_criteria_value_bad {
   background-color: #BF6E42;
 }
 
@@ -243,6 +247,8 @@ ul.navbar-nav {
   width: 100%;
   border-spacing: 2px;
   border-collapse: separate;
+  font-size: 1.1em;
+  line-height: 1.5em;
 }
 
 .resources-table a:link {
@@ -257,6 +263,11 @@ ul.navbar-nav {
 .resources-table th:not(.resource-name),
 .resources-table td:not(.resource-name) {
   text-align: center;
+}
+
+td.resource-name,
+th.resource-name {
+  width: 50%;
 }
 
 
