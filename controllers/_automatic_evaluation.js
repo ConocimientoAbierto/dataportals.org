@@ -5,6 +5,7 @@ const configAPP = require('../lib/configAPP');
 mongoose.connect(configAPP.dbURL, (err) => err ? console.log(err) : console.log('Conected to DB'));
 
 const request = require('request');
+const path = require('path');
 const fs = require('fs');
 const execSync = require('child_process').execSync;
 const Pool = require('threads').Pool;
@@ -38,7 +39,7 @@ process.on('message', portals => {
           })
           .then(() => console.log('guardada evaluación de ' + portal.slug))
           .catch((portalObj) => {
-            console.log('no se generó la evaluación automática de '+ portal.slug +': \n', portalObj)
+            console.log('no se generó la evaluación automática de '+ portal.slug +': \n', portalObj);
             portalObj.report.ranking_id = ranking._id;
             return portalObj.report.save();
           });
@@ -189,7 +190,8 @@ const _downloadResources = portalObj => {
         const path = require('path');
         const download = require('download');
         const fs = require('fs');
-        const filePath = input.filePath + input.fileName;
+        const filePath = path.join(input.filePath, input.fileName);
+        console.log(filePath);
 
         download(input.fileUrl, {retries: 1})
           .on('request', req => setTimeout(() => req.abort(), 5000)) // abortin after 5" without response
@@ -207,7 +209,7 @@ const _downloadResources = portalObj => {
             done();
           });
       })
-      .send({fileUrl: resource.url, filePath: 'temp/', fileName: fileName});
+      .send({fileUrl: resource.url, filePath: path.join(__dirname, '../temp/'), fileName: fileName});
     });
 
     pool
@@ -220,12 +222,21 @@ const _downloadResources = portalObj => {
 };
 
 const _setPortalObject = portal => {
-  const finishUrl = portal.api_endpoint.slice('/')[portal.api_endpoint.length -1];
-  const api_endpoint = finishUrl  === '/' ? portal.api_endpoint : portal.api_endpoint + '/';
+  let finishUrl = portal.url.slice('/')[portal.url.length -1];
+  let apiEndpoint = '';
+  let apiPath = '';
+  switch (portal.api_type) {
+  case 'CKAN_API_V3':
+    apiPath = 'api/3/action/';
+    apiEndpoint = finishUrl  === '/' ? portal.url + apiPath : portal.url + '/' + apiPath;
+    break;
+  default:
+    break;
+  }
 
   return {
     slug: portal.slug,
-    api_endpoint: api_endpoint + 'action/'
+    api_endpoint: apiEndpoint
   };
 };
 
