@@ -89,10 +89,10 @@ const _closeRanking = ranking => {
         console.log("Found previous_ranking",previous_ranking._id,previous_ranking.created_at);
       }
 
-      evaluations.sort(function(a,b){
-        if (a.total_score < b.total_score)
-          return -1;
+      evaluations = evaluations.sort(function(a,b){
         if (a.total_score > b.total_score)
+          return -1;
+        if (a.total_score < b.total_score)
           return 1;
         return 0;
       });
@@ -185,13 +185,18 @@ const _downloadResources = portalObj => {
     // download pool
     const pool = new Pool();
     resources.forEach(resource => {
-      const fileName = _getResourceFileName(resource.url);
+      const resourceUrlParts = resource.url.split('/');
+      // forces http due the sownload lib don't support https
+      const resourceUrl = resourceUrlParts.slice(2).join('/');
+      const fileName = _getResourceFileName(resourceUrl);
+      const filepath = path.join(__dirname, '../temp/', fileName);
+      console.log(resourceUrl);
+
       pool.run( (input, done) => {
         const path = require('path');
         const download = require('download');
         const fs = require('fs');
-        const filePath = path.join(input.filePath, input.fileName);
-        console.log(filePath);
+        console.log(input.filePath);
 
         download(input.fileUrl, {retries: 1})
           .on('request', req => setTimeout(() => req.abort(), 5000)) // abortin after 5" without response
@@ -201,7 +206,7 @@ const _downloadResources = portalObj => {
           })
           .on('response', response => {
             try {
-              fs.writeFileSync(filePath, response._readableState.buffer);
+              fs.writeFileSync(input.filePath, response._readableState.buffer);
             }
             catch(err) {
               console.log('Error al guardar archivo. \narchivo: ' + input.fileName, err);
@@ -209,7 +214,7 @@ const _downloadResources = portalObj => {
             done();
           });
       })
-      .send({fileUrl: resource.url, filePath: path.join(__dirname, '../temp/'), fileName: fileName});
+      .send({fileUrl: resourceUrl, filePath: filepath});
     });
 
     pool
@@ -531,13 +536,22 @@ const _evalWithGoodTables = (resourceFileName) => {
     if (!fs.existsSync(filePath)) {
       throw new Error({fileNotDownload: 'no se descargó el mensaje'});
     }
+    const stats = fs.statSync(filePath);
+    if (stats.size === 0) {
+      throw new Error({fileNotDownload: 'no se descargó el mensaje'});
+    }
     const gt = execSync('goodtables --json table ' + filePath);
     result = JSON.parse(gt.toString());
   }
   catch(err) {
     result = {err: 'No se pudo evaluar con goodTable'};
     if (err.status === 1) {
-      result = JSON.parse(err.stdout.toString());
+      try {
+        result = JSON.parse(err.stdout.toString());
+      }
+      catch(err) {
+        result = {err: 'No se pudo evaluar con goodTable'};
+      }
     }
   }
 

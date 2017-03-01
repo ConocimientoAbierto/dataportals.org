@@ -14,7 +14,7 @@ const portalSchema = new Schema({
   author: String,
   publisher_clasification: {
     type: String,
-    enum: ['municipal_government', 'national_government', 'ministry', 'org', 'other']
+    enum: ['municipal_government','provincial_government', 'national_government', 'ministry', 'org', 'other']
   },
   description: {type: String, min: 10, max: 200},
   country: String,
