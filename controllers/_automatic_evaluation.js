@@ -185,44 +185,78 @@ const _downloadResources = portalObj => {
     // download pool
     const pool = new Pool();
     resources.forEach(resource => {
-      const resourceUrlParts = resource.url.split('/');
       // forces http due the sownload lib don't support https
-      const resourceUrl = resourceUrlParts.slice(2).join('/');
-      const fileName = _getResourceFileName(resourceUrl);
+      const fileName = _getResourceFileName(resource.url);
       const filepath = path.join(__dirname, '../temp/', fileName);
-      console.log(resourceUrl);
 
+      // if already downloaded don't download again
+      if (fs.existsSync(filepath) ) {
+        const stats = fs.statSync(filepath);
+        console.log(stats.birthtime > Date(resource.revision_timestamp));
+        if (stats.birthtime > Date(resource.revision_timestamp)) {
+
+          return;
+        }
+      }
       pool.run( (input, done) => {
+        'use strict';
         const path = require('path');
-        const download = require('download');
+        const request = require('request');
         const fs = require('fs');
-        console.log(input.filePath);
+        const maxSize = 1000000;
 
-        download(input.fileUrl, {retries: 1})
-          .on('request', req => setTimeout(() => req.abort(), 5000)) // abortin after 5" without response
-          .on('error', (error, body, response) => {
-            console.log(error);
-            done();
-          })
-          .on('response', response => {
-            try {
-              fs.writeFileSync(input.filePath, response._readableState.buffer);
+        try {
+          request({url: input.fileUrl, method: 'HEAD'}, (err, headRes) => {
+            if (err) {
+              console.log(err);
+              done();
             }
-            catch(err) {
-              console.log('Error al guardar archivo. \narchivo: ' + input.fileName, err);
+            let size = headRes.headers['content-length'];
+            if (size > maxSize) {
+              console.log('Resource size exceeds limit (' + size + ')');
+              done();
+            } else {
+              // download the file
+              let file = fs.createWriteStream(input.filePath);
+              size = 0;
+              const req = request({ url: input.fileUrl });
+              req.on('data', function(data) {
+                size += data.length;
+
+                if (size > maxSize) {
+                  console.log('Resource stream exceeded limit (' + size + ')');
+
+                  req.abort();
+                  fs.unlinkSync(input.filePath);
+                  done();
+                }
+              }).pipe(file);
+              req.on('finish', () => {
+                console.log('descargado: ', input.filePath);
+                done();
+              });
+              req.on('end', () => {
+                console.log('descargado: ', input.filePath);
+                done();
+              });
+              req.on('error', error => {
+                throw new Error(error);
+              });
             }
-            done();
           });
+        }
+        catch (err) {
+          console.log('Error al guardar archivo. \narchivo: ' + input.fileName, error);
+          done();
+        }
       })
-      .send({fileUrl: resourceUrl, filePath: filepath});
+      .send({fileUrl: resource.url, filePath: filepath});
     });
 
     pool
     .on('message', (job, message) => console.log(message))
     .on('error', (job, message) => reject('Error en el pool de descarga, error: \n' + message))
-    .on('finished', () => {
-      resolve(portalObj);
-    });
+    .on('finished', () => resolve(portalObj));
   });
 };
 
@@ -471,21 +505,26 @@ const _evaluateDatasets = portalObj => {
         file_name: fileName,
         evaluable: resource.format.toLocaleLowerCase() === 'csv',
         format: resource.format.toLowerCase(),
-        validity: null,
-        errors_count: null,
-        goodtables: null
+        validity: false,
+        errors_count: 0,
+        goodtables: false
       };
 
       if (resourceEval.evaluable) {
-        const gtResult = _evalWithGoodTables(resourceEval.file_name);
-        if (gtResult.hasOwnProperty('err')) {
-          resourceEval.validity = 0;
-          resourceEval.errors_count = 0;
-          resourceEval.goodtables = false;
+        const filePath = path.join(__dirname, '../temp/', resourceEval.file_name);
+        if (fs.existsSync(filePath)) {
+          const gtResult = _evalWithGoodTables(filePath);
+          if (gtResult.hasOwnProperty('err')) {
+            resourceEval.validity = 0;
+            resourceEval.errors_count = 0;
+            resourceEval.goodtables = false;
+          } else {
+            resourceEval.validity = gtResult.valid ? 1 : 0;
+            resourceEval.errors_count = gtResult['error-count'];
+            resourceEval.goodtables = true;
+          }
         } else {
-          resourceEval.validity = gtResult.valid ? 1 : 0;
-          resourceEval.errors_count = gtResult['error-count'];
-          resourceEval.goodtables = true;
+          resourceEval.goodtables = false;
         }
       }
 
@@ -498,6 +537,14 @@ const _evaluateDatasets = portalObj => {
     datasetEval.resources = resourcesEval;
     datasetEval.resources_score = +(validityScore / datasetEval.resources_count).toFixed(2);
     datasets.push(datasetEval);
+
+    // TODO borrar es una prueba
+    if (isNaN(datasetEval.resources_score)) {
+      console.log('***************************');
+      console.log(datasetEval.name);
+      console.log(datasetEval.resources_score);
+      console.log('***************************');
+    }
 
     resourcesCount += +datasetEval.resources_count;
     resourceScore += datasetEval.resources_score;
@@ -527,19 +574,11 @@ const _evaluateDatasets = portalObj => {
   return portalObj;
 };
 
-const _evalWithGoodTables = (resourceFileName) => {
-  const filePath = './temp/' + resourceFileName;
+const _evalWithGoodTables = filePath => {
   let result = {};
 
   // evaluar cada recurso
   try {
-    if (!fs.existsSync(filePath)) {
-      throw new Error({fileNotDownload: 'no se descargó el mensaje'});
-    }
-    const stats = fs.statSync(filePath);
-    if (stats.size === 0) {
-      throw new Error({fileNotDownload: 'no se descargó el mensaje'});
-    }
     const gt = execSync('goodtables --json table ' + filePath);
     result = JSON.parse(gt.toString());
   }
