@@ -64,7 +64,7 @@ exports.sendContactMail = (req, res) => {
   // TODO
   console.log('TODO: Terminar esta ruta de sugerir portal');
 
-  body_text = "Nombre: " + req.params.name +
+  let body_text = "Nombre: " + req.params.name +
   "\n Email: " + req.params.url +
   "\n Asunto: " + req.params.mail;
 
@@ -78,7 +78,7 @@ exports.sendContactMail = (req, res) => {
 exports.sendSugerirPortal = (req, res) => {
   // TODO
   // console.log('TODO: Terminar esta ruta de envio de sugerencia de portal');
-  body_text = "Nombre: " + req.params.name +
+  let body_text = "Nombre: " + req.params.name +
   "\n Email: " + req.params.email +
   "\n Asunto: " + req.params.subject +
   "\n Mensaje: " + req.params.message;
