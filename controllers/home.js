@@ -3,6 +3,7 @@
 const mongoose = require('mongoose');
 const Ranking = mongoose.model('Ranking');
 const Portal = mongoose.model('Portal');
+const nodemailer = require('nodemailer');
 
 /**
  * Render Home View
@@ -36,15 +37,6 @@ exports.renderSugerirPortal = (req, res) => {
   res.render('sugerir-portal.html');
 };
 
-/**
- * Save suggest in db
- */
-exports.sendContactMail = (req, res) => {
-  // TODO
-  console.log('TODO: Terminar esta ruta de sugerir portal');
-  // res.json(req.body);
-  res.render('contacto.html', {enviado: true});
-};
 
 /**
  * Render contacto view
@@ -66,11 +58,61 @@ exports.renderRanking = (req, res) => {
 };
 
 /**
+* Save suggest in db
+*/
+exports.sendContactMail = (req, res) => {
+  // TODO
+  console.log('TODO: Terminar esta ruta de sugerir portal');
+
+  body_text = "Nombre: " + req.params.name +
+  "\n Email: " + req.params.url +
+  "\n Asunto: " + req.params.mail;
+
+  sendmail("martin@fcabierto.org","Contacto desde portalesdedatos.com.ar",body_text)
+  // res.json(req.body);
+  res.render('contacto.html', {enviado: true});
+};
+/**
  * Send Mail for contact
  */
 exports.sendSugerirPortal = (req, res) => {
   // TODO
-  console.log('TODO: Terminar esta ruta de envio de sugerencia de portal');
+  // console.log('TODO: Terminar esta ruta de envio de sugerencia de portal');
+  body_text = "Nombre: " + req.params.name +
+  "\n Email: " + req.params.email +
+  "\n Asunto: " + req.params.subject +
+  "\n Mensaje: " + req.params.message;
+
+  sendmail("martin@fcabierto.org","Sugerir portales en portalesdedatos.com.ar",body_text)
   // res.json(req.body);
   res.render('sugerir-portal.html', {enviado: true});
 };
+
+
+function sendmail(destination,subject,body_text) {
+
+  // create reusable transporter object using the default SMTP transport
+  let transporter = nodemailer.createTransport({
+      service: 'sendmail',
+      newline: 'unix',
+      path: '/usr/sbin/sendmail'
+  });
+
+  // setup email data with unicode symbols
+  let mailOptions = {
+      from: '"Portales de datos" <info@fcabierto.org>', // sender address
+      to: destination, // list of receivers
+      subject: subject, // Subject line
+      text: body_text
+      // , // plain text body
+      // html: body_html // html body
+  };
+
+  // send mail with defined transport object
+  transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+          return console.log("Mailer error",error);
+      }
+      console.log('Message %s sent: %s', info.messageId, info.response);
+  });
+}
