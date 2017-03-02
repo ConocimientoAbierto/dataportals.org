@@ -62,11 +62,11 @@ exports.renderRanking = (req, res) => {
 */
 exports.sendContactMail = (req, res) => {
   // TODO
-  console.log('TODO: Terminar esta ruta de sugerir portal');
+  // console.log('TODO: Terminar esta ruta de sugerir portal');
 
   let body_text = "Nombre: " + req.params.name +
-  "\n Email: " + req.params.url +
-  "\n Asunto: " + req.params.mail;
+  "\nEmail: " + req.params.url +
+  "\nAsunto: " + req.params.mail;
 
   sendmail("martin@fcabierto.org","Contacto desde portalesdedatos.com.ar",body_text)
   // res.json(req.body);
@@ -79,9 +79,9 @@ exports.sendSugerirPortal = (req, res) => {
   // TODO
   // console.log('TODO: Terminar esta ruta de envio de sugerencia de portal');
   let body_text = "Nombre: " + req.params.name +
-  "\n Email: " + req.params.email +
-  "\n Asunto: " + req.params.subject +
-  "\n Mensaje: " + req.params.message;
+  "\nEmail: " + req.params.email +
+  "\nAsunto: " + req.params.subject +
+  "\nMensaje: " + req.params.message;
 
   sendmail("martin@fcabierto.org","Sugerir portales en portalesdedatos.com.ar",body_text)
   // res.json(req.body);
@@ -93,9 +93,14 @@ function sendmail(destination,subject,body_text) {
 
   // create reusable transporter object using the default SMTP transport
   let transporter = nodemailer.createTransport({
-      service: 'sendmail',
-      newline: 'unix',
-      path: '/usr/sbin/sendmail'
+      // service: 'sendmail',
+      // newline: 'unix',
+      // path: '/usr/sbin/sendmail'
+      service: 'Gmail',
+      auth: {
+          user: "",
+          pass: ""
+      }
   });
 
   // setup email data with unicode symbols
