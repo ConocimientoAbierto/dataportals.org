@@ -80,6 +80,7 @@
                 fill: false,
                 borderWidth: 5
               },
+              {% if evaluations[0].manual_eval_done %}
               {
                 label: "Navegación",
                 data: navegacion,
@@ -96,6 +97,7 @@
                 fill: false,
                 borderWidth: 2
               },
+              {% endif %}
               {
                 label: "Metadatos",
                 data: metadatos,
@@ -150,7 +152,7 @@
           <tr>
             <td colspan="2">
               <p class="criteria_description">
-                El promedio de los cuatro criterios se utiliza para definir las posiciones del ranking. Para más detalles vea la <a href="/metodologia">metodología</a>.
+                El promedio de los otros criterios se utiliza para definir las posiciones del ranking. Para más detalles vea la <a href="/metodologia">metodología</a>.
               </p>
             </td>
           </tr>
@@ -159,7 +161,11 @@
               Navegación
             </td>
             <td>
+              {% if evaluations[0].manual_eval_done %}
               <div class="criteria_bar" style="background-color: #5074D2; width: {{evaluations[0].ease_portal_navigation_score *100}}%">{{evaluations[0].ease_portal_navigation_score *100}}%</div>
+              {% else %}
+              No evaluado
+              {% endif %}
             </td>
           </tr>
           <tr>
@@ -174,7 +180,11 @@
               Uso automático
             </td>
             <td>
+              {% if evaluations[0].manual_eval_done %}
               <div class="criteria_bar" style="background-color: #45BFA5; width: {{evaluations[0].automated_portal_use_score *100}}%">{{evaluations[0].automated_portal_use_score *100}}%</div>
+              {% else %}
+              No evaluado
+              {% endif %}
             </td>
           </tr>
           <tr>

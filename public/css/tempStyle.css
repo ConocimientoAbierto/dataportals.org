@@ -1,9 +1,21 @@
 body {
   padding-top: 85px;
-  font-family: 'PT Sans', Helvetica, Arial, sans-serif;
+  font-family: 'Source Sans', Helvetica, Arial, sans-serif;
   min-width: 90%;
 }
 
+h1,h2,h3,h4,h5,h6 {
+  font-family: 'Merriweather', Georgia, Serif;
+  line-height: 1.4em;
+}
+
+h1 {
+  margin: 0.5em 0 0.5em 0;
+}
+
+h2,h3 {
+  margin: 2.5em 0 1.2em 0;
+}
 
 .navbar-brand {
   height: auto;
@@ -67,17 +79,18 @@ ul.navbar-nav {
 }
 
 .jumbotron {
-  padding: 0;
+  padding-top: 2em;
   background-color: #235;
   color: #FFFFFF;
-
 }
 .jumbotron.jumbotron-home {
+  padding: 0;
   background-image: url('https://images.unsplash.com/photo-1431605695381-f4a9c3cdd150?dpr=1.25&auto=format&fit=crop&w=767&h=511&q=80&cs=tinysrgb&crop=');
   background-size: cover;
   background-position: 100% 29%;
 }
 .jumbotron>.background-blur {
+  padding-top: 2em;
   background-color: rgba(16, 32, 96, 0.69);
 }
 
@@ -88,6 +101,11 @@ ul.navbar-nav {
 .jumbotron a:visited  {
   color: #ddd;
   text-decoration: underline;
+}
+
+.jumbotron p {
+  font-size: 1.9em;
+
 }
 
 .equal-sign {
@@ -123,6 +141,8 @@ ul.navbar-nav {
   font-size: 6em;
   padding: 0 20px;
   font-family: Lato,Helvetica Neue,Helvetica,Arial,sans-serif;
+  border-radius: 0.3em;
+  box-shadow: 3px 4px 4px #FFFFCCAA;
 }
 
 .counter .value:after {
@@ -197,7 +217,7 @@ ul.navbar-nav {
   white-space: normal;
   font-size: 0.85em;
   padding: 1em;
-  margin-bottom: 1.5em;
+  margin-bottom: 3em;
   border-radius: 0 10px 10px 0;
 
   /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#000000+0,eaeaea+100&0+0,0.65+100 */
@@ -207,9 +227,10 @@ ul.navbar-nav {
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00000000', endColorstr='#a6eaeaea',GradientType=0 ); /* IE6-9 */
 }
 
-.criteria_name {
+td.criteria_name {
   padding-left: 1em;
   font-weight: bold;
+  font-size: 1.4em;
 }
 
 .portal_criteria {
@@ -249,6 +270,7 @@ ul.navbar-nav {
   border-collapse: separate;
   font-size: 1.1em;
   line-height: 1.5em;
+  margin-top: 3em;
 }
 
 .resources-table a:link {
@@ -283,6 +305,22 @@ th.resource-name {
   font-weight: bold;
 }
 
+#metodologia_items .panel {
+  margin-bottom: 3em;
+}
+
+#metodologia_items .panel-title {
+  font-size: 1em;
+  font-weight: bold;
+}
+
+#metodologia_items .glyphicon {
+  color: #999;
+}
+
+#metodologia_items p {
+  line-height: 1.5em;
+}
 
 .banner {
   border-top: 1px solid;
@@ -298,6 +336,10 @@ th.resource-name {
 
 .banner .panel {
   margin-top: 3em;
+}
+
+.banner h3 {
+  margin: 1em 0 1em;
 }
 
 .banner .glyphicon {

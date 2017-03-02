@@ -52,7 +52,7 @@
         </tr>
       </thead>
       <tbody>
-        {% for portal in ranking.portals %}
+        {% for portal in ranking.portals|sort(false,false,"current_position") %}
           <tr class="text-center">
             <td>{{portal.current_position}}
               {% if portal.current_position > portal.previous_position %}
