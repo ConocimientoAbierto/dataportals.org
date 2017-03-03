@@ -86,10 +86,13 @@ const _closeRanking = ranking => {
     console.log("Found evaluations for ranking ",evaluations.length);
 
     Ranking.find({}, null,  {sort:{_id:-1}, limit:2}, function(err, rankings) {
+      console.log('**************************')
+      console.log(rankings);
+      console.log('**************************')
       // chek for previous ranking
-      const previous_ranking = rankings[0];
-      if (rankings.length >2) {
-        const previous_ranking = rankings[1];
+      let previous_ranking = rankings[0];
+      if (rankings.length > 1) {
+        previous_ranking = rankings[1];
         console.log("Found previous_ranking",previous_ranking._id,previous_ranking.created_at);
       }
 
@@ -106,7 +109,6 @@ const _closeRanking = ranking => {
         let prev_pos = null;
         console.log("previous_ranking",previous_ranking);
         for (let p in previous_ranking.portals) {
-          console.log("previous_ranking",previous_ranking)
           if (previous_ranking.portals[p].portal_slug == evaluation.portal_slug) {
             prev_pos = previous_ranking.portals[p].current_position
           }
@@ -251,6 +253,9 @@ const _downloadResources = portalObj => {
               req.abort();
               done();
             }, 5000);
+          })
+          .on('end', () => {
+            done();
           });
         }
         catch (err) {

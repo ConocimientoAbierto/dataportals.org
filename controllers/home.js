@@ -10,7 +10,7 @@ const nodemailer = require('nodemailer');
  */
 exports.renderHome = (req, res) => {
   Ranking.find({is_finished:true}, null,{sort:{_id:-1}, limit:1}, function(err, ranking) {
-    console.log(ranking)
+    console.log(ranking);
     if (err) return res.status(500).send(err.message);
     res.render('index.html', {ranking: ranking[0]});
   });
