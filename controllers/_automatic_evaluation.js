@@ -54,14 +54,12 @@ process.on('message', portals => {
 
         return portals_promise
       }
-    },
-    Promise.resolve()
-    ).then( () => {
+    }, Promise.resolve())
+    .then( () => {
       console.log('All portals evaluated.');
       _closeRanking(ranking);
     });
-
-  })
+  });
 
 });
 
@@ -121,7 +119,7 @@ const _closeRanking = ranking => {
           const portal_name = portal.title;
           console.log("Found portal name",portal_name);
 
-          ranking.portals.push({
+          ranking.portals.addToSet({
             portal_slug: evaluation.portal_slug,
             portal_name: portal_name,
             current_position: (index+1),
