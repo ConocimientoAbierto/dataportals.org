@@ -22,7 +22,7 @@
       <p>
         <a href="{{ portal.url }}" style="text-decoration: underline; color:white">{{ portal.url }}</a>
       </p>
-      {% if evaluations[0] %}
+      {% if evaluations[0] or evaluations[0].is_finished == false %}
       <ul style="clear: both;" class="row">
         <li class="counter col-lg-2 col-md-4 col-sm-12 col-lg-offset-2 col-md-offset-0">
           <span class="value">1 {{evaluations[0].ranking.portals[0].position}}</span>
@@ -43,7 +43,7 @@
 {% endblock %}
 {% block content %}
 
-{% if evaluations[0] %}
+{% if evaluations[0] or evaluations[0].is_finished == false %}
   <div class="row" >
     <section class="line-chart col-md-12" >
       <h2>Historial de puntajes</h2>
@@ -252,24 +252,21 @@
         <div class="panel-heading">Informe detallado</div>
 
         <div class="panel-body">
-          {% if evaluations[0] and (currentUser.role == 'admin'
+          {#{evaluations[0].datasets|dump}#}
+          {% if (evaluations[0] or evaluations[0].is_finished == false) and (currentUser.role == 'admin'
           or ((portal.slug=="ciudad-de-mendoza" or portal.slug=="datos-gob-ar") and detailed=="true"))
           %}
           {#
           #//or  and currentUser.role != 'evaluator' and portal.user = currentUser
           #}
-
-
             {% if evaluations[0].manual_eval_done %}
 
             {%
               set portal_criteria = [evaluations[0].ease_portal_navigation_criteria.oficial_identity,evaluations[0].ease_portal_navigation_criteria.link_oficial_site,evaluations[0].ease_portal_navigation_criteria.open_data_exp,evaluations[0].ease_portal_navigation_criteria.all_dataset_link,evaluations[0].ease_portal_navigation_criteria.dataset_search_system,evaluations[0].automated_portal_use_criteria.existence_api,evaluations[0].automated_portal_use_criteria.api_documentation]
-
-              %}
-              <h3>Criterios de todo el portal
-    (Cumple          {{ portal_criteria|length }} de
-              {{ portal_criteria|sum }})
-</h3>
+            %}
+            <h3>Criterios de todo el portal
+            (Cumple {{ portal_criteria|length }} de {{ portal_criteria|sum }})
+            </h3>
             <ul style="margin: 0; padding: 0;">
               <li class="col-md-4 col-sm-12 portal_criteria">
                 <span class="portal_criteria_name">Uso de identidad oficial</span>
@@ -363,7 +360,7 @@
 
             <h3>Criterios por conjunto de datos ({{ evaluations[0].datasets| length }} conjuntos evaluados)</h3>
             {% for dataset in evaluations[0].datasets %}
-              {% if dataset.resources|selectattr({validity:true})|length == dataset.resources.length %}
+              {% if (dataset.resources_score+dataset.resources_score)/2 == 1 %}
                 <div class="panel panel-success">
               {% else %}
                 <div class="panel panel-warning">
@@ -372,9 +369,84 @@
                 {{dataset.title}}
               </div>
               <div class="panel-body">
-                <p>
-                  Cantidad de recursos válidos: {{dataset.resources|selectattr({validity:true})|length}} / {{dataset.resources.length}}
-                </p>
+                <h4>
+                  Calidad de metadatos (promedio {{dataset.metadata_score*100}}%)
+                </h4>
+                <ul style="margin: 0; padding: 0;">
+                  <li class="col-md-4 col-sm-12 metadata_criteria">
+                    <span class="metadata_criteria_name">Formato</span>
+                    {%if dataset.metadata_criteria.format %}
+                    <span class="metadata_criteria_value_ok">Si</span>
+                    {%else%}
+                    <span class="metadata_criteria_value_bad">No</span>
+                    {%endif%}
+                     <p class="metadata_criteria_description">
+                      Al menos un recurso en formatos abiertos.
+                     </p>
+                  </li>
+                  <li class="col-md-4 col-sm-12 metadata_criteria">
+                    <span class="metadata_criteria_name">Licencia</span>
+                    {%if dataset.metadata_criteria.licence %}
+                    <span class="metadata_criteria_value_ok">Si</span>
+                    {%else%}
+                    <span class="metadata_criteria_value_bad">No</span>
+                    {%endif%}
+                     <p class="metadata_criteria_description">
+                       Define una licencia abierta en los metadatos.
+                     </p>
+                  </li>
+                  <li class="col-md-4 col-sm-12 metadata_criteria">
+                    <span class="metadata_criteria_name">Actualización informada</span>
+                    {%if dataset.metadata_criteria.update_frequency %}
+                    <span class="metadata_criteria_value_ok">Si</span>
+                    {%else%}
+                    <span class="metadata_criteria_value_bad">No</span>
+                    {%endif%}
+                     <p class="metadata_criteria_description">
+                       Declara frencuencia de actualización.
+                     </p>
+                  </li>
+                  <li class="col-md-4 col-sm-12 metadata_criteria">
+                    <span class="metadata_criteria_name">Actualización efectiva</span>
+                    {%if dataset.metadata_criteria.actual_update_frequency %}
+                    <span class="metadata_criteria_value_ok">Si</span>
+                    {%else%}
+                    <span class="metadata_criteria_value_bad">No</span>
+                    {%endif%}
+                     <p class="metadata_criteria_description">
+                       Cumple frecuencia de actualización.
+                     </p>
+                  </li>
+                  <li class="col-md-4 col-sm-12 metadata_criteria">
+                    <span class="metadata_criteria_name">Responsable</span>
+                    {%if dataset.metadata_criteria.responsable %}
+                    <span class="metadata_criteria_value_ok">Si</span>
+                    {%else%}
+                    <span class="metadata_criteria_value_bad">No</span>
+                    {%endif%}
+                     <p class="metadata_criteria_description">
+                       Declara responsable.
+                     </p>
+                  </li>
+                  <li class="col-md-4 col-sm-12 metadata_criteria">
+                    <span class="metadata_criteria_name">Explicación del dataset</span>
+                    {%if dataset.metadata_criteria.dataset_explanation %}
+                    <span class="metadata_criteria_value_ok">Si</span>
+                    {%else%}
+                    <span class="metadata_criteria_value_bad">No</span>
+                    {%endif%}
+                     <p class="metadata_criteria_description">
+                       Tiene una explicación de 150 caracteres o más.
+                     </p>
+                  </li>
+
+              </ul>
+
+              <hr style="clear:both;" />
+              
+              <h4>
+                Calidad de datos por recurso (promedio {{dataset.resources_score*100}}%)
+              </h4>
                 <table class="resources-table">
                   <thead>
                     <tr>
@@ -414,23 +486,54 @@
                       <td class="resource-ok">
                         {% if resource.evaluable == true %} Si {% else %} No {% endif %}
                       </td>
-                      <td class="{% if resource.validity or not resource.evaluable %} resource-ok {% else %} resource-error {% endif %}">
+                      <td class="{%
+                        if (resource.goodtables and resource.validity) or not resource.evaluable %}
+                          resource-ok
+                        {% else %}
+                          resource-error
+                        {% endif %}">
                         {% if resource.evaluable %}
                         {% if resource.validity %}
                         Válido
-                        {%else %}
+                        {%elseif resource.goodtables %}
                         Errores
+                        {%else %}
+                        No evaluado
                         {%endif%}
                         {% else %}
+                        No evaluable
                         {% endif %}
                       </td>
-                      <td class="{% if (resource.errors_count > 0 and resource.goodtables or not resource.evaluable) %} resource-ok {% else %} resource-error {% endif %}">
+                      <td class="{%
+                        if (
+                          resource.evaluable and resource.goodtables and resource.errors_count == 0
+                          or not resource.evaluable
+
+                          )
+                        %}
+                          resource-ok
+                        {% elseif resource.evaluable %}
+                          resource-error
+                        {% endif %}">
                         {% if resource.evaluable %}
-                        {{resource.errors_count}}
-                        <a href="http://goodtables.okfnlabs.org/reports?data_url={{resource.url}}">
-                          Ver detalles
-                        </a>
+                          {% if resource.goodtables %}
+                          <a href="http://goodtables.okfnlabs.org/reports?data_url={{resource.url}}">
+                            {% if resource.errors_count > 0 %}
+                            Ver {{resource.errors_count}} errores
+                            {% else %}
+                            Re-validar
+                            {% endif %}
+
+                          </a>
+                          {% else %}
+                          <a href="http://goodtables.okfnlabs.org/reports?data_url={{resource.url}}">
+                            Re-validar
+                          </a>
+                          {% endif %}
+                        {% else %}
+                        No evaluable
                         {% endif %}
+
                       </td>
                       <td class="resource-ok">
                         <a href="{{resource.url}}">Ver original</a>

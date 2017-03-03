@@ -213,6 +213,7 @@ ul.navbar-nav {
   min-width: 2em;
 }
 
+.metadata_criteria_description,
 .criteria_description {
   white-space: normal;
   font-size: 0.85em;
@@ -246,7 +247,7 @@ td.criteria_name {
   line-height: 3em;
 }
 
-.portal_criteria_value_error,
+.portal_criteria_value_bad,
 .portal_criteria_value_ok {
   padding: 1em;
   color: white;
@@ -264,12 +265,44 @@ td.criteria_name {
   background-color: #BF6E42;
 }
 
+
+.metadata_criteria {
+  margin: 0;
+  padding: 0 1em 1em 0;
+  list-style: none;
+  font-size: 1.1em;
+}
+
+.metadata_criteria_name {
+  padding: 1em;
+  font-size: 1.1em;
+  line-height: 3em;
+}
+
+.metadata_criteria_value_bad,
+.metadata_criteria_value_ok {
+  padding: 1em;
+  color: white;
+  font-weight: bold;
+  float: right;
+  border-top-right-radius: 1em;
+  box-shadow: 2px 2px 5px #666;
+}
+
+.metadata_criteria_value_ok {
+  background-color: #45BFA5;
+}
+
+.metadata_criteria_value_bad {
+  background-color: #BF6E42;
+}
+
+
 .resources-table {
   width: 100%;
-  border-spacing: 2px;
+  border-spacing: 3px;
   border-collapse: separate;
   font-size: 1.1em;
-  line-height: 1.5em;
   margin-top: 3em;
 }
 
@@ -285,6 +318,7 @@ td.criteria_name {
 .resources-table th:not(.resource-name),
 .resources-table td:not(.resource-name) {
   text-align: center;
+  padding: 0.5em;
 }
 
 td.resource-name,
