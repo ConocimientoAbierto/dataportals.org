@@ -38,11 +38,18 @@ process.on('message', portals => {
             return portalObj.report.save();
           })
           .then(() => console.log('guardada evaluación de ' + portal.slug))
-          .catch((portalObj) => {
-            console.log('no se generó la evaluación automática de '+ portal.slug +': \n', portalObj);
-            // portalObj.report.ranking_id = ranking._id;
-            // return portalObj.report.save();
-            return portals_promise;
+          .catch((err) => {
+            console.log('no se generó la evaluación automática de '+ portal.slug +': \n', err);
+            const evaluation = new Evaluation({
+              portal_slug: portal.slug,
+              ranking_id: ranking._id,
+              automatic_eval_done: false,
+              manual_eval_done: false,
+              is_finished: true,
+              with_error: true
+            });
+
+            return evaluation.save();
           });
       }
       else {
@@ -52,7 +59,7 @@ process.on('message', portals => {
         evaluation.ranking_id = ranking._id;
         evaluation.save();
 
-        return portals_promise
+        return portals_promise;
       }
     }, Promise.resolve())
     .then( () => {
@@ -86,9 +93,6 @@ const _closeRanking = ranking => {
     console.log("Found evaluations for ranking ",evaluations.length);
 
     Ranking.find({}, null,  {sort:{_id:-1}, limit:2}, function(err, rankings) {
-      console.log('**************************')
-      console.log(rankings);
-      console.log('**************************')
       // chek for previous ranking
       let previous_ranking = rankings[0];
       if (rankings.length > 1) {
@@ -105,47 +109,115 @@ const _closeRanking = ranking => {
       });
 
       console.log(1,evaluations);
-      evaluations.forEach(function(evaluation,index,all) {
-        let prev_pos = null;
-        console.log("previous_ranking",previous_ranking);
-        for (let p in previous_ranking.portals) {
-          if (previous_ranking.portals[p].portal_slug == evaluation.portal_slug) {
-            prev_pos = previous_ranking.portals[p].current_position
+      Portal.find({}, (err, portals) => {
+        console.log('****1 portales');
+        if (err) console.log(err);
+        portals.forEach(portal => {
+          // this portal is not evaluable
+          if (portal.to_evaluate === false) {
+            ranking.portals.addToSet({
+              portal_slug: portal.slug,
+              portal_name: portal.title,
+              current_position: null,
+              previous_position: null,
+              score: null,
+              was_evaluated: false,
+              has_manual_evaluation: false,
+            });
+            return;
           }
-        }
-        console.log("evaluation.portal_slug",evaluation.portal_slug);
 
-        const portal_name = null;
-        Portal.findBySlug(evaluation.portal_slug, function(err,portal) {
-          console.log("portal",portal);
-          const portal_name = portal.title;
-          console.log("Found portal name",portal_name);
+          // for portals with evaluation
+          const portalEvaluation = evaluations.filter(evaluation => evaluation.portal_slug === portal.slug)[0];
+
+          let prev_pos = null;
+          console.log("previous_ranking",previous_ranking);
+          for (let p in previous_ranking.portals) {
+            if (previous_ranking.portals[p].portal_slug == portalEvaluation.portal_slug) {
+              prev_pos = previous_ranking.portals[p].current_position
+            }
+          }
+          console.log("evaluation.portal_slug",portalEvaluation.portal_slug);
 
           ranking.portals.addToSet({
-            portal_slug: evaluation.portal_slug,
-            portal_name: portal_name,
-            current_position: (index+1),
+            portal_slug: portalEvaluation.portal_slug,
+            portal_name: portal.title,
+            current_position: evaluations.indexOf(portalEvaluation)+1,
             previous_position: prev_pos,
-            score: evaluation.total_score,
+            score: portalEvaluation.total_score,
             was_evaluated: true,
-            has_manual_evaluation: evaluation.manual_eval_done,
+            has_manual_evaluation: portalEvaluation.manual_eval_done,
           });
 
-          ranking.datasets_count += +evaluation.datasets.length;
-          ranking.resources_count += +evaluation.resources_count;
+        });
+        ranking.datasets_count = evaluations.reduce((total, evaluation) => {
+          return total + evaluation.datasets.length
+        }, 0);
+        ranking.resources_count = evaluations.reduce((total, evaluation) => {
+          return total + evaluation.resources_count
+        }, 0);
 
-          ranking.is_finished = true;
-          ranking.save(function(err,ranking) {
-            console.log("finish ranking",err,ranking);
-            console.log('terminó el ranking');
-          });
+        ranking.is_finished = true;
+        ranking.save((err,ranking) => {
+          console.log("finish ranking",err,ranking);
+          console.log('terminó el ranking');
         });
       });
+      //******
+      //forma anterior // TODO BORRAR
+      //******
+      // evaluations.forEach(function(evaluation,index,all) {
+      //   let prev_pos = null;
+      //   console.log("previous_ranking",previous_ranking);
+      //   for (let p in previous_ranking.portals) {
+      //     if (previous_ranking.portals[p].portal_slug == evaluation.portal_slug) {
+      //       prev_pos = previous_ranking.portals[p].current_position
+      //     }
+      //   }
+      //   console.log("evaluation.portal_slug",evaluation.portal_slug);
+      //
+      //   let portal_name = null;
+      //   Portal.findBySlug(evaluation.portal_slug, function(err,portal) {
+      //     console.log("portal",portal);
+      //     portal_name = portal.title;
+      //     console.log("Found portal name",portal_name);
+      //
+      //     ranking.portals.addToSet({
+      //       portal_slug: evaluation.portal_slug,
+      //       portal_name: portal_name,
+      //       current_position: (index+1),
+      //       previous_position: prev_pos,
+      //       score: evaluation.total_score,
+      //       was_evaluated: true,
+      //       has_manual_evaluation: evaluation.manual_eval_done,
+      //     });
+      //
+      //     ranking.datasets_count += +evaluation.datasets.length;
+      //     ranking.resources_count += +evaluation.resources_count;
+      //
+      //
+      //     Portal.find({to_evaluate: false}, (err, portals) => {
+      //       portals.forEach((portal) => {
+      //         ranking.portals.addToSet({
+      //           portal_slug: portal.slug,
+      //           portal_name: portal.title,
+      //           current_position: null,
+      //           previous_position: null,
+      //           score: null,
+      //           was_evaluated: false,
+      //           has_manual_evaluation: false,
+      //         });
+      //       });
+      //       ranking.is_finished = true;
+      //       ranking.save(function(err,ranking) {
+      //         console.log("finish ranking",err,ranking);
+      //         console.log('terminó el ranking');
+      //       });
+      //     });
+      //   });
+      // });
     });
   });
-
-  console.log("WTF",ranking._id);
-
 };
 
 const _checkForPreviousManualEvaluation = portalObj => {
@@ -322,7 +394,8 @@ const _requestPromise = (url, json) => {
     request.get({
       url: url,
       json: json || false,
-      headers: {'User-Agent': 'request'}
+      headers: {'User-Agent': 'request'},
+      timeout: 5000
     }, (err, res, data) => {
       if (err) {
         reject('Some thing goes wrong with the request to : ' + url + '\nError: '+ err);
