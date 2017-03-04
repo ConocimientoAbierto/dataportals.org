@@ -17,7 +17,7 @@ const rankingSchema = new Schema({
     previous_position:{type: Number, default: null},
     score: {type: Number, default: null},
     was_evaluated: {type: Boolean, default: false},
-    has_manual_evaluation: {type: Boolean, default: false},
+    has_manual_evaluation: {type: Boolean, default: false}
   }],
   is_finished: {type: Boolean, default: false},
 }, {

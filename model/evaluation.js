@@ -55,6 +55,7 @@ const evaluationSchema = new Schema({
     }]
   }],
   ranking_id: {type: Schema.Types.ObjectId, ref: 'Ranking', required: true, default: null},
+  with_error: {type: Boolean, default: false}
 }, {
   timestamps: {createdAt: 'created_at', updatedAt: 'updated_at'}
 });
