@@ -14,9 +14,10 @@
           <a class="btn btn-warning pull-right" href="/evaluation/manual/{{portal.slug}}" role="button">Evaluación manual <i class="fa fa-graduation-cap" aria-hidden="true"></i></a>
         {% endif %}
       </h1>
-      <img style="float: left; margin: 0 2em 2em 0 " src="http://api.page2images.com/directlink?p2i_url={{ portal.url }}&p2i_key=97c6f2d45d7ab41d&p2i_size=250x350" alt="Captura de pantalla del portal web" />
-      <p style="font-size: 1.2em">Portal de datos CKAN</p>
+      <img style="float: left; margin: 0 2em 2em 0 " src="http://api.page2images.com/directlink?p2i_url={{ portal.url }}&p2i_key=ba1bef6c9e6864e3&p2i_size=250x350" alt="Captura de pantalla del portal web" />
+      <p style="font-size: 1.2em">Portal de datos {{ portal.plataform }}</p>
       <p>
+        {{ portal.author }}.
         {{ portal.description }}
       </p>
       <p>
@@ -254,7 +255,7 @@
         <div class="panel-body">
           {#{evaluations[0].datasets|dump}#}
           {% if (evaluations[0] or evaluations[0].is_finished == false) and (currentUser.role == 'admin'
-          or ((portal.slug=="ciudad-de-mendoza" or portal.slug=="datos-gob-ar") and detailed=="true"))
+          or ((portal.slug=="neuquen-open-data" or portal.slug=="datos-gob-ar") and detailed=="true"))
           %}
           {#
           #//or  and currentUser.role != 'evaluator' and portal.user = currentUser
@@ -443,7 +444,7 @@
               </ul>
 
               <hr style="clear:both;" />
-              
+
               <h4>
                 Calidad de datos por recurso (promedio {{dataset.resources_score*100}}%)
               </h4>
@@ -560,7 +561,7 @@
             </ul>
             <p>
               <a href="/contacto?portal={{portal.slug}}" class="btn btn-lg btn-info" style="font-size: 1.2em; font-weight: bold; margin-top: 1.1em">Solcitar informe deallado</a>
-              <a href="/portales/ciudad-de-mendoza/?detailed=true" style="position: relative; top: 0.6em; text-decoration: underline; left: 1em">Ver un ejemplo</a>
+              <a href="/portals/neuquen-open-data/?detailed=true" style="position: relative; top: 0.6em; text-decoration: underline; left: 1em">Ver un ejemplo</a>
             </p>
           </div>
           {% endif %}
@@ -571,10 +572,6 @@
     <div class="col-md-12">
       <h3>Metadatos del portal (cargados a mano)</h3>
       <dl class="dl-horizontal">
-          <dt>Autor:</dt>
-          <dd>{{ portal.author }}</a></dd>
-          <dt>URL:</dt>
-          <dd><a href="{{ portal.url }}">{{ portal.url }}</a></dd>
           <dt>Estado:</dt>
           <dd>{{ portal.status }}</dd>
           <dt>Tipo de author:</dt>
@@ -585,12 +582,11 @@
               /
             <span class="label label-info">{{ portal.lenguage }}</span>
           </dd>
-          <dt>Plataforma utilizada</dt>
-          <dd>{{ portal.plataform }}</dd>
           <dt>Tipo de API:</dt>
           <dd>{{ portal.api_type }}</dd>
           <dt>URL de API:</dt>
           <dd>{{ portal.api_endpoint }}</dd>
+          {% if currentUser.role === 'admin' %}
           <dt>Responsable del Portal</dt>
           <dd>
             {% if portal.owner %}
@@ -637,6 +633,7 @@
             </span>
             {% endif %}
           </dd>
+          {% endif %}
       </dl>
       {% if currentUser.role === 'admin' %}
       <div class="btn-inline">
