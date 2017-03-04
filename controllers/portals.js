@@ -3,6 +3,7 @@
 const mongoose = require('mongoose');
 const Portal = mongoose.model('Portal');
 const Evaluation = mongoose.model('Evaluation');
+const Ranking = mongoose.model('Ranking');
 
 const userCtrl = require('./../controllers/users');
 
@@ -19,10 +20,24 @@ exports.findAllPortals = (req, res) => {
 exports.findBySlug = (req, res) => {
   Portal.findBySlug(req.params.slug, (err, portal) => {
     if(err) return res.status(500).send(err.message);
+
     Evaluation.find({portal_slug: req.params.slug, is_finished: true}, null ,{sort: {_id:-1}}, (err, evaluations) => {
       // evaluations[0].populate();
       if(err) return res.status(500).send(err.message);
-      res.render('portals/view.html', {'portal': portal, evaluations: evaluations, detailed: req.param("detailed")});
+
+      Ranking.find({is_finished: true}, null, {sort:{_id:-1}}, (err, rankings) => {
+        // get the portal in the array of portals on the ranking
+        const portalOnRanking = rankings[0].portals.filter(portal => portal.portal_slug ===req.params.slug)[0];
+        const current_position = portalOnRanking.current_position;
+
+        const data = {
+          portal: portal,
+          evaluations: evaluations, 
+          current_position: current_position,
+          detailed: req.param('detailed')
+        };
+        res.render('portals/view.html', data);
+      });
     });
   });
 };

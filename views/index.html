@@ -71,7 +71,7 @@
               No
               {% endif %}
             </td>
-            <td>{{portal.score * 100}}%</td>
+            <td>{{(portal.score * 100) | round}}%</td>
           </tr>
         {% endfor %}
       </tbody>

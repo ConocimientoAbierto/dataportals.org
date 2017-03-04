@@ -26,11 +26,11 @@
       {% if evaluations[0] or evaluations[0].is_finished == false %}
       <ul style="clear: both;" class="row">
         <li class="counter col-lg-2 col-md-4 col-sm-12 col-lg-offset-2 col-md-offset-0">
-          <span class="value">1 {{evaluations[0].ranking.portals[0].position}}</span>
+          <span class="value">{{current_position}}</span>
           <span class="label">Posición</span>
         </li>
         <li class="counter col-lg-3 col-md-4 col-sm-12">
-          <span class="value">{{evaluations[0].total_score * 100}}%</span>
+          <span class="value">{{ (evaluations[0].total_score * 100) | round }}%</span>
           <span class="label">Puntaje</span>
         </li>
         <li class="counter col-lg-3 col-md-4 col-sm-12">
