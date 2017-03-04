@@ -54,7 +54,7 @@ const evaluationSchema = new Schema({
       goodtables: {type: Boolean, default: false}
     }]
   }],
-  ranking_id: {type: Schema.Types.ObjectId, ref: 'Ranking', required: true, default: null},
+  ranking_id: {type: Schema.Types.ObjectId, ref: 'Ranking', default: null},
   with_error: {type: Boolean, default: false}
 }, {
   timestamps: {createdAt: 'created_at', updatedAt: 'updated_at'}

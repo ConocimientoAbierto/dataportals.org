@@ -223,26 +223,10 @@ const _closeRanking = ranking => {
 const _checkForPreviousManualEvaluation = portalObj => {
   // verify if the automatic evaluation is needed
   return Evaluation.find({portal_slug: portalObj.portal_slug, manual_eval_done: true}).sort({_id: -1}).exec()
-  .then(evaluation => {
+  .then(evaluations => {
     const newPortalObj = new Object(portalObj);
-    if (evaluation.length > 0) { // has a previous evaluation manual
-      portalObj.report = {
-        manual_eval_done: true,
-        ease_portal_navigation_score: evaluation.ease_portal_navigation_score,
-        ease_portal_navigation_criteria: {
-          oficial_identity: evaluation.oficial_identity,
-          link_oficial_site: evaluation.link_oficial_site,
-          open_data_exp: evaluation.open_data_exp,
-          all_dataset_link: evaluation.all_dataset_link,
-          dataset_search_system: evaluation.dataset_search_system,
-          examinator: evaluation.examinator
-        },
-        automated_portal_use_score: evaluation.automated_portal_use_score,
-        automated_portal_use_criteria: {
-          existence_api: evaluation.existence_api,
-          api_documentation: evaluation.api_documentation
-        },
-      };
+    if (evaluations.length > 0) { // has a previous evaluation manual
+      newPortalObj.report = evaluations[0];
     }
     return newPortalObj;
   });

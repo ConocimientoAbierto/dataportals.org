@@ -19,7 +19,7 @@ exports.findAllPortals = (req, res) => {
 exports.findBySlug = (req, res) => {
   Portal.findBySlug(req.params.slug, (err, portal) => {
     if(err) return res.status(500).send(err.message);
-    Evaluation.find({portal_slug: req.params.slug}, null ,{sort: {_id:-1}}, (err, evaluations) => {
+    Evaluation.find({portal_slug: req.params.slug, is_finished: true}, null ,{sort: {_id:-1}}, (err, evaluations) => {
       // evaluations[0].populate();
       if(err) return res.status(500).send(err.message);
       res.render('portals/view.html', {'portal': portal, evaluations: evaluations, detailed: req.param("detailed")});

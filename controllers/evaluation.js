@@ -49,7 +49,12 @@ exports.saveManualEvaluation = (req, res) => {
     .then( evaluation => _checkCurrentEvaluation(evaluation) )
     .then( evaluation => _mapRecBodyToEvaluationObj(evaluation) )
     .then( evaluation => evaluation.save() )
-    .then( evaluationSaved => res.send(evaluationSaved) )
+    .then( evaluationSaved => {
+      let flashMsg = 'Evaluación manual guardada con éxito.';
+      req.flash('message', ['warning', flashMsg]);
+
+      res.redirect('/portals/'+ req.params.slug);
+    })
     .catch( err => {
       console.log('no encontré la evaluación: ', err);
 
@@ -63,7 +68,7 @@ exports.saveManualEvaluation = (req, res) => {
 
   // check for the status of the current evaluation
   const _checkCurrentEvaluation = evaluation => {
-    if (!evaluation) return new Evaluation; // no current evaluation
+    if (!evaluation) return new Evaluation(); // no current evaluation
 
     if (evaluation.manual_eval_done) { // current evaluation manual already done
       const msg = 'Existe una evaluación en proceso y ya posee evaluación manual para ' + req.params.slug;
@@ -78,8 +83,6 @@ exports.saveManualEvaluation = (req, res) => {
     // general values
     evaluation.portal_slug = evaluation.portal_slug || req.params.slug;
     evaluation.manual_eval_done = true;
-    // if automatic is already done this eval is finished
-    evaluation.is_finished = false;
 
     // ease_portal_navigation_criteria
     evaluation.ease_portal_navigation_criteria.oficial_identity = req.body.oficial_identity;
@@ -106,8 +109,21 @@ exports.saveManualEvaluation = (req, res) => {
       req.body.api_documentation
     ];
     evaluation.automated_portal_use_score = _averageCriteria(aps_criteriaValues);
+
     // total score
-    evaluation.total_score = _averageCriteria([evaluation.automated_portal_use_score, evaluation.ease_portal_navigation_score]);
+    const totalCriteria = [
+      evaluation.automated_portal_use_score,
+      evaluation.ease_portal_navigation_score
+    ];
+    if (evaluation.automatic_eval_done) {
+      totalCriteria.push(evaluation.metadata_cuality_score);
+      totalCriteria.push(evaluation.data_cuality_score);
+    }
+
+    evaluation.total_score = _averageCriteria(totalCriteria);
+
+    // if automatic is already done this eval is finished
+    evaluation.is_finished = evaluation.automatic_eval_done;
 
     return evaluation;
   };
