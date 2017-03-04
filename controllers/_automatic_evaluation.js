@@ -257,7 +257,7 @@ const _downloadResources = portalObj => {
         const path = require('path');
         const request = require('request');
         const fs = require('fs');
-        const maxSize = 1000000;
+        const maxSize = 1200000;
 
         try {
           // if already downloaded don't download again

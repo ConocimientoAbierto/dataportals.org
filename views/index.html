@@ -52,7 +52,7 @@
         </tr>
       </thead>
       <tbody>
-        {% for portal in ranking.portals|sort(false,false,"current_position") %}
+        {% for portal in ranking.portals|selectattr("current_position")|sort(false,false,"current_position") %}
           <tr class="text-center">
             <td>{{portal.current_position}}
               {% if portal.current_position > portal.previous_position %}
@@ -72,6 +72,18 @@
               {% endif %}
             </td>
             <td>{{(portal.score * 100) | round}}%</td>
+          </tr>
+        {% endfor %}
+        {% for portal in ranking.portals|rejectattr("current_position") %}
+          <tr class="text-center">
+            <td>
+
+            </td>
+            <td><a href="/portals/{{portal.portal_slug}}">{{portal.portal_name}}</a></td>
+            <td>
+
+            </td>
+            <td>No evaluado</td>
           </tr>
         {% endfor %}
       </tbody>
