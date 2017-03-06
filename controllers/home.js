@@ -43,7 +43,7 @@ exports.renderSugerirPortal = (req, res) => {
  */
 exports.renderContacto = (req, res) => {
   let asunto = null
-  if (req.param("portal")) {
+  if (req.params.portal) {
     asunto = "Solicito evaluación detallada de "+req.params.portal
   }
   res.render('contacto.html',{asunto: asunto});
@@ -63,10 +63,12 @@ exports.renderRanking = (req, res) => {
 exports.sendContactMail = (req, res) => {
   // TODO
   // console.log('TODO: Terminar esta ruta de sugerir portal');
+  // console.log(req,res);
 
-  let body_text = "Nombre: " + req.params.name +
-  "\nEmail: " + req.params.url +
-  "\nAsunto: " + req.params.mail;
+  let body_text = "Nombre: " + req.body.name +
+  "\nEmail: " + req.body.email +
+  "\nAsunto: " + req.body.subject +
+  "\nMensaje: " + req.body.message;
 
   sendmail("martin@fcabierto.org","Contacto desde portalesdedatos.com.ar",body_text)
   // res.json(req.body);
@@ -78,10 +80,9 @@ exports.sendContactMail = (req, res) => {
 exports.sendSugerirPortal = (req, res) => {
   // TODO
   // console.log('TODO: Terminar esta ruta de envio de sugerencia de portal');
-  let body_text = "Nombre: " + req.params.name +
-  "\nEmail: " + req.params.email +
-  "\nAsunto: " + req.params.subject +
-  "\nMensaje: " + req.params.message;
+  let body_text = "Nombre: " + req.body.name +
+  "\nURL: " + req.body.url +
+  "\nMail: " + req.body.mail;
 
   sendmail("martin@fcabierto.org","Sugerir portales en portalesdedatos.com.ar",body_text)
   // res.json(req.body);
@@ -90,7 +91,7 @@ exports.sendSugerirPortal = (req, res) => {
 
 
 function sendmail(destination,subject,body_text) {
-
+  console.log("sendmail",destination,subject,body_text);
   // create reusable transporter object using the default SMTP transport
   let transporter = nodemailer.createTransport({
       // service: 'sendmail',
