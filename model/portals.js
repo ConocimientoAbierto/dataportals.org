@@ -1,7 +1,7 @@
 'use strict';
 
 const mongoose = require('mongoose'),
-      slugHero = require('mongoose-slug-hero');
+  slugHero = require('mongoose-slug-hero');
 // plugin ES6 promises default -> mpromise is deprecated
 mongoose.Promise = Promise;
 

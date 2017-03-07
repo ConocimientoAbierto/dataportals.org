@@ -6,7 +6,7 @@ mongoose.connect(configAPP.dbURL, (err) => err ? console.log(err) : console.log(
 
 const request = require('request');
 const path = require('path');
-const fs = require('fs');
+const fs = require('fs-extra');
 const execSync = require('child_process').execSync;
 const Pool = require('threads').Pool;
 
@@ -163,65 +163,12 @@ const _closeRanking = ranking => {
           console.log('terminó el ranking');
         });
       });
-      //******
-      //forma anterior // TODO BORRAR
-      //******
-      // evaluations.forEach(function(evaluation,index,all) {
-      //   let prev_pos = null;
-      //   console.log("previous_ranking",previous_ranking);
-      //   for (let p in previous_ranking.portals) {
-      //     if (previous_ranking.portals[p].portal_slug == evaluation.portal_slug) {
-      //       prev_pos = previous_ranking.portals[p].current_position
-      //     }
-      //   }
-      //   console.log("evaluation.portal_slug",evaluation.portal_slug);
-      //
-      //   let portal_name = null;
-      //   Portal.findBySlug(evaluation.portal_slug, function(err,portal) {
-      //     console.log("portal",portal);
-      //     portal_name = portal.title;
-      //     console.log("Found portal name",portal_name);
-      //
-      //     ranking.portals.addToSet({
-      //       portal_slug: evaluation.portal_slug,
-      //       portal_name: portal_name,
-      //       current_position: (index+1),
-      //       previous_position: prev_pos,
-      //       score: evaluation.total_score,
-      //       was_evaluated: true,
-      //       has_manual_evaluation: evaluation.manual_eval_done,
-      //     });
-      //
-      //     ranking.datasets_count += +evaluation.datasets.length;
-      //     ranking.resources_count += +evaluation.resources_count;
-      //
-      //
-      //     Portal.find({to_evaluate: false}, (err, portals) => {
-      //       portals.forEach((portal) => {
-      //         ranking.portals.addToSet({
-      //           portal_slug: portal.slug,
-      //           portal_name: portal.title,
-      //           current_position: null,
-      //           previous_position: null,
-      //           score: null,
-      //           was_evaluated: false,
-      //           has_manual_evaluation: false,
-      //         });
-      //       });
-      //       ranking.is_finished = true;
-      //       ranking.save(function(err,ranking) {
-      //         console.log("finish ranking",err,ranking);
-      //         console.log('terminó el ranking');
-      //       });
-      //     });
-      //   });
-      // });
     });
   });
 };
 
+// verify if a manual evaluation is already done and use it
 const _checkForPreviousManualEvaluation = portalObj => {
-  // verify if the automatic evaluation is needed
   return Evaluation.find({portal_slug: portalObj.portal_slug, manual_eval_done: true}).sort({_id: -1}).exec()
   .then(evaluations => {
     const newPortalObj = new Object(portalObj);
@@ -232,13 +179,14 @@ const _checkForPreviousManualEvaluation = portalObj => {
   });
 };
 
-// download
+// download all evaluables resources
 const _downloadResources = portalObj => {
   return new Promise((resolve, reject) => {
     const resources = [];
     portalObj.datasets_list.results.forEach(dataset => {
       dataset.resources.forEach(resource => {
         if (resource.format.toLowerCase() === 'csv') {
+          resource.dataset_name = dataset.name;
           resources.push(resource);
         }
       });
@@ -249,24 +197,31 @@ const _downloadResources = portalObj => {
     resources.forEach(resource => {
       // forces http due the sownload lib don't support https
       const fileName = _getResourceFileName(resource.url);
-      const filepath = path.join(__dirname, '../temp/', fileName);
+      const portalSlug = portalObj.portal_slug;
+      const datasetName = resource.dataset_name;
+      const filePath = path.join(__dirname, '../temp/', portalSlug, datasetName);
       const fileLastModified = resource.last_modified;
 
       pool.run( (input, done) => {
         'use strict';
         const path = require('path');
         const request = require('request');
-        const fs = require('fs');
+        const fs = require('fs-extra');
+
         const maxSize = 1200000;
+        const filePath = path.join(input.filePath, input.fileName);
 
         try {
+          // create directories if don't exists
+          fs.ensureDirSync(input.filePath);
+
           // if already downloaded don't download again
-          if (fs.existsSync(input.filePath) ) {
-            const stats = fs.statSync(input.filePath);
+          if (fs.existsSync(filePath) ) {
+            const stats = fs.statSync(filePath);
             const downloadDate = Date.parse(stats.birthtime);
             const modifiedDate = Date.parse(input.fileLastModified);
             if (downloadDate > modifiedDate) {
-              console.log('No se descargará -> ', input.filePath);
+              console.log('No se descargará -> ', filePath);
               done();
             }
           }
@@ -277,19 +232,22 @@ const _downloadResources = portalObj => {
               done();
             } else {
               // download the file
-              let file = fs.createWriteStream(input.filePath);
+              let file = fs.createWriteStream(filePath);
               let size = 0;
               const req = request({url: input.fileUrl, timeout: 5000});
               req.on('data', function(data) {
                 size += data.length;
 
+                // abort download if the file size is more than the maxSize
                 if (size > maxSize) {
                   console.log('Resource stream exceeded limit (' + size + ')');
                   req.abort();
-                  fs.unlinkSync(input.filePath);
+                  fs.unlinkSync(filePath);
                   done();
                 }
               }).pipe(file);
+
+              // abort after 5" without response
               req.on('request', req => {
                 setTimeout(() => {
                   req.abort();
@@ -297,21 +255,20 @@ const _downloadResources = portalObj => {
                 }, 5000);
               });
               req.on('end', () => {
-                console.log('descargado -> ', input.filePath);
+                console.log('descargado -> ', filePath);
                 done();
               });
               req.on('error', error => {
                 throw new Error(error);
               });
             }
-          }).on('request', req => {
+          })
+          // abort after 5"
+          .on('request', req => {
             setTimeout(() => {
               req.abort();
               done();
             }, 5000);
-          })
-          .on('end', () => {
-            done();
           });
         }
         catch (err) {
@@ -321,7 +278,8 @@ const _downloadResources = portalObj => {
       })
       .send({
         fileUrl: resource.url,
-        filePath: filepath,
+        filePath: filePath,
+        fileName: fileName,
         fileLastModified: fileLastModified
       });
     });
