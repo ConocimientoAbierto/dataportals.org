@@ -23,10 +23,11 @@ process.on('message', portals => {
   // get all portal's slugs
   const portalsSlug = portalsArr.map(portal => portal.slug);
 
-  _openRanking(portalsArr).then(function(ranking){
+  _openRanking(portalsArr)
+  .then( ranking => {
     portalsArr.reduce((portals_promise, portal) => {
       if (portal.to_evaluate === true) {
-        console.log("Evaluating ",portal.slug);
+        console.log('Evaluating ', portal.slug);
         return portals_promise
           .then( () => _setPortalObject(portal))
           .then(portalObj => _getPortalWithDatasetsList(portalObj, 'package_search?rows='))
@@ -79,7 +80,7 @@ const _openRanking = portalsArr => {
   //     return saved_ranking;
   // });
   return ranking.save();
-}
+};
 
 const _closeRanking = ranking => {
   //Traer todas las evaluaciones de este ranking
@@ -181,117 +182,121 @@ const _checkForPreviousManualEvaluation = portalObj => {
 
 // download all evaluables resources
 const _downloadResources = portalObj => {
-  return new Promise((resolve, reject) => {
-    const resources = [];
-    portalObj.datasets_list.results.forEach(dataset => {
-      dataset.resources.forEach(resource => {
-        if (resource.format.toLowerCase() === 'csv') {
-          resource.dataset_name = dataset.name;
-          resources.push(resource);
-        }
-      });
+  const resources = [];
+  portalObj.datasets_list.results.forEach(dataset => {
+    dataset.resources.forEach(resource => {
+      if (resource.format.toLowerCase() === 'csv') {
+        resource.dataset_name = dataset.name;
+        resources.push(resource);
+      }
     });
+  });
 
-    // download pool
-    const pool = new Pool();
-    resources.forEach(resource => {
-      // forces http due the sownload lib don't support https
-      const fileName = _getResourceFileName(resource.url);
-      const portalSlug = portalObj.portal_slug;
-      const datasetName = resource.dataset_name;
-      const filePath = path.join(__dirname, '../temp/', portalSlug, datasetName);
-      const fileLastModified = resource.last_modified;
+  // download pool
+  const pool = new Pool();
+  pool.run( (input, done) => {
+    'use strict';
+    const path = require('path');
+    const request = require('request');
+    const fs = require('fs-extra');
 
-      pool.run( (input, done) => {
-        'use strict';
-        const path = require('path');
-        const request = require('request');
-        const fs = require('fs-extra');
+    const maxSize = 1200000;
+    const filePath = path.join(input.filePath, input.fileName);
 
-        const maxSize = 1200000;
-        const filePath = path.join(input.filePath, input.fileName);
+    try {
+      // create directories if don't exists
+      fs.ensureDirSync(input.filePath);
 
-        try {
-          // create directories if don't exists
-          fs.ensureDirSync(input.filePath);
+      // if already downloaded don't download again
+      if (fs.existsSync(filePath) ) {
+        const stats = fs.statSync(filePath);
+        const downloadDate = Date.parse(stats.birthtime);
+        const modifiedDate = Date.parse(input.fileLastModified);
+        if (downloadDate < modifiedDate) {
+          console.log('No se descargará -> ', filePath);
+          done();
+        }
+      }
+      request({url: input.fileUrl, method: 'HEAD', timeout: 5000}, (err, headRes) => {
+        let size = headRes.headers['content-length'];
+        if (size > maxSize) {
+          console.log('Resource size exceeds limit (' + size + ')');
+          done();
+        } else {
+          console.log('descargando -> ', filePath);
 
-          // if already downloaded don't download again
-          if (fs.existsSync(filePath) ) {
-            const stats = fs.statSync(filePath);
-            const downloadDate = Date.parse(stats.birthtime);
-            const modifiedDate = Date.parse(input.fileLastModified);
-            if (downloadDate > modifiedDate) {
-              console.log('No se descargará -> ', filePath);
-              done();
-            }
-          }
-          request({url: input.fileUrl, method: 'HEAD', timeout: 5000}, (err, headRes) => {
-            let size = headRes.headers['content-length'];
+          // download the file
+          let file = fs.createWriteStream(filePath);
+          let size = 0;
+          const req = request({url: input.fileUrl, timeout: 5000});
+          req.on('data', function(data) {
+            size += data.length;
+
+            // abort download if the file size is more than the maxSize
             if (size > maxSize) {
-              console.log('Resource size exceeds limit (' + size + ')');
+              console.log('Resource stream exceeded limit (' + size + ')');
+              req.abort();
+              fs.unlinkSync(filePath);
               done();
-            } else {
-              // download the file
-              let file = fs.createWriteStream(filePath);
-              let size = 0;
-              const req = request({url: input.fileUrl, timeout: 5000});
-              req.on('data', function(data) {
-                size += data.length;
-
-                // abort download if the file size is more than the maxSize
-                if (size > maxSize) {
-                  console.log('Resource stream exceeded limit (' + size + ')');
-                  req.abort();
-                  fs.unlinkSync(filePath);
-                  done();
-                }
-              }).pipe(file);
-
-              // abort after 5" without response
-              req.on('request', req => {
-                setTimeout(() => {
-                  req.abort();
-                  done();
-                }, 5000);
-              });
-              req.on('end', () => {
-                console.log('descargado -> ', filePath);
-                done();
-              });
-              req.on('error', error => {
-                throw new Error(error);
-              });
             }
-          })
-          // abort after 5"
-          .on('request', req => {
+          }).pipe(file);
+
+          req.on('response', () => {
+            done();
+          });
+
+          // abort after 5" without response
+          req.on('request', req => {
             setTimeout(() => {
               req.abort();
               done();
             }, 5000);
           });
-        }
-        catch (err) {
-          console.log('Error al guardar archivo. \narchivo: ' + input.fileName, err);
-          done();
+
+          req.on('error', error => {
+            throw new Error(error);
+          });
+          req.end();
         }
       })
-      .send({
-        fileUrl: resource.url,
-        filePath: filePath,
-        fileName: fileName,
-        fileLastModified: fileLastModified
+      // abort after 5"
+      .on('request', req => {
+        setTimeout(() => {
+          req.abort();
+          done();
+        }, 5000);
       });
-    });
-
-    pool
-    .on('message', (job, message) => console.log(message))
-    .on('error', (job, message) => reject('Error en el pool de descarga, error: \n' + message))
-    .on('finished', () => {
-      console.log('****** Final de descargas del portal ' + portalObj.slug + ' ******');
-      resolve(portalObj);
-    });
+    }
+    catch (err) {
+      console.log('Error al guardar archivo. \narchivo: ' + input.fileName, err);
+      done();
+    }
   });
+
+  const promisesArray = [];
+  resources.forEach(resource => {
+    // forces http due the sownload lib don't support https
+    const fileName = _getResourceFileName(resource.url);
+    const portalSlug = portalObj.portal_slug;
+    const datasetName = resource.dataset_name;
+    const filePath = path.join(__dirname, '../temp/', portalSlug, datasetName);
+    const fileLastModified = resource.last_modified;
+
+    promisesArray.push(pool.send({
+      fileUrl: resource.url,
+      filePath: filePath,
+      fileName: fileName,
+      fileLastModified: fileLastModified
+    }).promise());
+  });
+
+  return Promise.all(promisesArray)
+  .then( () => {
+    console.log('==========================================================');
+    console.log('Todo descargado!');
+    return portalObj;
+  });
+
 };
 
 const _setPortalObject = portal => {
@@ -611,7 +616,7 @@ const _evaluateDatasets = portalObj => {
 };
 
 const _evalWithGoodTables = filePath => {
-  console.log('Evaluando goodtables -> ' + filePath);
+  // console.log('Evaluando goodtables -> ' + filePath);
   let result = {};
 
   // evaluar cada recurso
