@@ -32,6 +32,7 @@
 {% endblock %}
 
 {% block content %}
+{{ranking}}
 <section id="ranking">
   <div class="row">
     <h2>Los mejores portales de {{ ranking.updated_at | date("MMMM YYYY") }}</h2>
@@ -55,7 +56,9 @@
         {% for portal in ranking.portals|selectattr("current_position")|sort(false,false,"current_position") %}
           <tr class="text-center">
             <td>{{portal.current_position}}
-              {% if portal.current_position < portal.previous_position %}
+              {% if portal.previous_position|length === 0 and portal.current_position !== null %}
+              <span class="glyphicon glyphicon-plus text-default" title="Portal evaluado por primera vez"></span>
+              {% elseif portal.current_position < portal.previous_position %}
               <span class="glyphicon glyphicon-menu-up text-success" title="Subió desde posición {{portal.previous_position}}"></span>
               {% elseif portal.current_position > portal.previous_position %}
               <span class="glyphicon glyphicon-menu-down text-danger"  title="Bajó desde posición {{portal.previous_position}}"></span>
