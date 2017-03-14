@@ -18,12 +18,12 @@
     "express-validator": "^3.1.2",
     "fs-extra": "^2.0.0",
     "lodash": "^3.10.1",
+    "mailgun-js": "^0.8.2",
     "marked": "",
     "method-override": "^2.3.7",
     "mongoose": "^4.7.7",
     "mongoose-slug-hero": "^1.0.7",
     "morgan": "^1.7.0",
-    "nodemailer": "^3.1.4",
     "nunjucks": "^3.x",
     "nunjucks-date-filter": "",
     "passport": "^0.3.2",
@@ -32,9 +32,10 @@
     "request": "",
     "slug": "^0.9.1",
     "threads": "^0.7.2",
-    "underscore": ""
+    "underscore": "",
+    "xoauth2": "^1.2.0"
   },
   "engines": {
-    "node": "0.10.x"
+    "node": ">=6.10.0"
   }
 }

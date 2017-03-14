@@ -67,62 +67,73 @@ exports.sendContactMail = (req, res) => {
   // console.log('TODO: Terminar esta ruta de sugerir portal');
   // console.log(req,res);
 
-  let body_text = 'Nombre: ' + req.body.name +
+  const body_text = 'Nombre: ' + req.body.name +
   '\nEmail: ' + req.body.email +
   '\nAsunto: ' + req.body.subject +
   '\nMensaje: ' + req.body.message;
 
-  sendMail('emanuel@fcabierto.org','Contacto desde portalesdedatos.com.ar',body_text)
-  // res.json(req.body);
-  res.render('contacto.html', {enviado: true});
+  const data = {
+    from: 'Portales de Datos <'+ config.mailUser +'>',
+    to: config.mailContact,
+    subject: 'Contacto desde portalesdedatos.com.ar',
+    text: body_text
+  };
+
+  sendMailGun(data, (err, body) => {
+    let msg = ['success', 'Su mensaje ha sido recibido y será revisado en breve.'];
+
+    if (err) {
+      console.log(err);
+      msg = ['danger', 'Se produjo un error enviando su mensaje. Por favor intente nuevamente.'];
+    } else {
+      console.log('sent');
+    }
+
+    req.flash('message', msg);
+    res.redirect('/contacto');
+  });
 };
+
 /**
  * Send Mail for contact
  */
 exports.sendSugerirPortal = (req, res) => {
   // TODO
   // console.log('TODO: Terminar esta ruta de envio de sugerencia de portal');
-  let body_text = 'Nombre: ' + req.body.name +
-  '\nURL: ' + req.body.url +
-  '\nMail: ' + req.body.mail;
 
-  sendMail('emanuel@fcabierto.org','Sugerir portales en portalesdedatos.com.ar',body_text)
-  // res.json(req.body);
-  res.render('sugerir-portal.html', {enviado: true});
+  const body_text = 'Nombre: ' + req.body.name +
+    '\nURL: ' + req.body.url +
+    '\nMail: ' + req.body.mail;
+
+  const data = {
+    from: 'Portales de Datos <'+ config.mailUser +'>',
+    to: config.mailContact,
+    subject: 'Sugerir portales en portalesdedatos.com.ar',
+    text: body_text
+  };
+
+  sendMail(data, (err, body) => {
+    let msg = ['success', 'Su mensaje ha sido recibido y será revisado en breve.'];
+
+    if (err) {
+      console.log(err);
+      msg = ['danger', 'Se produjo un error enviando su mensaje. Por favor intente nuevamente.'];
+    } else {
+      console.log('sent');
+    }
+
+    req.flash('message', msg);
+    res.redirect('/sugerir-portal');
+  });
 };
 
 /**
  * Send mail
  */
-const sendMail = (destination,subject,body_text) => {
-  console.log('sendmail',destination,subject,body_text);
-  // create reusable transporter object using the default SMTP transport
-  const transporter = nodemailer.createTransport({
-    service: 'Gmail',
-    auth: {
-      xoauth2: xoauth2.createXOAuth2Generator({
-        user: config.mailUser,
-        clientId: config.mailClientID,
-        clientSecret: config.mailClientSecret,
-        refreshToken: config.mailRefreshToken
-      })
-    }
-  });
+const sendMail = (data, cb) => {
+  const api_key = config.mailApiKey;
+  const domain = config.mailDomain;
+  const mailgun = require('mailgun-js')({apiKey: api_key, domain: domain});
 
-  // setup email data with unicode symbols
-  let mailOptions = {
-    from: '"Portales de datos" <info@fcabierto.org>', // sender address
-    to: destination, // list of receivers
-    subject: subject, // Subject line
-    text: body_text // plain text body
-    // html: body_html // html body
-  };
-
-  // send mail with defined transport object
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      return console.log('Mailer error', error);
-    }
-    console.log('Message %s sent: %s', info.messageId, info.response);
-  });
-}
+  mailgun.messages().send(data, cb);
+};

@@ -57,7 +57,7 @@ exports.updateUser = (req, res, next) => {
 
     if (!updatedUser) {
       const msg = 'No es posible encontrar al ususario.';
-      req.flash('message', ['warning', msg])
+      req.flash('message', ['warning', msg]);
       return res.redirect('/');
     }
 
