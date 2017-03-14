@@ -32,8 +32,7 @@
     "request": "",
     "slug": "^0.9.1",
     "threads": "^0.7.2",
-    "underscore": "",
-    "xoauth2": "^1.2.0"
+    "underscore": ""
   },
   "engines": {
     "node": ">=6.10.0"
