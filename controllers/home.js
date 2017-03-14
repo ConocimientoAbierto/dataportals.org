@@ -79,7 +79,7 @@ exports.sendContactMail = (req, res) => {
     text: body_text
   };
 
-  sendMailGun(data, (err, body) => {
+  sendMail(data, (err, body) => {
     let msg = ['success', 'Su mensaje ha sido recibido y será revisado en breve.'];
 
     if (err) {
