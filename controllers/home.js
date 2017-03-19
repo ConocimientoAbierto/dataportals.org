@@ -4,8 +4,6 @@ const config = require('../lib/configAPP');
 const mongoose = require('mongoose');
 const Ranking = mongoose.model('Ranking');
 const Portal = mongoose.model('Portal');
-const nodemailer = require('nodemailer');
-const xoauth2 = require('xoauth2');
 
 /**
  * Render Home View
