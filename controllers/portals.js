@@ -28,11 +28,13 @@ exports.findBySlug = (req, res) => {
       Ranking.find({is_finished: true}, null, {sort:{_id:-1}}, (err, rankings) => {
         // get the portal in the array of portals on the ranking
         const portalOnRanking = rankings[0].portals.filter(portal => portal.portal_slug ===req.params.slug)[0];
-        const current_position = portalOnRanking.current_position;
+
+
+        const current_position = portalOnRanking ? portalOnRanking.current_position : null;
 
         const data = {
           portal: portal,
-          evaluations: evaluations, 
+          evaluations: evaluations,
           current_position: current_position,
           detailed: req.param('detailed')
         };
