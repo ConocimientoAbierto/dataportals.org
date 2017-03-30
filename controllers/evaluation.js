@@ -162,12 +162,13 @@ exports.makeAutomaticEvaluation = (req, res) => {
 
   // make a new thread for the automatic evaluation
   const _startAutomaticEvaluation = portals => {
-    const process = child_process.fork(__dirname + '/_automatic_evaluation.js');
+    // const process = child_process.fork(__dirname + '/_automatic_evaluation.js');
+    const process = child_process.fork(__dirname + '/_atomatic_eval-test.js');
 
     // send portals array
-    process.send({
-      portals: portals
-    });
+    // process.send({
+    //   portals: portals
+    // });
   };
 };
 

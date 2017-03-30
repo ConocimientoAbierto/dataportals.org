@@ -26,9 +26,12 @@ exports.findBySlug = (req, res) => {
       if(err) return res.status(500).send(err.message);
 
       Ranking.find({is_finished: true}, null, {sort:{_id:-1}}, (err, rankings) => {
+        if (err) console.log(err);
+        let portalOnRanking = '';
         // get the portal in the array of portals on the ranking
-        const portalOnRanking = rankings[0].portals.filter(portal => portal.portal_slug ===req.params.slug)[0];
-
+        if (rankings.length > 0) {
+          portalOnRanking = rankings[0].portals.filter(portal => portal.portal_slug ===req.params.slug)[0];
+        }
 
         const current_position = portalOnRanking ? portalOnRanking.current_position : null;
 

@@ -24,8 +24,8 @@ const evaluationSchema = new Schema({
   },
   automated_portal_use_score: {type: Number, default: null},
   automated_portal_use_criteria: {
-    existence_api: Number,
-    api_documentation: Number
+    existence_api: {type: Number, default: null},
+    api_documentation: {type: Number, default: null}
   },
   metadata_cuality_score: {type: Number, default: null},
   data_cuality_score: {type: Number, default: null},
